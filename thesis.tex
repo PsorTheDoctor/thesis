@@ -1,0 +1,170 @@
+\documentclass[12pt]{article}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+\graphicspath{{./images/}}
+
+\begin{document}
+\title{Rozpoznawanie i estymacja pozycji obiektu z użyciem systemu wizyjnego w zadaniu chwytania realizowanego przez manipulator}
+\author{
+	Praca inżynierska \\\\
+	Adam Wołkowycki \\\\
+	Promotor: Dr Adam Wolniakowski
+}
+
+\maketitle
+
+\section{Streszczenie}
+W ostatnich latach można zaobserwować wzrastający trend na zastosowanie robotów o działaniu autonomicznym. Powstaje obecnie wiele rozwiązań przeznaczonych dla tego segmentu rynku, a każdy z nich opiera swoje działanie o rozwiązania, które są przyjęte jako trudno algorytmizowalne. Przykładami takich zadań są przetwarzanie obrazu, estymaja położenia obiektów i konfiguracja kinematyki robota. Właśnie na nich zamieram skupić się w mojej pracy.
+
+Ponieważ zadania, o których wspomniałem są często realizowane przez określony rodzaj robotów, w swojej pracy zamierzam wykorzytać manipulator UR5 duńskiego producenta Universal Robots. Na nim zostanie zaimplementowany algorytm, który w oparciu o dane z systemu wizyjnego będzie w stanie określić położenie widzianych przedmiotów. Dzięki temu działanie robota będzie można gruntownie zweryfikować w praktyce.
+
+\newpage
+\section{Wprowadzenie}
+
+Definiując współczesną robotykę jako dziedzinę wiedzy mamy na uwadze przede wszystkim dwa problemy: natury konstrukcyjnej i sterowania. Ponieważ wielu producentów z branży robotyki oferuje szeroką gamę rozwiązań spełniających potrzeby niniejszej pracy, posłużymy się robotem industrialnym, w którego konstrukcję nie będziemy ingerować. Dlatego, aby zrozumieć koncepcje zawarte w tej pracy nie jest wymagana dogłębna znajomość budowy robota. Natomiast, jeśli chodzi o sterowanie to możemy ponownie wyodrębnić dwie podrzędne kategorie: manipulację i lokomocję. 
+
+\begin{itemize}
+\item \textbf{Manipulację} definiujemy jako zdolność do wykonywania precyzyjnych ruchów przez efektor końcowy robota w celu osiągnięcia wyznaczonego celu, np. przeniesienia przedmiotu procesowanego - tzw. zadanie \emph{pick and place}. Roboty posiadające tą cechę nazywamy mianem manipulatorów.
+
+\item \textbf{Lokomocja} z kolei, jak sama nazwa wskazuje, opisuje zdolność do przemieszczania się platformy mobilnej. Jest kluczowa m.in. dla pojazdów AVG \emph{(Automated Guided Vehicles)}, łazików czy robotów kroczących. Ponieważ w swojej pracy zamierzam skupić się na robotach stacjonarnych, nie będę wracał więcej do tego tematu.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=10cm]{classification}
+\caption{Podział robotyki na odrębne zagadnienia.}
+\end{figure}
+
+Musimy jednak mieć na uwadze, że jest to dość ogólna i luźna klasyfikacja. Pierwotnie, podobny podział zaproponował Marc H. Raibert kończąc książkę  \emph{Legged Robots That Balance} w ostatnim rozdziale w pytaniu \emph{Do Locomotion and Manipulation Have a Common Ground?} Dalej problem został rozwinięty w kontekście badań nad lokomocją i manipulacją oraz tego jak te dwie dziedziny wpływają na siebie nawzajem.
+
+\subsection{Manipulacja a percepcja}
+Gdy mamy już wyjaśnione ogólne zagadnienia możemy skupić się na danym zadaniu manipulatora. Załóżmy, że zadaniem robota jest pobranie kilku kostek z podajnika w miejscu A i przeniesienie ich w odpowiednie miejsca na palecie B, tzw. paletyzacja. Aby wykonać to zadanie możemy podejść do niego na dwa sposoby: zapewniając maszynie odpowiednią percepcję lub nie. 
+
+\begin{itemize}
+\item \textbf{Przypadek 1. Brak percepcji} \\
+Brak percepcji oznacza brak danych wejściowych. Operujemy jedynie na wielkościach, które muszą zostać założone z góry. W tym przykładzie będą to: pozycje bazy i kiści manipulatora, podajnika, palety oraz rozmiar kostki. Z tego powodu, robot pozbawiony percepcji zawsze musi otrzymać od nas dokładne informacje odnośnie trajektorii ruchu.
+
+\item \textbf{Przypadek 2. Percepcja z użyciem systemu wizyjnego} \\
+Przez system wizyjny możemy rozumieć dowolny rodzaj kamery, jak również projektory chmur punktów i urządzenia nakładające na siebie kolory z danymi o głębokości obrazu, zwane kamerami RGBD. W takim przypadku operujemy znaczną ilością danych, dzięki czemu znajomość wymienionych wyżej wartości nie musi być konieczna - możemy oszacować te wartości używając metod widzenia maszynowego \emph{(Computer Vision)}
+\end{itemize}
+
+\newpage
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{basic}
+\caption{Przykład zadania paletyzacji jako manipulacji przy braku percepcji. Po lewej widoczny jest kod programu stworzony w języku MELFA-BASIC IV. Po prawej na górze - ujęcie wykonane podczas pracy robota Kawasaki, na dole - widok palety do ukończeniu zadania. Symulacja została wykonana w środowisku Cosimir.}
+\end{figure}
+
+\subsection{Afordancje}
+Zdolność oddziaływania na jakiś obiekt lub środowisko została określona mianem \textbf{afordancji} przez psychologa Jamesa J. Gibsona w 1966 roku w książce \emph{The Senses Considered as Perceptual Systems} i opisana w artykule \emph{The  Theory  of  Affordance.  In:  Perceiving,  Acting  and  Knowing  Toward  an Ecological Psychology}. Definicja ta przyjęła szerokie znaczenie w dziedzinach tj. psychologia, kognitywistyka, sztuczna inteligencja czy robotyka.
+
+Możemy zdefiniować afordancje na przykładzie ludzi, ale człowiek ze względu na swoją złożoność często pozostaje niewdzięcznym modelem. Dlatego dla naszych rozważań posłużymy się morskim bezkręgowcem - krabem \emph{Limulus polyphemus}. Przykład ten został opisany m.in. w \emph{Biocybernetyce} Ryszarda Tadeusiewicza. Korzystnymi cechami tego stawonoga z naszego punktu widzenia są posiadanie ośrodkowego układu nerwowego oraz oczu, z których impulsy jesteśmy w stanie śledzić. Tak więc, jesteśmy w stanie w przybliżeniu zobrazować jego pole widzenia. 
+
+Co wobec tego widzi krab? Przede wszystkim \textbf{obiekty} stanowiące najczęściej zagrożenie lub będące przedmiotem łowów niezależnie od tła. W warunkach laboratoryjnych możemy także osiągnąć pobudzenie neuronalne za pomocą punktowego oświetlenia lub gwałtownych zmian światła. Krab nie widzi natomiast równomiernych gradientów oświetlenia czy pastelowego tła. Jest to biologicznie uzasadnione, ponieważ informacje te nie są dla niego w żaden sposób niezbędne do życia. 
+
+Przykład kraba, mimo że może wydawać się surowy, niesie ze sobą istotne wskazówki na temat tego co powinniśmy rozumieć przez afordancje i jaka jest ich rola. W robotyce robot musi nauczyć się jak chwytać i operować uchwyconymi obiektami, tak aby osiągnąć wyznaczony cel. Różne przedmioty, np. młotek mogą być uchwycone na wiele różnych sposobów natomiast liczba optymalnych chwytów jest ograniczona w kontekście danego zadania.
+
+\newpage
+\section{Estymacja położenia obiektu}
+Algorytm Iterative Closest Point (ICP) został szerzej opisany w artykule \emph{A Method for Registration of 3-D Shapes} przez Paula Besla i Neila McKaya w 1992 roku. Wcześniej została opublikowana praca \emph{Least-Squares Fitting of Two 3-D Point Sets} K.S Aryn at el. 
+\\
+Aby przejść do zadania estymacji położenia obiektu najpierw należy określić czy dysponujemy jego kształtem. Ponieważ w wielu zastosowaniach industrialnych przedstawionego algorytmu cecha ta jest wiadoma z góry, dla potrzeby tej pracy możemy przyjąć, że dysponujemy takim modelem. Mamy więc podane dwa kształty: rzeczywisty model obiektu pobrany z kamery RGBD jako chmura punktów oraz wyidealizowany model, który posłuży jako szablon.
+\\
+Mamy więc dwa zbiory punktów, z których każdy opisany jest przez współrzędne x, y, z.
+\\
+\subsection{Wyznaczenie najbliższego punktu}
+\\
+\textbf{Przypadek 1: dwa punkty}
+\\
+Odległość $d(p_{1}, p_{2})$ między dwoma punktami $p_{1} = (x_{1}, y_{1}, z_{1})$
+i $p_{2} = (x_{2}, y_{2}, z_{2})$ jest dana w metryce euklidesowej wzorem: 
+\[d(p_{1}, p_{2}) = ||p_{1} - p_{2}|| = \sqrt{(x_{2}-x_{1})^2+(y_{2}-y_{1})^2+(z_{2}-z_{1})^2}\]
+\\
+\textbf{Przypadek 2: punkt i zbiór punktów}
+\\
+Załóżmy, że A jest zbiorem n punktów oznaczonych jako $a_{i}$. Odległość między punktem p a zbiorem punktów A jest równa:
+\[d(p, A) = \min_{i \in {1,...,n}} d(p, a_{i})\]
+Wówczas najbliższy punkt spełnia warunek $d(p, a_{i}) = d(p, A)$
+\\
+\\
+\textbf{Przypadek 3: punkt i odcinek}
+\\
+Załóżmy, że l jest odcinkiem łączącym punkty $p_{1}$ i $p_{2}$ Odległość między punktem p a odcinkiem l wynosi:
+\[d(p, l) = \min_{u+v=1} ||up_{1}+vp_{2}-p|| \]
+gdzie $u \in [0, 1]$ i $v \in [0, 1]$ 
+\\
+\\
+\textbf{Przypadek 4: punkt i figura płaska}
+\\
+Załóżmy, że t jest trójkątem opisanym przez trzy punkty leżące na jego wierzchołkach: $p_{1} = (x_{1}, y_{1}, z_{1})$, $p_{2} = (x_{2}, y_{2}, z_{2})$ oraz $p_{3} = (x_{3}, y_{3}, z_{3})$ Odległość między punktem p a trójkątem t jest dana:
+\[d(p, t) = \min_{u+v+w=1} ||up_{1}+vp_{2}-p+wp_{3}-p|| \]
+gdzie $u \in [0, 1]$ i $v \in [0, 1]$ 
+\\
+\subsection{Iterative closest point}
+
+
+\begin{verbatim}
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from sklearn.preprocessing import MinMaxScaler
+import random
+from math import *
+import trimesh
+import os
+import icp
+import test
+
+mesh = trimesh.load_mesh('bunny.stl')
+
+density = 3000
+dim = 3
+translation = 0.5
+rotation = 0.5
+
+A = mesh.sample(density)
+scaler = MinMaxScaler(feature_range=(0, 1))
+A = scaler.fit_transform(A)
+
+B = mesh.sample(density)
+B = scaler.fit_transform(B)
+
+t = np.random.rand(dim) * translation
+B += t
+
+R = test.rotation_matrix(np.random.rand(dim), 
+			np.random.rand() * rotation)
+B = np.dot(R, B.T).T
+
+iterations = 15
+
+for i in range(iterations):
+  T, distances, iters = icp.icp(B, A, max_iterations=(i+1))
+
+  C = np.ones((density, 4))
+  C[:, 0:3] = B
+  C = np.dot(T, C.T).T
+
+  fig = plt.figure(figsize=(9, 9))
+  ax = Axes3D(fig)
+  ax.scatter(A[:, 0], A[:, 1], A[:, 2], c='b')
+  ax.scatter(C[:, 0], C[:, 1], C[:, 2], c='r')
+
+  fig.savefig('icp{}.png'.format(i))
+\end{verbatim}
+
+\includegraphics[width=\textwidth]{bunny_icp}
+Działanie algorytmu ICP na przykładzie obiektu w kształcie królika.
+
+\section{Bibliografia}
+\begin{enumerate}
+\item \emph{Legged Robots That Balance} - Marc H. Raibert
+\item \emph{The Senses Considered as Perceptual Systems} - James J. Ginson
+\item \emph{Biocybernetyka} - Ryszard Tadeusiewicz
+\item \emph{A Method for Registration of 3-D Shapes} - Paul J. Besl, Neil D. McKay
+\item \emph{Least-Squares Fitting of Two 3-D Point Sets} - K.S. Arun, T.S. Huang, S.D. Blostein
+\item \emph{Linear Algebra with Applications} - Steven J. Leon
+\end{enumerate}
+\end{document}
