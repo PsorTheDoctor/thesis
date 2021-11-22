@@ -3,6 +3,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{amsmath}
+\usepackage{amsfonts}
 \graphicspath{{./images/}}
 
 \begin{document}
@@ -12,17 +14,26 @@
 	Adam Wołkowycki \\\\
 	Promotor: Dr Adam Wolniakowski
 }
-
 \maketitle
 
-\section{Streszczenie}
-W ostatnich latach można zaobserwować wzrastający trend na zastosowanie robotów o działaniu autonomicznym. Powstaje obecnie wiele rozwiązań przeznaczonych dla tego segmentu rynku, a każdy z nich opiera swoje działanie o rozwiązania, które są przyjęte jako trudno algorytmizowalne. Przykładami takich zadań są przetwarzanie obrazu, estymaja położenia obiektów i konfiguracja kinematyki robota. Właśnie na nich zamieram skupić się w mojej pracy.
+\newpage
+\section{Abstract}
+In the recent years, a rising trend in application of autonomous robots can be observed. Nowadays, many solutions intended to this part of market are developed and each of these is based on solutions that are hard to algorithmizable. The examples of this kind of tasks are image processing, object position estimation and configuration of kinematics. I am going to focus on them in my thesis.
 
-Ponieważ zadania, o których wspomniałem są często realizowane przez określony rodzaj robotów, w swojej pracy zamierzam wykorzytać manipulator UR5 duńskiego producenta Universal Robots. Na nim zostanie zaimplementowany algorytm, który w oparciu o dane z systemu wizyjnego będzie w stanie określić położenie widzianych przedmiotów. Dzięki temu działanie robota będzie można gruntownie zweryfikować w praktyce.
+The purpose of this thesis is to develop a solution resposible for recognition a given object and perform grasping it by a manipulator. The further development of the problem known as \emph{bin picking} aims at increasing a scope of industrial robots' operation in a context of their work.
+
+Because the tasks I mentioned are often performed by a particular type of robots, in my work I am going to use UR5 manipulator by Danish manufacturer Universal Robots. There will be implemented algorithm on it that will be able to define a location of seen objects based on the data from the computer vision sensors. In my work I will be using code examples written in Python. Thanks to this, it will be possible to deeply verified in practice the working of a robot.
+
+\newpage
+\section{Streszczenie}
+W ostatnich latach można zaobserwować wzrastający trend na zastosowanie robotów o działaniu autonomicznym. Powstaje obecnie wiele rozwiązań przeznaczonych dla tego segmentu rynku, a każdy z nich opiera swoje działanie o rozwiązania, które są przyjęte jako trudno algorytmizowalne. Przykładami takich zadań są przetwarzanie obrazu, estymacja położenia obiektów i konfiguracja kinematyki robota. Właśnie na nich zamieram skupić się w mojej pracy.
+
+Celem pracy jest opracowanie rozwiązania odpowiedzialnego za rozpoznawanie wskazanego obiektu i realizację chwycenia go przy wykorzystaniu manipulatora. Rozwinięcie problemu znanego pod nazwą \emph{bin picking} ma przede wszystkim na celu zwiększenie zakresu działania robotów przemysłowych w kontekście ich pracy.
+
+Ponieważ zadania, o których wspomniałem są często realizowane przez określony rodzaj robotów, w swojej pracy zamierzam wykorzytać manipulator UR5 duńskiego producenta Universal Robots. Na nim zostanie zaimplementowany algorytm, który w oparciu o dane z systemu wizyjnego będzie w stanie określić położenie widzianych przedmiotów. W pracy posłużę się programami stworzonymi w języku Python. Dzięki temu działanie robota będzie można gruntownie zweryfikować w praktyce.
 
 \newpage
 \section{Wprowadzenie}
-
 Definiując współczesną robotykę jako dziedzinę wiedzy mamy na uwadze przede wszystkim dwa problemy: natury konstrukcyjnej i sterowania. Ponieważ wielu producentów z branży robotyki oferuje szeroką gamę rozwiązań spełniających potrzeby niniejszej pracy, posłużymy się robotem industrialnym, w którego konstrukcję nie będziemy ingerować. Dlatego, aby zrozumieć koncepcje zawarte w tej pracy nie jest wymagana dogłębna znajomość budowy robota. Natomiast, jeśli chodzi o sterowanie to możemy ponownie wyodrębnić dwie podrzędne kategorie: manipulację i lokomocję. 
 
 \begin{itemize}
@@ -52,11 +63,16 @@ Przez system wizyjny możemy rozumieć dowolny rodzaj kamery, jak również proj
 
 \newpage
 \begin{figure}[h]
-\centering
 \includegraphics[width=\textwidth]{basic}
 \caption{Przykład zadania paletyzacji jako manipulacji przy braku percepcji. Po lewej widoczny jest kod programu stworzony w języku MELFA-BASIC IV. Po prawej na górze - ujęcie wykonane podczas pracy robota Kawasaki, na dole - widok palety do ukończeniu zadania. Symulacja została wykonana w środowisku Cosimir.}
 \end{figure}
 
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{bullet}
+\caption{Przykład zadania \emph{bin picking} wykonywanego przez robota KUKA w oparciu o dane z systemu wizyjnego. Widoczne po lewej obrazy zostały wygenerowane sztucznie jako hipotetyczne dane z kamery umieszczonej nieruchomo względem bazy robota. Od góry - ujęcie powstałe jako bezpośrednia projekcja, obraz niosący dane o głębii i obraz poddany segmentacji. Symulacja została stworzona w języku Python z wykorzystaniem biblioteki \emph{pybullet}.}
+\end{figure}
+
+\newpage
 \subsection{Afordancje}
 Zdolność oddziaływania na jakiś obiekt lub środowisko została określona mianem \textbf{afordancji} przez psychologa Jamesa J. Gibsona w 1966 roku w książce \emph{The Senses Considered as Perceptual Systems} i opisana w artykule \emph{The  Theory  of  Affordance.  In:  Perceiving,  Acting  and  Knowing  Toward  an Ecological Psychology}. Definicja ta przyjęła szerokie znaczenie w dziedzinach tj. psychologia, kognitywistyka, sztuczna inteligencja czy robotyka.
 
@@ -67,6 +83,31 @@ Co wobec tego widzi krab? Przede wszystkim \textbf{obiekty} stanowiące najczę�
 Przykład kraba, mimo że może wydawać się surowy, niesie ze sobą istotne wskazówki na temat tego co powinniśmy rozumieć przez afordancje i jaka jest ich rola. W robotyce robot musi nauczyć się jak chwytać i operować uchwyconymi obiektami, tak aby osiągnąć wyznaczony cel. Różne przedmioty, np. młotek mogą być uchwycone na wiele różnych sposobów natomiast liczba optymalnych chwytów jest ograniczona w kontekście danego zadania.
 
 \newpage
+\section{Przegląd dotychczasowych rozwiązań}
+Problem sterowania robotami z wykorzystaniem informacji zwrotnej z otoczenia sięga początków współczesnej robotyki. Chcąc zapewnić możliwość pracy robota w środowiskach, w których nie mamy wystarczającej wiedzy na temat położenia obiektów z jakimi ma wchodzić w interakcje, konieczne jest zaimplementowanie podstawowej percepcji. Najprostszy przypadek może stanowić robot wyposażony w czujnik koloru w zadaniu sortowania kolorowych kulek. Wiele rozwiązań jednak opiera się na wykorzystaniu danych i przetworzeniu obrazu z kamery i czujników w taki sposób, aby robot był w stanie rozpoznać lub zlokalizować wskazane obiekty. Taką analizę obrazu nazywany widzeniem maszynowym lub CV od angielskich słów \emph{Computer Vision}.
+
+\subsection{Widzenie maszynowe}
+W dziedzinie widzenia maszynowego wyróżniamy kilka typów problemów związanych z obrazami, takich jak: detekcja, lokalizacja i segmentacja.
+
+\begin{itemize}
+\item \textbf{Detekcja} dostarcza nam informację czy wskazany obiekt znajduje się na obrazie,
+a także w niektórych przypadkach, otrzymujemy prawdopodobieństwo jego wystąpienia. Nie zapewnia nam jednak informacji, gdzie dokładnie ten obiekt się znajduje.
+\item \textbf{Lokalizacja} często pojawia się w parze z detekcją. Wynika to z faktu, że gdy mamy rozpoznany dany obiekt, chcemy pozyskać także informację o jego położeniu, co otrzymujemy w postaci współrzędnych lokalizacji, a czasem także wielkości.
+\item \textbf{Segmentacja} niesie nam odpowiedź o położeniu oraz kształcie obiektów.
+\end{itemize} 
+
+Wymieniowe wyżej problemy należą do dość złożonych zadań wymagających sporej mocy obliczeniowej. Z pomocą przychodzą algorytmy takie jak SIFT (w celu detekcji i lokalizacji danych obiektów na podstawie podobieństwa cech) czy metody uczenia nienadzorowanego (pomocne przy segmentacji). Często jednak z pomocą przychodzą sztuczne sieci neuronowe, a szczególnie popularne są sieci zawierające operację splotu, czyli sieci konwolucyjne.
+
+\subsection{Uczenie ze wzmocnieniem}
+Uczenie ze wzmocnieniem zwane też uczeniem z krytykiem lub \emph{Reinforcement Learning} opisuje metody uczenia maszynowego, w którym optymalne rozwiązanie danego zadania powstaje na skutek interakcji agenta ze środowiskiem.
+
+\begin{figure}[h]
+\centering
+\includegraphics{rubik}
+\caption{Robot wykorzystujący techniki uczenia ze wzmocnieniem podczas układania kostki Rubika.}
+\end{figure}
+
+\newpage
 \section{Estymacja położenia obiektu}
 Algorytm Iterative Closest Point (ICP) został szerzej opisany w artykule \emph{A Method for Registration of 3-D Shapes} przez Paula Besla i Neila McKaya w 1992 roku. Wcześniej została opublikowana praca \emph{Least-Squares Fitting of Two 3-D Point Sets} K.S Aryn at el. 
 \\
@@ -75,7 +116,7 @@ Aby przejść do zadania estymacji położenia obiektu najpierw należy określi
 Mamy więc dwa zbiory punktów, z których każdy opisany jest przez współrzędne x, y, z.
 \\
 \subsection{Wyznaczenie najbliższego punktu}
-\\
+
 \textbf{Przypadek 1: dwa punkty}
 \\
 Odległość $d(p_{1}, p_{2})$ między dwoma punktami $p_{1} = (x_{1}, y_{1}, z_{1})$
@@ -102,9 +143,104 @@ Załóżmy, że t jest trójkątem opisanym przez trzy punkty leżące na jego w
 \[d(p, t) = \min_{u+v+w=1} ||up_{1}+vp_{2}-p+wp_{3}-p|| \]
 gdzie $u \in [0, 1]$ i $v \in [0, 1]$ 
 \\
-\subsection{Iterative closest point}
+\subsection{Transformacje}
+Wspomniane algorytmy wyznaczenia najbliższego punktu mogą być rozwinięte do przestrzeni \emph{n}-wymiarowych. Aby dokonać takiej generalizacji do przestrzeni trójwymiarowej konieczne jest zastosowanie macierzy obrotu - rotacji \textbf{R} i wektora przesunięcia liniowego - translacji \textbf{T}.
+\[
+R = \begin{bmatrix}
+R_{xx} & R_{xy} & R_{xz} \\
+R_{yx} & R_{yy} & R_{yz} \\
+R_{zx} & R_{zy} & R_{zz}
+\end{bmatrix}
+\qquad
+T = \begin{bmatrix}
+T_{x} \\ T_{y} \\ T_{x}
+\end{bmatrix}
+\]
+\\
+\textbf{Macierz rotacji}
+\\
+W zależności od tego jakim sposobem chcemy wykonywać działania mamy do wyboru trzy równoważne opcje obrotu danego kształtu w przestrzeni. Możemy w tym celu posłużyć się macierzą opartą o kąty obrotu wokół wszystkich trzech osi w układzie kartezjańskim, macierzą opartą o oś obrotu i kąt o jaki dany obiekt ma zostać obrócony lub kwaternionem.
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=10cm]{bitmap}
+\caption{Rotacja obiektu w przestrzeni może zostać wykonanana na trzy sposoby.}
+\end{figure}
 
+\newpage
+\subsubsection{Sposób 1. Kąty Eulera}
+Odnosząc się do rysunku, w pierwszym przypadku po lewej stronie mamy dane trzy osie układu kartezjańskiego i wykonujemy składowe obroty wokół każdej z nich. 
+\[
+R_{z}(\gamma) = \begin{bmatrix}
+\cos \gamma & -\sin \gamma & 0 \\
+\sin \gamma & \cos \gamma & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\]
+\[
+R_{y}(\beta) = \begin{bmatrix}
+\cos \beta & 0 & \sin \beta \\
+0 & 1 & 0 \\
+-\sin \beta & 0 & \cos \beta
+\end{bmatrix}
+\]
+\[
+R_{x}(\alpha) = \begin{bmatrix}
+1 & 0 & 0 \\
+0 & \cos \alpha & -\sin \alpha \\
+0 & \sin \alpha & \cos \alpha \\
+\end{bmatrix}
+\]
+\\
+Mamy więc trzy obroty, które składają się na wynikową rotację.
+\\
+\[R = R_{z}(\gamma)R_{y}(\beta)R_{x}(\alpha)\]
+Macierz rotacji przyjmuje wtedy postać
+
+\[
+R = \begin{bmatrix}
+\cos \gamma \cos \beta & 
+\cos \gamma \sin \beta \sin \alpha - \sin \gamma \cos \alpha &
+\cos \gamma \sin \beta \cos \alpha + \sin \gamma \sin \alpha \\
+\sin \gamma \cos \beta &
+\sin \gamma \sin \beta \sin \alpha + \cos \gamma \cos \alpha &
+\sin \gamma \sin \beta \cos \alpha - \cos \gamma \sin \alpha \\
+-\sin \beta & \cos \beta \sin \alpha & \cos \beta \cos \alpha
+\end{bmatrix}
+\]
+
+\subsubsection{Sposób 2. Oś obrotu i kąt}
+W drugim - dysponujemy osią pożądanej rotacji, więc wykonujemy już tylko jeden obrót. Oś obrotu możemy przedstawić w postaci wektora jedenostkowego $\textbf{u} = [u_{x}, u_{y}, u_{z}]$ takiego, że $u_{x}^2+u_{y}^2+u_{z}^2 = 1$ 
+Dla ułatwienia oznaczmy $c = \cos \theta$ i $s = \sin \theta$
+\[
+R = \begin{bmatrix}
+c+u_{x}^2(1-c) & u_{x}u_{y}(1-c)-u_{z}s & u_{x}u_{z}(1-c)+u_{y}s \\
+u_{y}u_{x}(1-c)-u_{z}s & c+u_{y}^2(1-c) & u_{y}u_{z}(1-c)+u_{x}s \\
+u_{z}u_{x}(1-c)-u_{z}s & u_{z}u_{y}(1-c)-u_{x}s & c+u_{z}^2(1-c)
+\end{bmatrix}
+\]
+\subsubsection{Sposób 3. Kwaternion}
+W trzecim przypadku posługujemy się kwaternionem, który możemy zapisać w postaci sumy algebraicznej jako
+\[q = a \cdot \textbf{e} + b \cdot \textbf{i} + c \cdot \textbf{j} + d \cdot \textbf{k} \]
+
+gdzie $a, b, c, d \in \mathbb{R}$ zaś $\textbf{e, i, j, k}$ to pewne jednostki urojone, między którymi zachodzi zależność $i^2 = j^2 = k^2 = -1$.
+
+Wówczas transformację tą możemy zapisać równoważnie w postaci macierzy:
+\[
+R = \begin{bmatrix}
+a^2+b^2-c^2-d^2 & 2(bc-ad) & 2(bd+ac) \\
+2(bc+ad) & a^2+c^2-b^2-d^2 & 2(cd-ab) \\
+2(bd-ac) & 2(cd*ab) & a^2+d^2-b^2-c^2
+\end{bmatrix}
+\]
+
+Wówczas równanie opisujące przejście punktu z jednego zbioru do drugiego wygląda następująco:
+\[p' = R p + T + N \]
+
+Chcemy dobrać takie R i T, aby zminimalizować wyrażenie
+\[ \sum_{i=1}^N || p'_{i} - (Rp_{i}+T)||^2 \]
+
+\subsection{Implementacja algorytmu}
 \begin{verbatim}
 import numpy as np
 import matplotlib.pyplot as plt
