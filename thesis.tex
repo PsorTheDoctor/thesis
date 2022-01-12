@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage{listings}
+\usepackage{physics}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \graphicspath{{./images/}}
@@ -118,6 +119,13 @@ Wymieniowe wyżej problemy należą do dość złożonych zadań wymagających s
 
 \subsection{Sztuczne sieci neuronowe}
 
+\subsubsection{GraspNet}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=10cm]{graspnet}
+\caption{Wizualizacja możliwych chwytów wykrytych przez sieć \emph{GraspNet}. Na niebiesko oznaczone jest położenie szczęk chwytaka.}
+\end{figure}
 
 \subsection{Uczenie przez wzmacnianie}
 Uczenie przez wzmacnianie zwane też uczeniem z krytykiem lub \emph{Reinforcement Learning} opisuje metody uczenia maszynowego, w którym optymalne rozwiązanie danego zadania powstaje na skutek interakcji agenta ze środowiskiem. W zastosowaniach tego podejścia w robotyce, środowiskiem jest symulacja lub rzeczywiste otoczenie, z którym agent (robot) wchodzi w interakcję. Celem jest maksymalizacja zysku ściśle związanego z pożądanym rezultatem. W ten sposób robot próbując osiągnąć jak najwyższy wynik uczy się rozwiązywać zadany problem.
@@ -136,11 +144,11 @@ W tym podejściu przyjmowana jest polityka, którą należy zoptymalizować. Pol
 \item \textbf{Oparte na funkcji wartości stanu} \\
 Funkcja wartości stanu $V_{\pi}(s)$ określa jak wysoki będzie zysk, gdy zaczniemy ze stanu $s$ i będziemy opierać się o politykę $\pi$. 
 
-\[V_{\pi}(s) = \mathbb{E}[R | s_{0}=s] = \mathbb{E} \left[\sum_{t=0}^n \gamma^t r_{t} | s_{0}=s \right]\]
+\[V_{\pi}(s) = \mathbb{E}[R | s_0=s] = \mathbb{E} \left[\sum_{t=0}^n \gamma^t r_t | s_0=s \right]\]
 
 W tym kryterium zostaje wprowadzona wartość $R$ jako całkowity \textbf{zysk}, który jest zdefiniowany jako suma poszczególnych przyszłych zysków
 
-\[R = r_{0} + \gamma r_{1} + \gamma^2 r_{2} + \ldots + \gamma^n r_{n} = \sum_{t=0}^n \gamma^t r_{t} \quad gdzie \quad \gamma \in \langle 0, 1)\]
+\[R = r_{0} + \gamma r_1 + \gamma^2 r_2 + \ldots + \gamma^n r_n = \sum_{t=0}^n \gamma^t r_t \quad gdzie \quad \gamma \in \langle 0, 1)\]
 
 Ponieważ $\gamma$ jest mniejsza niż 1, odległe przyszłe zdarzenia są mniej istotne od zdarzeń w bliskiej i niedalekiej przyszłości. Jest to istotne, ponieważ zależy nam na njaszybszym możliwym uzyskaniu zysku.
 \end{itemize}
@@ -148,11 +156,14 @@ Ponieważ $\gamma$ jest mniejsza niż 1, odległe przyszłe zdarzenia są mniej 
 \begin{figure}[h]
 \centering
 \includegraphics{rubik}
-\caption{Robot wykorzystujący techniki uczenia ze wzmocnieniem podczas układania kostki Rubika. Eksperyment został opisany w publikacji \emph{Learning Dexterous In-Hand Manipulation} - praca zbiorowa OpenAI.}
+\caption{Robot wykorzystujący techniki uczenia ze wzmacnianiem podczas układania kostki Rubika. Eksperyment został opisany w publikacji \emph{Learning Dexterous In-Hand Manipulation} i miał na celu przetrenowanie sztucznej inteligencji pod kątem umiejętności motorycznych - praca zbiorowa OpenAI.}
 \end{figure}
 
+\subsubsection{Zalety uczenia przez wzmacnianie}
+Do niewątpliwych zalet uczenia przez wzmacnianie należy zdolność do tworzenia zachowań \textbf{emergentnych}. Przez emergencję rozumiemy powstawanie zachowań, do których instrukcje nie zostały bezpośrednio udzielone, a znalezione metodą prób i błędów i następnie z powodzeniem stosowane. Drugą ważną zaletą jest jego uniwersalność - metody oparte na \emph{Reinforcement Learning} mogą zostać z lepszym lub gorszym skutkiem użyte w większości problemów związanych z motoryką w robotyce, tj. nauka chodzenia, chwytania itp.
+
 \subsubsection{Wady uczenia przez wzmacnianie}
-Jak już zostało wspomniane we wprowadzeniu, do wad podejścia wykorzystującego uczenie przez wzmocnienie w robotyce zaliczamy czas potrzebny do przetrenowania algorytmu oraz niewydajne i często chaotyczne ruchy, które są jego rezultatem.
+Jak już zostało wspomniane we wprowadzeniu, do wad podejścia wykorzystującego uczenie przez wzmacnianie w robotyce zaliczamy czas potrzebny do przetrenowania algorytmu oraz niewydajne i często chaotyczne ruchy, które są jego rezultatem.
 
 \newpage
 \section{Estymacja położenia obiektu}
@@ -209,12 +220,11 @@ T = \begin{bmatrix}
 T_{x} \\ T_{y} \\ T_{z}
 \end{bmatrix}
 \]
-\\
-\textbf{Macierz rotacji}
-\\
+
+\subsubsection{Macierz rotacji}
 W zależności od tego jakim sposobem chcemy wykonywać działania mamy do wyboru trzy równoważne opcje obrotu danego kształtu w przestrzeni. Możemy w tym celu posłużyć się macierzą opartą o kąty obrotu wokół wszystkich trzech osi w układzie kartezjańskim, macierzą opartą o oś obrotu i kąt o jaki dany obiekt ma zostać obrócony lub kwaternionem.
 
-\subsubsection{Sposób 1. Kąty Eulera}
+\subsubsection{Kąty Eulera}
 Odnosząc się do rysunku, w pierwszym przypadku po lewej stronie mamy dane trzy osie układu kartezjańskiego i wykonujemy składowe obroty wokół każdej z nich. 
 \[
 R_{z}(\gamma) = \begin{bmatrix}
@@ -255,7 +265,7 @@ R = \begin{bmatrix}
 \end{bmatrix}
 \]
 
-\subsubsection{Sposób 2. Oś obrotu i kąt}
+\subsubsection{Oś obrotu i kąt}
 W drugim - dysponujemy osią pożądanej rotacji, więc wykonujemy już tylko jeden obrót. Oś obrotu możemy przedstawić w postaci wektora jedenostkowego $\textbf{u} = [u_{x}, u_{y}, u_{z}]$ takiego, że $u_{x}^2+u_{y}^2+u_{z}^2 = 1$ 
 Dla ułatwienia oznaczmy $c = \cos \theta$ i $s = \sin \theta$
 \[
@@ -265,7 +275,8 @@ u_{y}u_{x}(1-c)-u_{z}s & c+u_{y}^2(1-c) & u_{y}u_{z}(1-c)+u_{x}s \\
 u_{z}u_{x}(1-c)-u_{z}s & u_{z}u_{y}(1-c)-u_{x}s & c+u_{z}^2(1-c)
 \end{bmatrix}
 \]
-\subsubsection{Sposób 3. Kwaternion}
+
+\subsubsection{Kwaternion}
 W trzecim przypadku posługujemy się kwaternionem, który możemy zapisać w postaci sumy algebraicznej jako
 \[q = a \cdot \textbf{e} + b \cdot \textbf{i} + c \cdot \textbf{j} + d \cdot \textbf{k} \]
 
@@ -280,27 +291,122 @@ a^2+b^2-c^2-d^2 & 2(bc-ad) & 2(bd+ac) \\
 \end{bmatrix}
 \]
 
+\newpage
+\subsection{Rozkład macierzy według wartości osobliwych}
+Celem rozkład według wartości osobliwych, w skrócie rozkładu \emph{SVD} (ang. \emph{Singular Value Decomposition}) w proponowanym algorytmie jest znalezienie macierzy rotacji, która stanowi transformację między chmurą punktów a szablonem, do którego próbujemy ją dopasować. Umożliwi to późniejsze uchwycenie przedmiotu przez chwytak manipulatora, ponieważ szablon jest obiektem, który jest znany, a więc możemy zamodelować poprawny proces chwytania.
+
+Opisany w ten sposób problem stanowi jedynie pewien szczególny przypadek zastosowania rozkładu SVD. Ogólnie rzecz biorąc, SVD jest metodą pozwalającą na znalezienie rzędu macierzy, co teoretycznie może zostać wyznaczone metodą eliminacji Gaussa. To podejście jest jednak niepraktyczne, gdy ma zostać zrealizowane za pomocą metod numerycznych. Błędy biorą się często z niedoszacowań z powodu zaokrąglania wartości. Na przykład gdy rząd macierzy A jest niedoszacowany a U stanowi obliczoną numerycznie postać schodkową, wówczas możliwe jest, że U będzie miało niepoprawną liczbę niezerowych wierszy.
+
+Rozkład macierzy A według wartości osobliwych jest zawsze możliwy i można go przedstawić jako
+\[A = UDV^T \]
+
+Zakładając, że A jest macierzą $m \times n$, wówczas U stanie się macierzą ortogonalną o wymiarach $m \times m$, V - macierzą ortogonalną o wymiarach $n \times n$, a D macierzą $m \times n$, której wartości nieleżące na przekątnej są równe 0, a wartości na przekątnej spełniają zależność
+\[\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_n \geq 0\]
+
+\[
+D = \begin{bmatrix}
+\sigma_1 & & & \\
+& \sigma_2 & & \\
+& & \ddots & \\
+& & & \sigma_n
+\end{bmatrix}
+\]
+Wartości $\sigma_i$ określone przez rozkład są różne i są nazywane \textbf{wartościami osobliwymi} macierzy A. Natomiast liczba niezerowych wartości osobliwych jest równa rzędowi macierzy A, a ich wielkość stanowi miarę jak bardzo ta macierz różni się od macierzy niższego rzędu. 
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{five_svd}
+\caption{Graficzne przedstawienie zasady działania SVD na przykładzie obrazu ręcznie pisanej cyfry pięć o wymiarach 28 $\times$ 28 pikseli. Kolory zbliżone do fioletu reprezentują niskie wartości, a jaskrawe zbliżone ku żółci - wysokie. Możemy zauważyć, że sposób w jakim na obrazie macierzy D układają się coraz ciemniejsze kolory jest zgodny z założonym wzorem $\sigma_i \geq \sigma_{i+1} \geq 0$.}
+\end{figure}
+
+Twierdzenie związane z SVD zakłada, że jeśli A jest macierzą o wymiarach $m \times n$ możliwy jest jej rozkład według wartości osobliwych. Aby to wykazać, posłużmy się macierzą $A^T A$. Jest to macierz symetryczna, toteż wszystkie jej wartości własne są liczbami rzeczywistymi i istnieje taka macierz ortogonalna V, która ją diagonalizuje. Co więcej, jej wartości własne muszą być nieujemne. Aby to zobaczyć, niech $\lambda$ będzie wartością własną $A^T A$ a $\vb{x}$ wektorem własnym związanym z $\lambda$. Wynika z tego, że
+\[||A \vb{x}||^2 = \vb{x}^{T}A^T A\vb{x} = \lambda\vb{x}^T \vb{x} = \lambda||\vb{x}||^2 \]
+
+Aby wyznaczyć $\lambda$ z powyższego równania wykonujemy dzielenie
+\[\lambda = \frac{||A\vb{x}||^2}{||\vb{x}||^2} \geq 0 \]
+
+Podniesienie do kwadratu dowodzi, że lambda jest dodatnia. Załóżmy, że kolumny macierzy V zostały uporządkowane tak, że odpowiednie wartości własne spełniają zależność
+\[\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_n \geq 0 \]
+
+Wartości własne macierzy A są dane
+\[\sigma_i = \sqrt{\lambda_i} \quad i = 1, 2,..., n \]
+
+Niech r oznacza rząd macierzy A. Należy zauważyć, że macierz $A^T A$ też będzie rzędu r. Ponieważ $A^T A$ jest symetryczna jej rząd będzie równy liczbie niezerowych wartości własnych.
+\[\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_r \geq 0 \quad \lambda_{r+1} = \lambda_{r+2} = \ldots = \lambda_n \geq 0 \]
+
+Ta sama zależność zachodzi dla wartości osobliwych
+\[\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_r \geq 0 \quad \sigma_{r+1} = \sigma_{r+2} = \ldots = \sigma_n \geq 0 \]
+
+Dla naszych dalszych rozważań konieczne jest przedstawienie poszczególnych czynników U, D i V  w rozbiciu na mniejsze macierze, z których są złożone. Zaczynając od macierzy V mamy
+\[V_1 = (\vb{v}_1, \vb{v}_2,... \vb{v}_r), \quad V_1 = (\vb{v}_{r+1}, \vb{v}_{r+2},... \vb{v}_n) \]
+
+\[
+D_1 = \begin{bmatrix}
+\sigma_1 & & & \\
+& \sigma_2 & & \\
+& & \ddots & \\
+& & & \sigma_r
+\end{bmatrix}
+\qquad
+D = \begin{bmatrix}
+D_1 & 0 \\
+0 & 0 \\
+\end{bmatrix}
+\]
+Wektory $V_2$ stanowią wektory własne macierzy $A^T A$ związane z $\lambda = 0$
+\[A_T A \vb{x}_i = 0 \quad i = r+1, r+2,..., n \]
+\[AV_2 = 0 \]
+
+Ponieważ V jest macierzą ortogonalną możemy zapisać
+\[I = VV^T \]
+\[A = AI = AVV^T \]
+
+Zostało nam jeszcze skonstruować macierz ortogonalną U o wymiarach $m \times m$ taką, że
+\[A = UDV^T \]
+
+Co po przeniesieniu V na lewą stronę możemy równoważnie zapisać jako
+\[AV = UD \]
+
+Porównując pierwsze r kolumn po obu stronach możemy zauważyć
+\[A \vb{v}_i = \sigma_i \vb{u}_i \quad i = 1, 2,..., n \]
+
+\[\vb{u}_i = \frac{1}{\sigma_i}A \vb{v}_i \quad i = 1, 2,..., n \]
+
+\[U_1 = (\vb{u}_1, \vb{u}_2,..., \vb{u}_r) \]
+
+\[AV_1 = U_1 D_1 \]
+
+\[\vb{u}_i^T \vb{u}_j = \left(\frac{1}{\sigma_i}\vb{v}_i^T A^T \right) \left(\frac{1}{\sigma_j}A \vb{v}_j \right)
+= \frac{1}{\sigma_i \sigma_j}\vb{v}_i^T \left( A^T A \vb{v}_j \right)
+= \frac{\sigma_j}{\sigma_i} \vb{v}_i^T \vb{v}_j 
+= \delta_ij \]
+
+\[UDV^T = U_1 D_1 V_1^T = AV_1 V_1^T = A \]
+
+\subsubsection{Interpretacja geometryczna SVD}
+
+\subsection{Algorytm Iterative Closest Point}
 Mamy dwa zbiory punktów: \emph{p} i \emph{p'} w postaci macierzy o wymiarach 3 x N.
 
 Wówczas równanie opisujące przejście punktu z jednego zbioru do drugiego wygląda następująco
 \[p' = R p + T + N \]
 
 Chcemy dobrać takie R i T, aby zminimalizować wyrażenie
-\[ d^2(p, p') = \sum_{i=1}^n || p'_{i} - (Rp_{i}+T)||^2 \]
+\[ d^2(p, p') = \sum_{i=1}^n || p'_{i} - (Rp_i+T)||^2 \]
 
 Niech 
-\[p = \frac{1}{n} \sum_{i=1}^n p_{i} \]
-\[p' = \frac{1}{n} \sum_{i=1}^n p'_{i} \]
+\[p = \frac{1}{n} \sum_{i=1}^n p_i \]
+\[p' = \frac{1}{n} \sum_{i=1}^n p'_i \]
 
 Wówczas \emph{q} i \emph{q'} będą zbiorami odległości poszczególnych punktów w zbiorach \emph{p} i \emph{p'} od ich centroidów
-\[q_{i} = p_{i} - p \]
+\[q_i = p_i - p \]
 \[q'_{i} = p'_{i} - p' \]
 
 Mamy
 \[d^2(q, q') = \sum_{i=1}^n || q'_{i} - Rq_{i}||^2 \]
 
 Następnym krokiem jest wyznaczenie macierzy 3 x 3 
-\[H = \sum_{i=1}^n q_{i} q_{i}^T \]
+\[H = \sum_{i=1}^n q_{i} q_{i}^{'T} \]
 
 I rozłożenie jej na wartości osobliwe
 \[H = UDV^T \]
@@ -308,9 +414,6 @@ I rozłożenie jej na wartości osobliwe
 \[X = VU^T \]
 
 Jeśli wyznacznik \emph{det X} = 1, X stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem \emph{det X}= -1 algorytm nie zwraca rozwiązań. 
-
-\newpage
-\subsection{Rozkład macierzy na wartości osobliwe}
 
 \subsection{Implementacja algorytmu}
 \begin{verbatim}
@@ -363,8 +466,11 @@ for i in range(iterations):
   fig.savefig('icp{}.png'.format(i))
 \end{verbatim}
 
+\begin{figure}[h]
+\centering
 \includegraphics[width=\textwidth]{bunny_icp}
-Działanie algorytmu ICP na przykładzie obiektu w kształcie królika.
+\caption{Działanie algorytmu ICP na przykładzie obiektu w kształcie królika.}
+\end{figure}
 
 \section{Bibliografia}
 \begin{enumerate}
