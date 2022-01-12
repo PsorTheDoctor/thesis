@@ -18,7 +18,7 @@
 \maketitle
 
 \newpage
-\section{Abstract}
+\section*{Abstract}
 In the recent years, a rising trend in application of autonomous robots can be observed. Nowadays, many solutions intended to this part of market are developed and each of these is based on solutions that are hard to algorithmizable. The examples of this kind of tasks are image processing, object position estimation and configuration of kinematics. I am going to focus on them in my thesis.
 
 The purpose of this thesis is to develop a solution resposible for recognition a given object and perform grasping it by a manipulator. The further development of the problem known as \emph{bin picking} aims at increasing a scope of industrial robots' operation in a context of their work.
@@ -26,12 +26,15 @@ The purpose of this thesis is to develop a solution resposible for recognition a
 Because the tasks I mentioned are often performed by a particular type of robots, in my work I am going to use UR5 manipulator by Danish manufacturer Universal Robots. There will be implemented algorithm on it that will be able to define a location of seen objects based on the data from the computer vision sensors. In my work I will be using code examples written in Python. Thanks to this, it will be possible to deeply verified in practice the working of a robot.
 
 \newpage
-\section{Streszczenie}
+\section*{Streszczenie}
 W ostatnich latach można zaobserwować wzrastający trend na zastosowanie robotów o działaniu autonomicznym. Powstaje obecnie wiele rozwiązań przeznaczonych dla tego segmentu rynku, a każdy z nich opiera swoje działanie o rozwiązania, które są przyjęte jako trudno algorytmizowalne. Przykładami takich zadań są przetwarzanie obrazu, estymacja położenia obiektów i konfiguracja kinematyki robota. Właśnie na nich zamieram skupić się w mojej pracy.
 
 Celem pracy jest opracowanie rozwiązania odpowiedzialnego za rozpoznawanie wskazanego obiektu i realizację chwycenia go przy wykorzystaniu manipulatora. Rozwinięcie problemu znanego pod nazwą \emph{bin picking} ma przede wszystkim na celu zwiększenie zakresu działania robotów przemysłowych w kontekście ich pracy.
 
 Ponieważ zadania, o których wspomniałem są często realizowane przez określony rodzaj robotów, w swojej pracy zamierzam wykorzytać manipulator UR5 duńskiego producenta Universal Robots. Na nim zostanie zaimplementowany algorytm, który w oparciu o dane z systemu wizyjnego będzie w stanie określić położenie widzianych przedmiotów. W pracy posłużę się programami stworzonymi w języku Python. Dzięki temu działanie robota będzie można gruntownie zweryfikować w praktyce.
+
+\newpage
+\tableofcontents
 
 \newpage
 \section{Wprowadzenie}
@@ -110,9 +113,7 @@ a także w niektórych przypadkach, otrzymujemy prawdopodobieństwo jego wystąp
 
 \item \textbf{Semantyczna segmentacja} niesie nam odpowiedź o położeniu oraz kształcie obiektów. Załóżmy, że mamy trzy różne obiekty w puli do rozpoznania i wszystkie znajdują się na jednym obrazie, z czego dwa z nich są na nim po jednej sztuce, a ostatni – w dwóch. Semantyczna segmentacja umożliwi nam znalezienie położenia ich wszystkich, natomiast nadal nie wiemy czy jakiś z nich nie wystąpił w więcej niż jednej sztuce, przez co niemożliwe jest określenie ilości.
 
-\item \textbf{Segmentacja z uwzględnieniem instancji} powstała jako rozwiązanie problemu
-opisanego powyżej. Niesie nam odpowiedź, która oprócz podania dokładnego
-położenia i kształtu obiektów także uwzględnia ich ilość.
+\item \textbf{Segmentacja z uwzględnieniem instancji} powstała jako rozwiązanie problemu opisanego powyżej. Niesie nam odpowiedź, która oprócz podania dokładnego położenia i kształtu obiektów także uwzględnia ich ilość.
 \end{itemize} 
 
 Wymieniowe wyżej problemy należą do dość złożonych zadań wymagających sporej mocy obliczeniowej. Z pomocą przychodzą algorytmy takie jak SIFT (w celu detekcji i lokalizacji danych obiektów na podstawie podobieństwa cech) czy metody uczenia nienadzorowanego (pomocne przy segmentacji). Często jednak z pomocą przychodzą sztuczne sieci neuronowe, a szczególnie popularne są sieci zawierające operację splotu, czyli sieci konwolucyjne.
@@ -120,6 +121,7 @@ Wymieniowe wyżej problemy należą do dość złożonych zadań wymagających s
 \subsection{Sztuczne sieci neuronowe}
 
 \subsubsection{GraspNet}
+Daleko idącym przykładem wykorzystania sieci neuronowych w robotyce jest projekt \emph{GraspNet}. Celem przedsięwzięcia było przetrenowanie modelu sztucznej inteligencji na zbiorze obrazów pochodzących z kamer RGBD przedstawiających przedmioty z możliwymi chwytami wyznaczonymi analitycznie. Twórcom projektu udało się zgromadzić 97280 obrazów RGBD zawierających ponad miliard możliwych pozycji chwytu. Zbiór ten został ujawniony i opublikowane pod nazwą \emph{GraspNet-1Billion}.
 
 \begin{figure}[h]
 \centering
@@ -293,7 +295,7 @@ a^2+b^2-c^2-d^2 & 2(bc-ad) & 2(bd+ac) \\
 
 \newpage
 \subsection{Rozkład macierzy według wartości osobliwych}
-Celem rozkład według wartości osobliwych, w skrócie rozkładu \emph{SVD} (ang. \emph{Singular Value Decomposition}) w proponowanym algorytmie jest znalezienie macierzy rotacji, która stanowi transformację między chmurą punktów a szablonem, do którego próbujemy ją dopasować. Umożliwi to późniejsze uchwycenie przedmiotu przez chwytak manipulatora, ponieważ szablon jest obiektem, który jest znany, a więc możemy zamodelować poprawny proces chwytania.
+Celem rozkładu według wartości osobliwych, w skrócie rozkładu SVD (ang. \emph{Singular Value Decomposition}) w proponowanym algorytmie jest znalezienie macierzy rotacji, która stanowi transformację między chmurą punktów a szablonem, do którego próbujemy ją dopasować. Umożliwi to późniejsze uchwycenie przedmiotu przez chwytak manipulatora, ponieważ szablon jest obiektem, który jest znany, a więc możemy zamodelować poprawny proces chwytania.
 
 Opisany w ten sposób problem stanowi jedynie pewien szczególny przypadek zastosowania rozkładu SVD. Ogólnie rzecz biorąc, SVD jest metodą pozwalającą na znalezienie rzędu macierzy, co teoretycznie może zostać wyznaczone metodą eliminacji Gaussa. To podejście jest jednak niepraktyczne, gdy ma zostać zrealizowane za pomocą metod numerycznych. Błędy biorą się często z niedoszacowań z powodu zaokrąglania wartości. Na przykład gdy rząd macierzy A jest niedoszacowany a U stanowi obliczoną numerycznie postać schodkową, wówczas możliwe jest, że U będzie miało niepoprawną liczbę niezerowych wierszy.
 
@@ -325,17 +327,17 @@ Twierdzenie związane z SVD zakłada, że jeśli A jest macierzą o wymiarach $m
 Aby wyznaczyć $\lambda$ z powyższego równania wykonujemy dzielenie
 \[\lambda = \frac{||A\vb{x}||^2}{||\vb{x}||^2} \geq 0 \]
 
-Podniesienie do kwadratu dowodzi, że lambda jest dodatnia. Załóżmy, że kolumny macierzy V zostały uporządkowane tak, że odpowiednie wartości własne spełniają zależność
+Podniesienie do kwadratu dowodzi, że $\lambda$ jest dodatnia. Załóżmy, że kolumny macierzy V zostały uporządkowane tak, że odpowiednie wartości własne spełniają zależność
 \[\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_n \geq 0 \]
 
 Wartości własne macierzy A są dane
 \[\sigma_i = \sqrt{\lambda_i} \quad i = 1, 2,..., n \]
 
 Niech r oznacza rząd macierzy A. Należy zauważyć, że macierz $A^T A$ też będzie rzędu r. Ponieważ $A^T A$ jest symetryczna jej rząd będzie równy liczbie niezerowych wartości własnych.
-\[\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_r \geq 0 \quad \lambda_{r+1} = \lambda_{r+2} = \ldots = \lambda_n \geq 0 \]
+\[\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_r \geq 0 \qquad \lambda_{r+1} = \lambda_{r+2} = \ldots = \lambda_n \geq 0 \]
 
 Ta sama zależność zachodzi dla wartości osobliwych
-\[\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_r \geq 0 \quad \sigma_{r+1} = \sigma_{r+2} = \ldots = \sigma_n \geq 0 \]
+\[\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_r \geq 0 \qquad \sigma_{r+1} = \sigma_{r+2} = \ldots = \sigma_n \geq 0 \]
 
 Dla naszych dalszych rozważań konieczne jest przedstawienie poszczególnych czynników U, D i V  w rozbiciu na mniejsze macierze, z których są złożone. Zaczynając od macierzy V mamy
 \[V_1 = (\vb{v}_1, \vb{v}_2,... \vb{v}_r), \quad V_1 = (\vb{v}_{r+1}, \vb{v}_{r+2},... \vb{v}_n) \]
@@ -384,6 +386,12 @@ Porównując pierwsze r kolumn po obu stronach możemy zauważyć
 \[UDV^T = U_1 D_1 V_1^T = AV_1 V_1^T = A \]
 
 \subsubsection{Interpretacja geometryczna SVD}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=10cm]{svd_geom}
+\caption{Interpretacja geometryczna SVD macierzy A o wymiarach 2$\times$2. Celem jest przekształcenie przestrzeni pokazanej w lewym górnym rogu, tak aby uzyskać obraz widoczny w prawym górnym. Transformacja zostaje rozłożona przez SVD na trzy etapy: rotację, skalowanie i ponowną rotację.}
+\end{figure}
 
 \subsection{Algorytm Iterative Closest Point}
 Mamy dwa zbiory punktów: \emph{p} i \emph{p'} w postaci macierzy o wymiarach 3 x N.
