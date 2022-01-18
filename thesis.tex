@@ -116,12 +116,16 @@ a także w niektórych przypadkach, otrzymujemy prawdopodobieństwo jego wystąp
 \item \textbf{Segmentacja z uwzględnieniem instancji} powstała jako rozwiązanie problemu opisanego powyżej. Niesie nam odpowiedź, która oprócz podania dokładnego położenia i kształtu obiektów także uwzględnia ich ilość.
 \end{itemize} 
 
-Wymieniowe wyżej problemy należą do dość złożonych zadań wymagających sporej mocy obliczeniowej. Z pomocą przychodzą algorytmy takie jak SIFT (w celu detekcji i lokalizacji danych obiektów na podstawie podobieństwa cech) czy metody uczenia nienadzorowanego (pomocne przy segmentacji). Często jednak z pomocą przychodzą sztuczne sieci neuronowe, a szczególnie popularne są sieci zawierające operację splotu, czyli sieci konwolucyjne.
+Wymieniowe wyżej problemy należą do dość złożonych zadań wymagających sporej mocy obliczeniowej. Z pomocą przychodzą algorytmy takie jak SIFT (w celu detekcji i lokalizacji danych obiektów na podstawie podobieństwa cech) czy metody uczenia nienadzorowanego (pomocne przy segmentacji). Często jednak z pomocą przychodzą sztuczne sieci neuronowe, a szczególnie popularne są sieci zawierające operację splotu, czyli sieci splotowe.
 
 \subsection{Sztuczne sieci neuronowe}
+Jedną z najbardziej popularnych technik w uczeniu maszynowych stanowią sieci neuronowe \emph{(ang. ANN - Artificial Neural Network)}. Taką sieć można w uproszczony sposób przedstawić w postaci grafu, którego wierzchołki reprezentują neurony a krawędzie - połączenia między nimi, tzw. synapsy.
 
-\subsubsection{GraspNet}
-Daleko idącym przykładem wykorzystania sieci neuronowych w robotyce jest projekt \emph{GraspNet}. Celem przedsięwzięcia było przetrenowanie modelu sztucznej inteligencji na zbiorze obrazów pochodzących z kamer RGBD przedstawiających przedmioty z możliwymi chwytami wyznaczonymi analitycznie. Twórcom projektu udało się zgromadzić 97280 obrazów RGBD zawierających ponad miliard możliwych pozycji chwytu. Zbiór ten został ujawniony i opublikowane pod nazwą \emph{GraspNet-1Billion}.
+\subsubsection*{Sieci splotowe}
+Rodzaj sieci, na który szczególnie warto jest zwrócić uwagę stanowią sieci splotowe zwane częściej sieciami konwolucyjnymi, w skrócie CNN (ang. \emph{Convolutional Neural Network}). Te sieci zawdzięczają swoją popularność przede wszystkim dzięki wykorzystaniu do problemów związanych z analizą obrazów, przy których ich możliwości przewyższają zwykłe sieci jednokierunkowe. Ich nazwa wzięła się od operacji splotu (konwolucji), która jest wykorzystywana do ekstrakcji cech przez splot obrazu z filtrem. Sieci splotowe są z powodzeniem stosowane w rozpoznawaniu, klasyfikacji i segmentacji obrazów. Ponieważ możliwe jest przeprowadzenie operacji splotu na danych o zarówno jednym, dwóch oraz trzech wymiarach, użycie sieci CNN da się poszerzyć do analizy danych takich jak dźwięk, obrazy RGBD czy chmury punktów, a to z kolei implikuje ich przydatność w robotyce.
+
+\subsubsection*{GraspNet}
+Daleko idącym przykładem wykorzystania sieci neuronowych w robotyce jest projekt \emph{GraspNet}. Celem przedsięwzięcia było przetrenowanie modelu sztucznej inteligencji na zbiorze obrazów pochodzących z kamer RGBD przedstawiających przedmioty z możliwymi chwytami wyznaczonymi analitycznie. Twórcom projektu udało się zgromadzić 97280 obrazów RGBD zawierających ponad miliard możliwych pozycji chwytu. Zbiór ten został ujawniony i opublikowany pod nazwą \emph{GraspNet-1Billion}. W rzeczywistości \emph{GraspNet} jest modelem składającym się z kilku mniejszych sieci, który oprócz nich wykorzystuje funkcje tj. grupowanie, wyśrodkowywanie i filtrowanie danych. Tak więc, dla danych wejściowych w postaci chmury punktów przyporządkowuje pewną ilość chwytów jakie mogą zostać zastosowane podczas próby uchwycenia obiektów w niej przedstawionych. Możliwe chwyty zostają wyznaczone w sposób, na który mogą zostać przeprowadzone z użyciem chwytaka dwupalczastego.
 
 \begin{figure}[h]
 \centering
@@ -161,10 +165,10 @@ Ponieważ $\gamma$ jest mniejsza niż 1, odległe przyszłe zdarzenia są mniej 
 \caption{Robot wykorzystujący techniki uczenia ze wzmacnianiem podczas układania kostki Rubika. Eksperyment został opisany w publikacji \emph{Learning Dexterous In-Hand Manipulation} i miał na celu przetrenowanie sztucznej inteligencji pod kątem umiejętności motorycznych - praca zbiorowa OpenAI.}
 \end{figure}
 
-\subsubsection{Zalety uczenia przez wzmacnianie}
+\subsubsection*{Zalety uczenia przez wzmacnianie}
 Do niewątpliwych zalet uczenia przez wzmacnianie należy zdolność do tworzenia zachowań \textbf{emergentnych}. Przez emergencję rozumiemy powstawanie zachowań, do których instrukcje nie zostały bezpośrednio udzielone, a znalezione metodą prób i błędów i następnie z powodzeniem stosowane. Drugą ważną zaletą jest jego uniwersalność - metody oparte na \emph{Reinforcement Learning} mogą zostać z lepszym lub gorszym skutkiem użyte w większości problemów związanych z motoryką w robotyce, tj. nauka chodzenia, chwytania itp.
 
-\subsubsection{Wady uczenia przez wzmacnianie}
+\subsubsection*{Wady uczenia przez wzmacnianie}
 Jak już zostało wspomniane we wprowadzeniu, do wad podejścia wykorzystującego uczenie przez wzmacnianie w robotyce zaliczamy czas potrzebny do przetrenowania algorytmu oraz niewydajne i często chaotyczne ruchy, które są jego rezultatem.
 
 \newpage
@@ -299,7 +303,7 @@ Celem rozkładu według wartości osobliwych, w skrócie rozkładu SVD (ang. \em
 
 Opisany w ten sposób problem stanowi jedynie pewien szczególny przypadek zastosowania rozkładu SVD. Ogólnie rzecz biorąc, SVD jest metodą pozwalającą na znalezienie rzędu macierzy, co teoretycznie może zostać wyznaczone metodą eliminacji Gaussa. To podejście jest jednak niepraktyczne, gdy ma zostać zrealizowane za pomocą metod numerycznych. Błędy biorą się często z niedoszacowań z powodu zaokrąglania wartości. Na przykład gdy rząd macierzy A jest niedoszacowany a U stanowi obliczoną numerycznie postać schodkową, wówczas możliwe jest, że U będzie miało niepoprawną liczbę niezerowych wierszy.
 
-Rozkład macierzy A według wartości osobliwych jest zawsze możliwy i można go przedstawić jako
+Najprostszym sposobem na zrozumienie rozkładu według wartości osobliwych jest zapisanie macierzy rzeczywistej A w postaci iloczynu trzech czynników, z których środkowy to macierz z pewnymi wartościami rosnącymi wzdłuż przekątnej. Taki rozkład jest zawsze możliwy, co można zapisać jako
 \[A = UDV^T \]
 
 Zakładając, że A jest macierzą $m \times n$, wówczas U stanie się macierzą ortogonalną o wymiarach $m \times m$, V - macierzą ortogonalną o wymiarach $n \times n$, a D macierzą $m \times n$, której wartości nieleżące na przekątnej są równe 0, a wartości na przekątnej spełniają zależność
@@ -310,10 +314,10 @@ D = \begin{bmatrix}
 \sigma_1 & & & \\
 & \sigma_2 & & \\
 & & \ddots & \\
-& & & \sigma_n
+& & & \sigma_n \\\\
 \end{bmatrix}
 \]
-Wartości $\sigma_i$ określone przez rozkład są różne i są nazywane \textbf{wartościami osobliwymi} macierzy A. Natomiast liczba niezerowych wartości osobliwych jest równa rzędowi macierzy A, a ich wielkość stanowi miarę jak bardzo ta macierz różni się od macierzy niższego rzędu. 
+Wartości $\sigma_i$ określone przez rozkład są różne i są nazywane \textbf{wartościami osobliwymi} macierzy A. Liczba niezerowych wartości osobliwych jest równa rzędowi macierzy A, a ich wielkość stanowi miarę jak bardzo ta macierz różni się od macierzy niższego rzędu. Z kolei kolumny macierzy U stanowią \textbf{lewostronne wektory osobliwe} a kolumny V - \textbf{prawostronne wektory osobliwe}.
 
 \begin{figure}[h]
 \centering
@@ -372,10 +376,12 @@ Co po przeniesieniu V na lewą stronę możemy równoważnie zapisać jako
 Porównując pierwsze r kolumn po obu stronach możemy zauważyć
 \[A \vb{v}_i = \sigma_i \vb{u}_i \quad i = 1, 2,..., n \]
 
+Zatem jeśli, ustalimy 
 \[\vb{u}_i = \frac{1}{\sigma_i}A \vb{v}_i \quad i = 1, 2,..., n \]
 
 \[U_1 = (\vb{u}_1, \vb{u}_2,..., \vb{u}_r) \]
 
+To będzie wynikać z tego
 \[AV_1 = U_1 D_1 \]
 
 \[\vb{u}_i^T \vb{u}_j = \left(\frac{1}{\sigma_i}\vb{v}_i^T A^T \right) \left(\frac{1}{\sigma_j}A \vb{v}_j \right)
@@ -383,9 +389,24 @@ Porównując pierwsze r kolumn po obu stronach możemy zauważyć
 = \frac{\sigma_j}{\sigma_i} \vb{v}_i^T \vb{v}_j 
 = \delta_ij \]
 
-\[UDV^T = U_1 D_1 V_1^T = AV_1 V_1^T = A \]
+Jeśli $\vb{u}_1,..., \vb{u}_m$ tworzy bazę ortonormalną dla $\mathbb{R}^m$ to U jest macierzą ortogonalną. Wówczas ostatnim krokiem jest wykazanie, że A rzeczywiście jet równe $UDV^T$
+\[UDV^T = \begin{bmatrix}
+U_1 & U_2
+\end{bmatrix}
+\begin{bmatrix}
+D_1 & 0 \\
+0 & 0 \\
+\end{bmatrix}
+\begin{bmatrix}
+V_1^T \\
+V_2^T \\
+\end{bmatrix}
+= U_1 D_1 V_1^T = AV_1 V_1^T = A \]
 
-\subsubsection{Interpretacja geometryczna SVD}
+\subsubsection*{Interpretacja geometryczna rozkładu SVD}
+W interpretacji geometrycznej wartości osobliwe mogą być rozumiane jako długości półosi elipsy na płaszczyźnie, co pokazano na rysunku. Wówczas zakładając, że A stanowi przekształcenie liniowe przestrzeni - macierze U i V reprezentują rotacje i odbicie tej przestrzeni, a D odpowiada za skalowanie. Innymi słowy, rozkład SVD rozkłada dowolne przekształcenie liniowe na złożenie funkcji trzech przekształceń: obrotu lub odbicia (V), skalowania (D) i kolejnego obrotu lub odbicia (U). W szczególności, jeśli wyznacznik poddawanej przekształcaniu macierzy jest dodatni, wówczas macierze U i V mogą odpowiadać zarówno za rotację jak i odbicie. Jeśli wyznacznik jest ujemny tylko jedna z nich odpowiada za odbicie, jeśli jest równy zero - odbicia nie ma wcale.
+
+Taka interpretacja może również zostać uogólniona do $n$-wymiarowych przestrzeni euklidesowych. Wówczas wartości osobliwe dowolnej macierzy kwadratowej n $\times$ n staną się długościami półosi $n$-wymiarowej elipsoidy. Wartości osobliwe zawierają w sobie informację o długościach a wektory osobliwe - o kierunku półosi. Nie jest to jednak zbyt praktyczne rozwiązanie, dlatego mówiąc o rozkładzie SVD w proponowanym algorytmie będziemy posługiwać się uproszczonym SVD. Przede wszystkim, zakładamy, że dysponujemy szablonem, który ma dokładnie te same wymiary co szukany obiekt oraz szukany przedmiot jest bryłą sztywną (więc również jego szablon traktujemy w ten sam sposób). Te założenia sporo upraszczają. Przede wszystkim, odnosząc się do praktycznego zastosowania możemy pominąć operację skalowania.
 
 \begin{figure}[h]
 \centering
@@ -394,12 +415,10 @@ Porównując pierwsze r kolumn po obu stronach możemy zauważyć
 \end{figure}
 
 \subsection{Algorytm Iterative Closest Point}
-Mamy dwa zbiory punktów: \emph{p} i \emph{p'} w postaci macierzy o wymiarach 3 x N.
-
-Wówczas równanie opisujące przejście punktu z jednego zbioru do drugiego wygląda następująco
+Mając teoretyczne podstawy za sobą możemy przejść do implementacji końcowego programu stworzonego w oparciu o algorytm ICP (ang. \emph{Iterative Closest Point}). Dla danej chmury punktów jego celem jest znalezienie położenia i orientacji obiektu, który przedstawia. W tej sytuacji dane wejściowe stanowią: chmura punktów i szablon szukanego obiektu, do którego chcemy dopasować widoczny przedmiot. Przez dopasowanie rozumiemy znalezienie transformacji (obrotu i przesunięcia) wykrytego obiektu względem początkowego położenia szablonu. Tak więc, mamy dwa zbiory punktów: \emph{p} i \emph{p'} w postaci macierzy o wymiarach 3 $\times$ n. Równanie opisujące przejście punktu z jednego zbioru do drugiego wygląda następująco
 \[p' = R p + T + N \]
 
-Chcemy dobrać takie R i T, aby zminimalizować wyrażenie
+Gdzie R jest macierzą rotacji o wymiarach 3 $\times$ 3, T - wektorem przesunięcia o wymiarach 3 $\times$ 1 a N - wektorem szumu. Zakładamy też, że obrót odbywa się wokół początku układu. Chcemy dobrać takie R i T, aby zminimalizować wyrażenie
 \[ d^2(p, p') = \sum_{i=1}^n || p'_{i} - (Rp_i+T)||^2 \]
 
 Niech 
@@ -413,15 +432,16 @@ Wówczas \emph{q} i \emph{q'} będą zbiorami odległości poszczególnych punkt
 Mamy
 \[d^2(q, q') = \sum_{i=1}^n || q'_{i} - Rq_{i}||^2 \]
 
-Następnym krokiem jest wyznaczenie macierzy 3 x 3 
+Następnym krokiem jest wyznaczenie macierzy 3 $\times$ 3 
 \[H = \sum_{i=1}^n q_{i} q_{i}^{'T} \]
 
 I rozłożenie jej na wartości osobliwe
 \[H = UDV^T \]
 
+Ponieważ, zgodnie z tym co zostało wspomniane podczas interpretacji geometrycznej rozkładu SVD, macierz D jest odpowiedzialna za skalowanie - podczas wyznaczenia wynikowej rotacji możemy ją odrzucić. W ten sposób otrzymujemy wyrażenie
 \[X = VU^T \]
 
-Jeśli wyznacznik \emph{det X} = 1, X stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem \emph{det X}= -1 algorytm nie zwraca rozwiązań. 
+Jeśli wyznacznik \emph{det X} = 1, X stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem \emph{det X}= -1 algorytm nie zwraca rozwiązań, ale ten przypadek z reguły nie występuje. 
 
 \subsection{Implementacja algorytmu}
 \begin{verbatim}
@@ -486,8 +506,9 @@ for i in range(iterations):
 \item \emph{Learning Dexterous In-Hand Manipulation} - OpenAI
 \item \emph{The Senses Considered as Perceptual Systems} - James J. Ginson
 \item \emph{Biocybernetyka} - Ryszard Tadeusiewicz
+\item \emph{Linear Algebra with Applications} - Steven J. Leon
+\item \emph{A Singularly Valuable Decomposition} - Dan Kalman
 \item \emph{A Method for Registration of 3-D Shapes} - Paul J. Besl, Neil D. McKay
 \item \emph{Least-Squares Fitting of Two 3-D Point Sets} - K.S. Arun, T.S. Huang, S.D. Blostein
-\item \emph{Linear Algebra with Applications} - Steven J. Leon
 \end{enumerate}
 \end{document}
