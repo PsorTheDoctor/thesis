@@ -38,7 +38,7 @@ Ponieważ zadania, o których wspomniałem są często realizowane przez określ
 
 \newpage
 \section{Wprowadzenie}
-Definiując współczesną robotykę jako dziedzinę wiedzy mamy na uwadze przede wszystkim dwa problemy: natury konstrukcyjnej i sterowania. Ponieważ wielu producentów z branży robotyki oferuje szeroką gamę rozwiązań spełniających potrzeby niniejszej pracy, posłużymy się robotem industrialnym, w którego konstrukcję nie będziemy ingerować. Dlatego, aby zrozumieć koncepcje zawarte w tej pracy nie jest wymagana dogłębna znajomość budowy robota. Natomiast, jeśli chodzi o sterowanie to możemy ponownie wyodrębnić dwie podrzędne kategorie: manipulację i lokomocję. 
+Definiując robotykę jako dziedzinę wiedzy mamy na uwadze zajmowanie się urządzeniami mechanicznymi, które mogą być przystosowane do realizacji wielu różnych zadań przez zmianę programu nimi sterującego. Jest to podstawowa różnica pozwalająca wyodrębnić robotykę na tle sztywnej automatyzacji zajmującej się maszynami przeznaczonymi do wykonywania jednego rodzaju zadań przez dłuższy czas. Współczesna robotyka stanowi przede wszystkim zbiór pewnych rozwiązań ukierunkowanych na tworzenie i sterowanie robotami. Mając to na uwadze, możemy wyróżnić dwa problemy: natury konstrukcyjnej i sterowania. Ponieważ wielu producentów z branży robotyki oferuje szeroką gamę rozwiązań spełniających potrzeby niniejszej pracy, posłużymy się manipulatorem przegubowym - najbardziej powszechną odmianą robota przemysłowego, w którego konstrukcję nie będziemy ingerować. Dlatego, aby zrozumieć koncepcje zawarte w tej pracy nie jest wymagana dogłębna znajomość budowy robota. Natomiast, jeśli chodzi o sterowanie to możemy ponownie wyodrębnić dwie podrzędne kategorie: manipulację i lokomocję. 
 
 \begin{itemize}
 \item \textbf{Manipulację} definiujemy jako zdolność do wykonywania precyzyjnych ruchów przez efektor końcowy robota w celu osiągnięcia wyznaczonego celu, np. przeniesienia przedmiotu procesowanego - tzw. zadanie \emph{pick and place}. Roboty posiadające tą cechę nazywamy mianem manipulatorów.
@@ -52,7 +52,7 @@ Definiując współczesną robotykę jako dziedzinę wiedzy mamy na uwadze przed
 \caption{Podział robotyki na odrębne zagadnienia.}
 \end{figure}
 
-Musimy jednak mieć na uwadze, że jest to dość ogólna i luźna klasyfikacja. Pierwotnie, podobny podział zaproponował Marc H. Raibert kończąc książkę  \emph{Legged Robots That Balance} w ostatnim rozdziale w pytaniu \emph{Do Locomotion and Manipulation Have a Common Ground?} Dalej problem został rozwinięty w kontekście badań nad lokomocją i manipulacją oraz tego jak te dwie dziedziny wpływają na siebie nawzajem.
+Musimy jednak mieć na uwadze, że jest to dość ogólna i luźna klasyfikacja. Pierwotnie, definicję wyodrębniającą robotykę i automatyzację zaproponował John J. Craig, natomiast podział na manipulację i lokomocję został został przytoczony w książce Marca H. Raiberta \emph{Legged Robots That Balance} w ostatnim rozdziale w pytaniu \emph{Do Locomotion and Manipulation Have a Common Ground?} Tam też problem został rozwinięty w kontekście badań nad lokomocją i manipulacją oraz tego jak te dwie dziedziny wpływają na siebie nawzajem.
 
 \subsection{Manipulacja a percepcja}
 Gdy mamy już wyjaśnione ogólne zagadnienia możemy skupić się na danym zadaniu manipulatora. Załóżmy, że zadaniem robota jest pobranie kilku kostek z podajnika w miejscu A i przeniesienie ich w odpowiednie miejsca na palecie B, tzw. paletyzacja. Aby wykonać to zadanie możemy podejść do niego na dwa sposoby: zapewniając maszynie odpowiednią percepcję lub nie. 
@@ -65,7 +65,6 @@ Brak percepcji oznacza brak danych wejściowych. Operujemy jedynie na wielkości
 Przez system wizyjny możemy rozumieć dowolny rodzaj kamery, jak również projektory chmur punktów i urządzenia nakładające na siebie kolory z danymi o głębokości obrazu, zwane kamerami RGBD. W takim przypadku operujemy znaczną ilością danych, dzięki czemu znajomość wymienionych wyżej wartości nie musi być konieczna - możemy oszacować te wartości używając metod widzenia maszynowego \emph{(Computer Vision).} Zastosowanie systemu wizyjnego możemy ponownie podzielić na dwa typy: z kamerą zamontowaną nieruchomo względem bazy robota oraz na jego narzędziu. Różnica między nimi polega głównie na tym, że w pierwszym przypadku widziane obiekty procesowane, jeśli robot ich bezpośrednio nie dotyka, pozostają w bezruchu względem kamery, a przez to nie zmienia się ich obraz. Przypadek z kamerą zamontowaną na kiści jest w stanie zapewnić więcej użytecznych ujęć, ale przez to jest też trudniejszy do zaimplementowania.
 \end{itemize}
 
-\newpage
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{basic}
 \caption{Przykład zadania paletyzacji jako manipulacji przy braku percepcji. Po lewej widoczny jest kod programu stworzony w języku MELFA-BASIC IV. Po prawej na górze - ujęcie wykonane podczas pracy robota Kawasaki, na dole - widok palety do ukończeniu zadania. Symulacja została wykonana w środowisku Cosimir.}
@@ -85,18 +84,18 @@ Chociaż pierwsze w pełni sprawne manipulatory istnieją w sektorze industrialn
 \item \textbf{Sterowanie we wszystkich stopniach swobody}. Manipulator przemysłowy wykorzystany w tej pracy charakteryzuje się sześcioma stopniami swobody (bez chwytaka), co sprawia, że dla niektórych pozycji zadanie kinematyki odwrotnej będzie miało więcej niż jedno rozwiązanie i wiele możliwych trajektorii, z których nie wszystkie są optymalne.
 
 \item \textbf{Odporność na zaszumione lub zniekształcone dane wejściowe}. Ograniczona rozdzielczość kamer RGBD, zaszumienie spowodowane światłem zewnętrznym i różne możliwe rozrzucenie obiektów komplikuje działanie algorytmu i aby proces przebiegał płynnie - musi zostać obsłużone.
-
-Do powyższej listy moglibyśmy także dopisać zdolność do przenoszenia zachowań z symulacji do rzeczywistego świata, ale ponieważ nie we wszytkich problemach stosuje się metody symulacji - nie dopisywałem ich do tej listy.
 \end{itemize}
 
+Do powyższej listy moglibyśmy także dopisać zdolność do przenoszenia zachowań z symulacji do rzeczywistego świata, ale ponieważ nie we wszytkich problemach stosuje się metody symulacji - nie dopisywałem jej.
+
 \subsection{Afordancje}
-Zdolność oddziaływania na jakiś obiekt lub środowisko została określona mianem \textbf{afordancji} przez psychologa Jamesa J. Gibsona w 1966 roku w książce \emph{The Senses Considered as Perceptual Systems} i opisana w artykule \emph{The  Theory  of  Affordance.  In:  Perceiving,  Acting  and  Knowing  Toward  an Ecological Psychology}. Definicja ta przyjęła szerokie znaczenie w dziedzinach tj. psychologia, kognitywistyka, sztuczna inteligencja czy robotyka.
+Zdolność oddziaływania na jakiś obiekt lub środowisko została określona mianem \textbf{afordancji} przez psychologa Jamesa J. Gibsona w 1966 roku w książce \emph{The Senses Considered as Perceptual Systems} i opisana w artykule \emph{The  Theory  of  Affordance.  In:  Perceiving,  Acting  and  Knowing  Toward  an Ecological Psychology}. Definicja ta przyjęła szerokie znaczenie w dziedzinach tj. psychologia, kognitywistyka, sztuczna inteligencja czy robotyka. Możemy zdefiniować afordancje na przykładzie ludzi, ale człowiek ze względu na swoją złożoność często pozostaje niewdzięcznym modelem. Dlatego dla naszych rozważań posłużymy się morskim bezkręgowcem - krabem \emph{Limulus polyphemus}. Przykład ten został opisany m.in. w \emph{Biocybernetyce} Ryszarda Tadeusiewicza. Korzystnymi cechami tego stawonoga z naszego punktu widzenia są posiadanie ośrodkowego układu nerwowego oraz oczu, z których impulsy jesteśmy w stanie śledzić. Tak więc, jesteśmy w stanie w przybliżeniu zobrazować jego pole widzenia. 
 
-Możemy zdefiniować afordancje na przykładzie ludzi, ale człowiek ze względu na swoją złożoność często pozostaje niewdzięcznym modelem. Dlatego dla naszych rozważań posłużymy się morskim bezkręgowcem - krabem \emph{Limulus polyphemus}. Przykład ten został opisany m.in. w \emph{Biocybernetyce} Ryszarda Tadeusiewicza. Korzystnymi cechami tego stawonoga z naszego punktu widzenia są posiadanie ośrodkowego układu nerwowego oraz oczu, z których impulsy jesteśmy w stanie śledzić. Tak więc, jesteśmy w stanie w przybliżeniu zobrazować jego pole widzenia. 
+Co wobec tego widzi krab? Przede wszystkim \textbf{obiekty} stanowiące najczęściej zagrożenie lub będące przedmiotem łowów niezależnie od tła. W warunkach laboratoryjnych możemy także osiągnąć pobudzenie neuronalne za pomocą punktowego oświetlenia lub gwałtownych zmian światła. Krab nie widzi natomiast równomiernych gradientów oświetlenia czy monotonnego pastelowego tła. Jest to biologicznie uzasadnione, ponieważ informacje te nie są dla niego w żaden sposób niezbędne do życia. Presja ewolucyjna wywierana na mózgi zwierząt kształtowała się z najbardziej podstawowych powodów: żeby umożliwić im lepszą zdolność poruszania się i odpowiednią zdolność postrzegania otoczenia. Te umiejętności znajdowały odzwierciedlenie w najbardziej fundamentalnych cechach życiowych, czyli poszukiwaniu pożywienia i schronienia oraz ucieczki przed zagrożeniem. Dlatego jeśli prześledzimy drogę ewolucji prowadzącą do prostych bezkręgowców tj. glisty czy małże, zauważymy, że ich ośrodkowy układ nerwowy odpowiada głównie za kontrolę ruchu przez pobudzanie właściwych mięśni. A ponieważ nawet u najbardziej prymitywnych zwierząt ruch wykształcał się w parze ze zdolnością postrzegania środowiska - receptory reagujące na sygnały zewnętrzne (substancje chemiczne lub światło) przesyłają impulsy elektryczne do nerwów odpowiedzialnych za poruszanie się. 
 
-Co wobec tego widzi krab? Przede wszystkim \textbf{obiekty} stanowiące najczęściej zagrożenie lub będące przedmiotem łowów niezależnie od tła. W warunkach laboratoryjnych możemy także osiągnąć pobudzenie neuronalne za pomocą punktowego oświetlenia lub gwałtownych zmian światła. Krab nie widzi natomiast równomiernych gradientów oświetlenia czy monotonnego pastelowego tła. Jest to biologicznie uzasadnione, ponieważ informacje te nie są dla niego w żaden sposób niezbędne do życia. 
+Przykład kraba, mimo że może wydawać się surowy, niesie ze sobą istotne wskazówki na temat tego co powinniśmy rozumieć przez afordancje i jaka jest ich rola. Nikt dokładnie nie wie jak wyglądała droga rozwoju układu nerwowego prowadząca do zorganizowania jego struktury w mózg dorosłego człowieka, w którym ponad połowa neuronów odpowiada za kontrolę motoryczną i zmysły. Aby mieć władzę nad ciałem, mózg tworzy pewne odwzorowanie, które "mapuje" poszczególne części ciała na powierzchni kory mózgowej w miejscu zwojów \emph{gyrus postcentralis} (pól Brodmanna 1, 2 i 3). Mając taką mapę możemy zauważyć, że łączna powierzchnia dłoni i twarzy zajmuje na niej znacznie więcej miejsca niż pozostała reszta ciała. Innymi słowy, czynności wykonywane twarzą i dłońmi, tj. mimika, mowa czy manipulacja, angażują znaczne ilości neuronów co stanowi pewną miarę ich skomplikowania. Ostatnie badania stosujące techniki neuroobrazowania sugerują, że umiejętność "obchodzenia się z narzędziami", czyli zdolność do projektowania, planowania i korzystania z narzędzi wyewoluowała w lewej półkuli mózgu. Dlatego też pacjenci, u których zdiagnozowano uszkodzenia tej części, mimo że potrafią rozpoznać dany przedmiot, nie potrafią sobie wyobrazić jak go użyć i nie radzą sobie w tej kwestii lepiej niż szympansy. 
 
-Przykład kraba, mimo że może wydawać się surowy, niesie ze sobą istotne wskazówki na temat tego co powinniśmy rozumieć przez afordancje i jaka jest ich rola. Przechodząc do chwytania, które w środowisku naturalnym jest domeną naczelnych, aby mogło ono zostać zrealizowane -  wykorzystywane są informacje zawarte w obrazie. Pozwala to tłumaczyć dlaczego niektóre gatunki, przykładem tu mogą być wczesne homidy, wykształciły bardziej rozwinięty wzrok konieczny do wytypowania elementów otoczenia. Podobnie w robotyce, robot musi nauczyć się jak chwytać i operować uchwyconymi obiektami, tak aby osiągnąć wyznaczony cel. Różne przedmioty, np. młotek mogą być uchwycone na wiele różnych sposobów natomiast liczba optymalnych chwytów jest ograniczona w kontekście danego zadania. 
+Tak więc, aby mogło zostać zrealizowane chwytanie -  wykorzystywane są informacje zawarte w obrazie. Pozwala to tłumaczyć dlaczego niektóre gatunki, przykładem tu mogą być wczesne homidy, wykształciły bardziej rozwinięty wzrok konieczny do wytypowania elementów otoczenia. Podobnie w robotyce, robot musi nauczyć się jak chwytać i operować uchwyconymi obiektami, tak aby osiągnąć wyznaczony cel. Różne przedmioty, np. młotek mogą być uchwycone na wiele różnych sposobów natomiast liczba optymalnych chwytów jest ograniczona w kontekście danego zadania. 
 
 \newpage
 \section{Przegląd dotychczasowych rozwiązań}
@@ -119,13 +118,25 @@ a także w niektórych przypadkach, otrzymujemy prawdopodobieństwo jego wystąp
 Wymieniowe wyżej problemy należą do dość złożonych zadań wymagających sporej mocy obliczeniowej. Z pomocą przychodzą algorytmy takie jak SIFT (w celu detekcji i lokalizacji danych obiektów na podstawie podobieństwa cech) czy metody uczenia nienadzorowanego (pomocne przy segmentacji). Często jednak z pomocą przychodzą sztuczne sieci neuronowe, a szczególnie popularne są sieci zawierające operację splotu, czyli sieci splotowe.
 
 \subsection{Sztuczne sieci neuronowe}
-Jedną z najbardziej popularnych technik w uczeniu maszynowych stanowią sieci neuronowe \emph{(ang. ANN - Artificial Neural Network)}. Taką sieć można w uproszczony sposób przedstawić w postaci grafu, którego wierzchołki reprezentują neurony a krawędzie - połączenia między nimi, tzw. synapsy.
+Mówiąc o sieciach neuronowych w kontekście przedmiotów zajmujących się przetwarzaniem sygnałów mamy na myśli struktury matematyczne, które w pewnym stopniu przypominają budowę i działanie ludzkiego mózgu. Są one jedną z najbardziej popularnych technik współczesnej sztucznej inteligencji. Stosujemy je przede wszystkim wtedy, gdy nie znamy reguł rozwiązania danego problemu, ale dysponujemy zbiorem przykładowych zadań (zbiorem uczącym), które zostały poprawnie rozwiązane. 
+
+Sztuczne sieci neuronowe składają się z wzajemnie połączonych neuronów, które są uproszczonymi modelami biologicznych odpowiedników. Jest to spowodowane tym, że rzeczywiste neurony są tworami niezmiernie skomplikowanymi i wymagającymi pod względem obliczeniowym. Gdy przedstawimy taką sieć w postaci grafu - jego wierzchołki będą reprezentować neurony, a krawędzie - poszczególne wagi sieci. Jej trening polega na znalezieniu takich wartości wag, które zapewnią poprawne rozwiązanie problemu. Zazwyczaj odbywa się to za pomocą algorytmu wstecznej propagacji błędów (ang. \emph{backpropagation}). Trenując sieć, generalizuje ona wiedzę na podstawie zbioru uczącego, od którego zależy jej późniejsze działanie.
+
+\subsubsection*{Sieci jednokierunkowe}
+Sztandarowym przykładem jest tu wielowarstwowa sieć jednokierunkowa, zwana również perceptronem wielowarstwowym lub MLP (ang. \emph{Multi-Layer Perceptron}). Jak sama nazwa wskazuje jest to struktura, w której zostały wyodrębnione \textbf{warstwy}, z których pierwszą nazywamy wejściową, środkowe - ukrytymi, a ostatnią - wyjściową. Warstwy te reprezentują kolejne poziomy abstrakcji tworząc model hierarchiczny. Najniższe z nich wykrywają proste cechy sygnału wejściowego, a najwyższe, opierając się o informacje z poprzednich warstw - są w stanie znaleźć pewne coraz bardziej abstrakcyjne cechy. 
+
+Posługując się przykładem, załóżmy, że chcemy przetrenować pięciowarstwową sieć pod kątem zdolności do rozpoznawania obrazu. Przechodząc przez warstwy ukryte w najbardziej powszechnym przypadku pierwsza z nich wykryje krawędzie na podstawie różnic kolorów między pikselami, druga - korzystając z informacji o krawędziach będzie w stanie znaleźć kontury i zaokrąglenia, trzecia - pewne relacje pomiędzy nimi. Na ich podstawie z większym prawdopodobieństwem będzie mogła stwierdzić do jakiej klasy należy widziany obraz. W ten sposób, najczęściej w postaci rozkładu prawdopodobieństwa, dostaniemy informację o rozpoznanym obiekcie.
+
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{neural_net}
+\caption{Idea działania sieci neuronowej w zadaniu rozpoznawania obiektu. Przedstawiona została sieć składająca się z pięciu warstw: wejściowej, trzech ukrytych i wyjściowej. Na wejście trafiają dane, np. obraz lub chmura punktów, którą chcemy rozpoznać. Następnie kolejne warstwy ukryte wydobywają z nich coraz bardziej abstrakcyjne cechy. Pod koniec, informacja o przynależności do danej klasy A, B lub C jest zwracana na wyjściu sieci. Obraz został zaczerpnięty z książki \emph{Deep Learning: Systemy uczące się}.}
+\end{figure}
 
 \subsubsection*{Sieci splotowe}
 Rodzaj sieci, na który szczególnie warto jest zwrócić uwagę stanowią sieci splotowe zwane częściej sieciami konwolucyjnymi, w skrócie CNN (ang. \emph{Convolutional Neural Network}). Te sieci zawdzięczają swoją popularność przede wszystkim dzięki wykorzystaniu do problemów związanych z analizą obrazów, przy których ich możliwości przewyższają zwykłe sieci jednokierunkowe. Ich nazwa wzięła się od operacji splotu (konwolucji), która jest wykorzystywana do ekstrakcji cech przez splot obrazu z filtrem. Sieci splotowe są z powodzeniem stosowane w rozpoznawaniu, klasyfikacji i segmentacji obrazów. Ponieważ możliwe jest przeprowadzenie operacji splotu na danych o zarówno jednym, dwóch oraz trzech wymiarach, użycie sieci CNN da się poszerzyć do analizy danych takich jak dźwięk, obrazy RGBD czy chmury punktów, a to z kolei implikuje ich przydatność w robotyce.
 
 \subsubsection*{GraspNet}
-Daleko idącym przykładem wykorzystania sieci neuronowych w robotyce jest projekt \emph{GraspNet}. Celem przedsięwzięcia było przetrenowanie modelu sztucznej inteligencji na zbiorze obrazów pochodzących z kamer RGBD przedstawiających przedmioty z możliwymi chwytami wyznaczonymi analitycznie. Twórcom projektu udało się zgromadzić 97280 obrazów RGBD zawierających ponad miliard możliwych pozycji chwytu. Zbiór ten został ujawniony i opublikowany pod nazwą \emph{GraspNet-1Billion}. W rzeczywistości \emph{GraspNet} jest modelem składającym się z kilku mniejszych sieci, który oprócz nich wykorzystuje funkcje tj. grupowanie, wyśrodkowywanie i filtrowanie danych. Tak więc, dla danych wejściowych w postaci chmury punktów przyporządkowuje pewną ilość chwytów jakie mogą zostać zastosowane podczas próby uchwycenia obiektów w niej przedstawionych. Możliwe chwyty zostają wyznaczone w sposób, na który mogą zostać przeprowadzone z użyciem chwytaka dwupalczastego.
+Daleko idącym przykładem wykorzystania sieci neuronowych w robotyce jest projekt \emph{GraspNet}. Celem przedsięwzięcia było przetrenowanie modelu sztucznej inteligencji na zbiorze obrazów pochodzących z kamer RGBD przedstawiających przedmioty z możliwymi chwytami wyznaczonymi analitycznie. Twórcom projektu udało się zgromadzić 97280 obrazów RGBD zawierających ponad miliard możliwych pozycji chwytu.
 
 \begin{figure}[h]
 \centering
@@ -133,6 +144,15 @@ Daleko idącym przykładem wykorzystania sieci neuronowych w robotyce jest proje
 \caption{Wizualizacja możliwych chwytów wykrytych przez sieć \emph{GraspNet}. Na niebiesko oznaczone jest położenie szczęk chwytaka.}
 \end{figure}
 
+Zbiór ten został ujawniony i opublikowany pod nazwą \emph{GraspNet-1Billion}. W rzeczywistości \emph{GraspNet} jest modelem składającym się z kilku mniejszych sieci, który oprócz nich wykorzystuje funkcje tj. grupowanie, wyśrodkowywanie i filtrowanie danych. Tak więc, dla danych wejściowych w postaci chmury punktów przyporządkowuje pewną ilość chwytów jakie mogą zostać zastosowane podczas próby uchwycenia obiektów w niej przedstawionych. Możliwe chwyty zostają wyznaczone w sposób, na który mogą zostać przeprowadzone z użyciem chwytaka dwupalczastego.
+
+\subsubsection*{Zalety sieci neuronowych}
+Oprócz zdolności do rozwiązywania problemów, które nie są efektywnie algorytmizowalne w oparciu o matematyczne modelowanie wiedzy, do zalet sieci neuronowych możemy zaliczyć ich wszechstronność. To znaczy, dana struktura sieci może zostać przetrenowana do wielu różnych niezwiązanych ze sobą zadań. Jest to w pewnym sensie cecha wspólna wszystkich technik uczenia maszynowego wyróżniająca je na tle innych algorytmów.
+
+\subsubsection*{Wady sieci neuronowych}
+Sieci neuronowe mają wiele wad - trenowane algorytmem \emph{backpropagation} dokonują coraz mniejszych zmian w kolejnych warstwach idących wgłąb sieci (problem zanikającego gradientu) oraz łatwo przeuczają się, ponieważ większa liczba zmieniających się podczas uczenia sieci parametrów sprzyja przetrenowaniu. Skutkiem tego jest mniejsza wydajność proces ekstrakcji cech występujących w zbiorze uczącym. Trenując sieci neuronowe, w szczególności duże modele, nie do końca wiemy w jaki sposób przetwarzają one informacje. Pociąga to za sobą wiele implikacji, a patrząc z technicznej perspektywy, często nie jesteśmy pewni czy zastosowany przez nas model sieci nie mógłby zostać uproszczony. Gdybyśmy dysponowali większą wiedzą na temat przetwarzania przez nie informacji, najprawdopodobniej możliwa była by redukcja czasu, danych i zasobów obliczeniowych potrzebnych do ich uczenia. Są to najbardziej istotne czynniki wpływające na jakość działania modelu.
+
+\newpage
 \subsection{Uczenie przez wzmacnianie}
 Uczenie przez wzmacnianie zwane też uczeniem z krytykiem lub \emph{Reinforcement Learning} opisuje metody uczenia maszynowego, w którym optymalne rozwiązanie danego zadania powstaje na skutek interakcji agenta ze środowiskiem. W zastosowaniach tego podejścia w robotyce, środowiskiem jest symulacja lub rzeczywiste otoczenie, z którym agent (robot) wchodzi w interakcję. Celem jest maksymalizacja zysku ściśle związanego z pożądanym rezultatem. W ten sposób robot próbując osiągnąć jak najwyższy wynik uczy się rozwiązywać zadany problem.
 
@@ -142,12 +162,12 @@ Uczenie przez wzmacnianie zwane też uczeniem z krytykiem lub \emph{Reinforcemen
 \caption{Przedstawienie zasady działania metod \emph{Reinforcement Learning} w postaci grafu: agent podejmuje działanie w danym środowisku co jest interpretowane jako zysk i reprezentacja stanu, które trafiają z powrotem do agenta. W dalej idących implementacjach algorytmu występują także obserwacje, czyli dostarczane agentowi informacje na temat środowiska.}
 \end{figure}
 
-Istnieje wiele wariantów algorytmów wykorzystujących \emph{Reinforcement Learning}, które możemy podzielić ze względu na kryterium optymalizacji na:
-\begin{itemize}
-\item \textbf{Oparte na polityce} \\
+Istnieje wiele wariantów algorytmów wykorzystujących \emph{Reinforcement Learning}, które możemy podzielić ze względu na kryterium optymalizacji na oparte na polityce lub funkcji zmiany stanu.
+
+\subsubsection*{Oparte na polityce}
 W tym podejściu przyjmowana jest polityka, którą należy zoptymalizować. Politykę możemy definiować jako odpowiedzialną za zachowanie agenta funkcję, która na wejściu przyjmuje obserwację, a na wyjściu zwraca akcję.  
 
-\item \textbf{Oparte na funkcji wartości stanu} \\
+\subsubsection*{Oparte na funkcji wartości stanu}
 Funkcja wartości stanu $V_{\pi}(s)$ określa jak wysoki będzie zysk, gdy zaczniemy ze stanu $s$ i będziemy opierać się o politykę $\pi$. 
 
 \[V_{\pi}(s) = \mathbb{E}[R | s_0=s] = \mathbb{E} \left[\sum_{t=0}^n \gamma^t r_t | s_0=s \right]\]
@@ -156,8 +176,10 @@ W tym kryterium zostaje wprowadzona wartość $R$ jako całkowity \textbf{zysk},
 
 \[R = r_{0} + \gamma r_1 + \gamma^2 r_2 + \ldots + \gamma^n r_n = \sum_{t=0}^n \gamma^t r_t \quad gdzie \quad \gamma \in \langle 0, 1)\]
 
-Ponieważ $\gamma$ jest mniejsza niż 1, odległe przyszłe zdarzenia są mniej istotne od zdarzeń w bliskiej i niedalekiej przyszłości. Jest to istotne, ponieważ zależy nam na njaszybszym możliwym uzyskaniu zysku.
-\end{itemize}
+Ponieważ $\gamma$ jest mniejsza niż 1, odległe przyszłe zdarzenia są mniej istotne od zdarzeń w bliskiej i niedalekiej przyszłości. Jest to istotne, ponieważ zależy nam na najszybszym możliwym uzyskaniu zysku.
+
+\subsubsection*{Deep Reinforcement Learning}
+Związek uczenia przez wzmacnianie z robotyką stale się zacieśnia, zwłaszcza popularne w ostatnich latach stały się techniki wykorzystujące głębokie uczenie przez wzmacnianie, czyli \emph{Deep Reinforcement Learning}. Jest to w pewnym sensie połączenie dwóch omawianych wyżej metod: sieci neuronowych i \emph{Reinforcement Learningu} stosowane w sytuacjach, gdy mamy do czynienia z bardziej złożonymi problemami. Posługując się konkretnym przykładem, załóżmy że chcemy, aby robot na podstawie obrazu chmury punktów pochodzącej z kamery RGBD znalazł zadany przedmiot i go uchwycił. Jest to problem, na którym skupia się ta praca, szerzej znany pod nazwą \emph{bin picking}. Wówczas, gdy mamy wielowymiarowe obserwacje w postaci chmury punktów - niemożliwe się staje rozwiązanie go za pomocą tradycyjnego \emph{Reinforcement Learningu}. 
 
 \begin{figure}[h]
 \centering
@@ -165,11 +187,12 @@ Ponieważ $\gamma$ jest mniejsza niż 1, odległe przyszłe zdarzenia są mniej 
 \caption{Robot wykorzystujący techniki uczenia ze wzmacnianiem podczas układania kostki Rubika. Eksperyment został opisany w publikacji \emph{Learning Dexterous In-Hand Manipulation} i miał na celu przetrenowanie sztucznej inteligencji pod kątem umiejętności motorycznych - praca zbiorowa OpenAI.}
 \end{figure}
 
+\newpage
 \subsubsection*{Zalety uczenia przez wzmacnianie}
 Do niewątpliwych zalet uczenia przez wzmacnianie należy zdolność do tworzenia zachowań \textbf{emergentnych}. Przez emergencję rozumiemy powstawanie zachowań, do których instrukcje nie zostały bezpośrednio udzielone, a znalezione metodą prób i błędów i następnie z powodzeniem stosowane. Drugą ważną zaletą jest jego uniwersalność - metody oparte na \emph{Reinforcement Learning} mogą zostać z lepszym lub gorszym skutkiem użyte w większości problemów związanych z motoryką w robotyce, tj. nauka chodzenia, chwytania itp.
 
 \subsubsection*{Wady uczenia przez wzmacnianie}
-Jak już zostało wspomniane we wprowadzeniu, do wad podejścia wykorzystującego uczenie przez wzmacnianie w robotyce zaliczamy czas potrzebny do przetrenowania algorytmu oraz niewydajne i często chaotyczne ruchy, które są jego rezultatem.
+Jak już zostało wspomniane we wprowadzeniu, do wad podejścia wykorzystującego uczenie przez wzmacnianie w robotyce zaliczamy czas i często zasoby obliczeniowe potrzebne do przetrenowania algorytmu oraz niewydajne i często chaotyczne ruchy, które są jego rezultatem.
 
 \newpage
 \section{Estymacja położenia obiektu}
@@ -502,10 +525,14 @@ for i in range(iterations):
 
 \section{Bibliografia}
 \begin{enumerate}
+\item \emph{Wprowadzenie do robotyki} - John. J. Craig
 \item \emph{Legged Robots That Balance} - Marc H. Raibert
-\item \emph{Learning Dexterous In-Hand Manipulation} - OpenAI
 \item \emph{The Senses Considered as Perceptual Systems} - James J. Ginson
 \item \emph{Biocybernetyka} - Ryszard Tadeusiewicz
+\item \emph{Odkrywanie właściwości sieci neuronowych} - Ryszard Tadeusiewicz
+\item \emph{The Representation of Tool Use in Humans and Monkeys: Common and Uniquely Human Features}, "Journal of Neuroscience" - Scott H. Jonhson-Frey
+\item \emph{Deep Learning. Systemy uczące się} - Ian Goodfellow, Yoshua Bengio, Aaron Courville
+\item \emph{Learning Dexterous In-Hand Manipulation} - OpenAI
 \item \emph{Linear Algebra with Applications} - Steven J. Leon
 \item \emph{A Singularly Valuable Decomposition} - Dan Kalman
 \item \emph{A Method for Registration of 3-D Shapes} - Paul J. Besl, Neil D. McKay
