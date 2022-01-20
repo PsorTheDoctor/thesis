@@ -6,7 +6,53 @@
 \usepackage{physics}
 \usepackage{amsmath}
 \usepackage{amsfonts}
+\usepackage{xcolor}
 \graphicspath{{./images/}}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{1,1,1}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\footnotesize\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\lstset{
+  literate={ą}{{\k a}}1
+  		   {Ą}{{\k A}}1
+           {ż}{{\. z}}1
+           {Ż}{{\. Z}}1
+           {ź}{{\' z}}1
+           {Ź}{{\' Z}}1
+           {ć}{{\' c}}1
+           {Ć}{{\' C}}1
+           {ę}{{\k e}}1
+           {Ę}{{\k E}}1
+           {ó}{{\' o}}1
+           {Ó}{{\' O}}1
+           {ń}{{\' n}}1
+           {Ń}{{\' N}}1
+           {ś}{{\' s}}1
+           {Ś}{{\' S}}1
+           {ł}{{\l}}1
+           {Ł}{{\L}}1
+}
 
 \begin{document}
 \title{Rozpoznawanie i estymacja pozycji obiektu z użyciem systemu wizyjnego w zadaniu chwytania realizowanego przez manipulator}
@@ -466,56 +512,13 @@ Ponieważ, zgodnie z tym co zostało wspomniane podczas interpretacji geometrycz
 
 Jeśli wyznacznik \emph{det X} = 1, X stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem \emph{det X}= -1 algorytm nie zwraca rozwiązań, ale ten przypadek z reguły nie występuje. 
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=10cm]{mean_dist}
+\caption{Wykres średnich odległości korespondujących punktów między dwiema chmurami przeprowadzony dla rotacji w zakresie 0.25$\pi$. Zależność ta została powtórzona przez największą liczbę prób. Z przebiegu widać, że algorytm w największej liczbie przypadków znajdował ostateczną transformację przy osiemnastej iteracji.}
+\end{figure}
+
 \subsection{Implementacja algorytmu}
-\begin{verbatim}
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from sklearn.preprocessing import MinMaxScaler
-import random
-from math import *
-import trimesh
-import os
-import icp
-import test
-
-mesh = trimesh.load_mesh('bunny.stl')
-
-density = 3000
-dim = 3
-translation = 0.5
-rotation = 0.5
-
-A = mesh.sample(density)
-scaler = MinMaxScaler(feature_range=(0, 1))
-A = scaler.fit_transform(A)
-
-B = mesh.sample(density)
-B = scaler.fit_transform(B)
-
-t = np.random.rand(dim) * translation
-B += t
-
-R = test.rotation_matrix(np.random.rand(dim), 
-			np.random.rand() * rotation)
-B = np.dot(R, B.T).T
-
-iterations = 15
-
-for i in range(iterations):
-  T, distances, iters = icp.icp(B, A, max_iterations=(i+1))
-
-  C = np.ones((density, 4))
-  C[:, 0:3] = B
-  C = np.dot(T, C.T).T
-
-  fig = plt.figure(figsize=(9, 9))
-  ax = Axes3D(fig)
-  ax.scatter(A[:, 0], A[:, 1], A[:, 2], c='b')
-  ax.scatter(C[:, 0], C[:, 1], C[:, 2], c='r')
-
-  fig.savefig('icp{}.png'.format(i))
-\end{verbatim}
 
 \begin{figure}[h]
 \centering
@@ -523,7 +526,7 @@ for i in range(iterations):
 \caption{Działanie algorytmu ICP na przykładzie obiektu w kształcie królika.}
 \end{figure}
 
-\section{Bibliografia}
+\section*{Bibliografia}
 \begin{enumerate}
 \item \emph{Wprowadzenie do robotyki} - John. J. Craig
 \item \emph{Legged Robots That Balance} - Marc H. Raibert
@@ -531,6 +534,7 @@ for i in range(iterations):
 \item \emph{Biocybernetyka} - Ryszard Tadeusiewicz
 \item \emph{Odkrywanie właściwości sieci neuronowych} - Ryszard Tadeusiewicz
 \item \emph{The Representation of Tool Use in Humans and Monkeys: Common and Uniquely Human Features}, "Journal of Neuroscience" - Scott H. Jonhson-Frey
+\item \emph{Krótka historia rozumu. Od pierwszej myśli do rozumienia wszechświata} - Leonard Mlodinow
 \item \emph{Deep Learning. Systemy uczące się} - Ian Goodfellow, Yoshua Bengio, Aaron Courville
 \item \emph{Learning Dexterous In-Hand Manipulation} - OpenAI
 \item \emph{Linear Algebra with Applications} - Steven J. Leon
@@ -538,4 +542,9 @@ for i in range(iterations):
 \item \emph{A Method for Registration of 3-D Shapes} - Paul J. Besl, Neil D. McKay
 \item \emph{Least-Squares Fitting of Two 3-D Point Sets} - K.S. Arun, T.S. Huang, S.D. Blostein
 \end{enumerate}
+
+\section*{Appendix}
+\subsection*{Kod programu}
+\lstinputlisting[language=Python]{appendix.py}
+
 \end{document}
