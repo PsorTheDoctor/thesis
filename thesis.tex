@@ -508,9 +508,11 @@ I rozłożenie jej na wartości osobliwe
 \[H = UDV^T \]
 
 Ponieważ, zgodnie z tym co zostało wspomniane podczas interpretacji geometrycznej rozkładu SVD, macierz D jest odpowiedzialna za skalowanie - podczas wyznaczenia wynikowej rotacji możemy ją odrzucić. W ten sposób otrzymujemy wyrażenie
-\[X = VU^T \]
+\[R = VU^T \]
 
-Jeśli wyznacznik \emph{det X} = 1, X stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem \emph{det X}= -1 algorytm nie zwraca rozwiązań, ale ten przypadek z reguły nie występuje. 
+Jeśli wyznacznik \emph{det R} = 1, R stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem \emph{det R}= -1 algorytm nie zwraca rozwiązań, ale ten przypadek z reguły nie występuje. 
+
+Obliczona transformacja w postaci macierzy R i wektora $\vb{t}$ nie stanowi jeszcze ostatecznego rozwiązania algorytmu. Możemy jedynie stwierdzić, że poddany tej transformacji obiekt znajduje bliżej docelowego szablonu niż był do tej pory. Dążąc do ostatecznego wyniku, potrzebujemy ponownie wykonywać poprzednie kroki do momentu, aż odległości między korespondującymi punktami w zbiorach staną się akceptowalnie małe. Każdy taki etap nosi nazwę \textbf{iteracji}, dlatego też algorytm nazywany jest iteracyjnym.
 
 \begin{figure}[h]
 \centering
@@ -518,14 +520,44 @@ Jeśli wyznacznik \emph{det X} = 1, X stanowi macierz obrotu. W przeciwnym wypad
 \caption{Wykres średnich odległości korespondujących punktów między dwiema chmurami przeprowadzony dla rotacji w zakresie 0.25$\pi$. Zależność ta została powtórzona przez największą liczbę prób. Z przebiegu widać, że algorytm w największej liczbie przypadków znajdował ostateczną transformację przy osiemnastej iteracji.}
 \end{figure}
 
+\newpage
 \subsection{Implementacja algorytmu}
+Poniżej zamieszczona została minimalistyczna implementacja omówionej listy kroków w języku Python. Pełna wersja algorytmu ICP wraz z komentarzami znajduje się w sekcji \emph{Appendix}.
 
-\begin{figure}[h]
+\lstinputlisting[language=Python]{transform_matrix.py}
+
+Funkcja \emph{transform matrix} przyjmuje dwa argumenty w postaci macierzy A i B i. A jest macierzą obiektu, który chcemy dopasować do szablonu B. W rozważanym przypadku obie macierze są wymiaru 3 $\times$ n, czyli składają się z trzech kolumn, z których pierwsza zawiera wartości współrzędnej x, druga - y, a trzecia - z. Każdy wiersz w obu macierzach reprezentuje jeden z $n$ punktów. W linijkach piątej i szóstej następuje wyznaczenie centroidów A i B w postaci wektorów o długości trzy przez obliczenie średniej dla każdej kolumny współrzędnych. Macierze A1 i B1 zostają utworzone przez odjęcię od A i B ich centroidów. Pomaga nam to ustandaryzować wartości zmiennych. W linijce jedenastej liczony jest iloczyn nowo utworzonych macierzy (transponujemy A1, żeby miała tyle samo kolumn co B1 wierszy). Następnie następuje rozkład H według wartości osobliwych, który zwraca trzy czynniki w postaci macierzy U, D i Vt. Mnożąc przez siebie U i Vt (obie transponowane) otrzymujemy otrzymujemy macierz rotacji R. Warunek poniżej obsługuje specjalny przypadek odbicia. Wektor przesunięcia t jest liczony jako różnica centroidu B i obróconego przez R centroidu A. Funkcja zwraca R i t.
+
+Gdy mamy zaimplementowane wyznaczanie transformacji dla pojedynczej iteracji możemy przejść do ostatecznego algorytmu ICP.
+
+\lstinputlisting[language=Python]{icp.py}
+
+Funkcja \emph{icp} przyjmuje cztery argumenty w tym jeden domyślny. Przyjmowane są zmienne A i B jako macierze o wymiarach 3 $\times$ n, maksymalna liczba iteracji oraz domyślnie ustawiony próg tolerancji. W linijkach 5-8 tworzone są macierze A1 i B1 jako czterokolumnowe odpowiedniki A i B. Dzieje się to przez skopiowanie wartości A i B i dostawienie kolumny jedynek. Linijki 11-23 zawierają główną pętlę programu wykonującą się maksymalnie \emph{max iterations} razy. Przed wejściem do pętli została zainicjalizowana zmienna \emph{prev error}, która będzie nadpisywana przy każdej iteracji. Następnie funkcja \emph{calculate distance} zwraca odległości euklidesowe między poszczególnymi punktami i ich indeksy. Będą one potem nam potrzebne do wyznaczenia średniego błędu dopasowania. Wyznaczana jest najlepsza transformacja T między A1 i B1, po czym zostaje ona zastosowana do przesunięcia A1. Pod koniec działania pętli liczony jest średni błąd jako średnia odległości między punktami. Jeśli wartość bezwzględna z różnicy średniego i poprzedniego błędu jest większa niż przyjęta toleracja, a dotychczasowa liczba iteracji mniejsza niż \emph{max iterations} - pętla wykonuje się ponownie. W momencie znalezienia wystarczająco dokładnej transformacji przed zakończeniem pętli - jest ona przerywana.
+
+\begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{bunny_icp}
 \caption{Działanie algorytmu ICP na przykładzie obiektu w kształcie królika.}
 \end{figure}
 
+\newpage
+\section{Podsumowanie i wnioski}
+W tej pracy została zaproponowana metoda estymacji położenia obiektu, którego modelem dysponujemy. Rozważony problem jest kluczowy na polu współczesnej robotyki, głównie przez trend do stosowania coraz bardziej "elastycznych" sposobów sterowania manipulatorami. Problem został rozbity na podstawowe zagadnienia, których rozwiązania również zostały przeprowadzone. Ponieważ jest nie jest to temat nowy, podczas pisania pracy było wykorzystanych wiele obecnie istniejących źródeł opisujących pełne lub cząstkowe rozwiązanie problemu. Tak czy inaczej, główną motywacją było znalezienie możliwie prostego i skutecznego rozwiązania, co zostało osiągnięte.
+
+\subsection{Dalszy rozwój}
+Mimo, że zaproponowana metoda estymacji położenia obiektu wykonała założone zadanie z powodzeniem, zastosowana technika posiada również pewne ograniczenia. Do najważniejszych z nich należy brak możliwości wyłonienia pożądanego przedmiotu ze zbioru zawierającego więcej niż jeden element. Tą kwestię można oczywiście rozwiązać stosując metody segmentacji. Mielibyśmy wtedy chmurę punktów rozbitą na kilka elementów, ale rodziłoby to kolejny problem - algorytm musiałby rozpoznać, który z nich stanowi żądany obiekt. W tym miejscu mogłaby zostać zaimplementowana logika odpowiadająca za obsługę przypadków w zależności czy w danych, które są sprawdzane mamy do czynienia z jednym, kilkoma lub żadnym szukanym obiektem. Podsumowując, dalszy rozwój tej pracy mógłby obejmować:
+
+\begin{itemize}
+\item Odszumienie i \textbf{segmentację} wejściowej chmury punktów w celu sprawdzenia z iloma elementami mamy do czynienia i gdzie się one znajdują.
+
+\item \textbf{Rozpoznanie} jak bardzo dany przedmiot odbiega od swojego szablonu. To pozwoliłoby stwierdzić czy mamy do czynienia z właściwym obiektem. Jeśli tak nie jest - dalsza estymacja położenia nie ma sensu.
+\end{itemize}
+
+Wracając do tematu segmentacji, zadanie to dla niewielkiej liczby elementów może zostać zrealizowane przy pomocy technik analizy skupień, do którego zaliczamy algorytmy uczenia nienadzorowanego takie jak DBSCAN, grupowanie hierarchiczne i metodę $k$-średnich. Jeśli podział zostałby zrealizowany dla każdej liczby klastrów od 1 do $n$ (przy czym $n$ to założona maksymalna liczba klastrów) - wówczas do dyspozycji mielibyśmy miarę dopasowania do każdej z tych ewentualności. Taką miarą jest najczęściej kryterium sumy kwadratów w obrębie klastra WCSS \emph{(Within-Cluster Sum of Squared)}. Z niej możliwe stałoby się odczytanie optymalnej liczby elementów. 
+
+Niestety, taka metoda jest zachłanna obliczeniowo, przez co zużywa sporo czasu i może być stosowana tylko do małych $n$. Wówczas, liczba klastrów rozważanych w każdej iteracji rośnie o jeden zgodnie z ciągiem arytmetycznym: 1, 2, 3, ... $n$. Ponieważ, w każdej iteracji jest mowa o innych klastrach ich sumaryczną ilość przedstawia ciąg: 1, 3, 6, 10, 15, ... $\sum n$. Innym powodem, który utrudnia pracę w wieloma elementami jest przede wszystkim to, że im większy jest ten zbiór - tym więcej charakterystycznych cech obiektów może być przysłonięte przez inne elementy. Trudno jest się z nim uporać w sposób obliczeniowy, ale może zostać w najprostszy sposób rozwiązany przez umieszczenie elementów na podajniku wibracyjnym.
+
+\newpage
 \section*{Bibliografia}
 \begin{enumerate}
 \item \emph{Wprowadzenie do robotyki} - John. J. Craig
@@ -543,6 +575,7 @@ Jeśli wyznacznik \emph{det X} = 1, X stanowi macierz obrotu. W przeciwnym wypad
 \item \emph{Least-Squares Fitting of Two 3-D Point Sets} - K.S. Arun, T.S. Huang, S.D. Blostein
 \end{enumerate}
 
+\newpage
 \section*{Appendix}
 \subsection*{Kod programu}
 \lstinputlisting[language=Python]{appendix.py}
