@@ -90,8 +90,9 @@ def calculate_distance(A, B):
 
 def icp(A, B, max_iterations, tolerance=0.001):
   '''
-  Algorytm Iterative Closest Point iteracyjnie znajdujący 
-  najlepszą transformację między chmurami punktów A i B
+  Algorytm Iterative Closest Point iteracyjnie 
+  znajdujący najlepszą transformację między chmurami 
+  punktów A i B
   Wejście:
     A - macierz m x n
     B - macierz m x n
@@ -120,35 +121,50 @@ def icp(A, B, max_iterations, tolerance=0.001):
     mean_error = np.mean(distances)
     if abs(prev_error - mean_error) < tolerance:
       break
-
     prev_error = mean_error
 
-  # Wyznaczenie ostatecznej transormacji
+  # Wyznaczenie ostatecznej transformacji
   T = transform_matrix(A, A1[:n, :].T)
-  return T
+  return T, mean_error
 
 
+# Załadowanie modelu obiektu
 mesh = trimesh.load('bunny.stl')
+# Ustawienie częstotliwości próbkowania
 density = 3000
-dim = 3
-translation = 0.5
-rotation = 0.5
+dim = 3  # liczba wymiarów
+translation = 0.5  # zakres przesunięcia
+rotation = 0.5  # zakres rotacji
 scaler = MinMaxScaler(feature_range=(0, 1))
 
+# Próbkowanie i standaryzacja zbioru A
 A = mesh.sample(density)
 A = scaler.fit_transform(A)
 
+# Próbkowanie i standaryzacja zbioru B
+# Mimo, że zostały użyte te same funkcje co powyżej
+# zbiory A i B są różne ze względu na losowy
+# charakter próbkowania
 B = mesh.sample(density)
 B = scaler.fit_transform(B)
 
+# Przesunięcie B o losowy wektor t
 t = np.random.rand(dim) * translation
 B += t
 
-R = rotation_matrix(np.random.rand(dim), 
-                    np.random.rand() * rotation)
+axis = np.zeros(dim)
+axis[dim - 1] = 1
+angle = random.random() * rotation
+# Obrócenie B o losową macierz R
+R = rotation_matrix(axis, angle)
+B = np.dot(R, B.T).T
 
-iterations = 15
+iterations = 15  # maksymalna liczba iteracji
+
+errors = []
 for i in range(iterations):
-  T = icp(B, A, iterations + 1)
+  T, error = icp(B, A, iterations + 1)
+  errors.append(error)
 
 print(T)
+print(errors)

@@ -7,6 +7,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{xcolor}
+\usepackage{comment}
 \graphicspath{{./images/}}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
@@ -230,7 +231,7 @@ Związek uczenia przez wzmacnianie z robotyką stale się zacieśnia, zwłaszcza
 \begin{figure}[h]
 \centering
 \includegraphics{rubik}
-\caption{Robot wykorzystujący techniki uczenia ze wzmacnianiem podczas układania kostki Rubika. Eksperyment został opisany w publikacji \emph{Learning Dexterous In-Hand Manipulation} i miał na celu przetrenowanie sztucznej inteligencji pod kątem umiejętności motorycznych - praca zbiorowa OpenAI.}
+\caption{Robot wykorzystujący techniki uczenia ze wzmacnianiem podczas układania kostki Rubika. Eksperyment został opisany w publikacji \emph{Solving Rubik's Cube with a Robot Hand} i miał na celu przetrenowanie sztucznej inteligencji pod kątem umiejętności motorycznych - praca zbiorowa OpenAI.}
 \end{figure}
 
 \newpage
@@ -242,11 +243,7 @@ Jak już zostało wspomniane we wprowadzeniu, do wad podejścia wykorzystująceg
 
 \newpage
 \section{Estymacja położenia obiektu}
-Algorytm Iterative Closest Point (ICP) został szerzej opisany w artykule \emph{A Method for Registration of 3-D Shapes} przez Paula Besla i Neila McKaya w 1992 roku. Wcześniej została opublikowana praca \emph{Least-Squares Fitting of Two 3-D Point Sets} K.S Aryn at el. 
-\\
-Aby przejść do zadania estymacji położenia obiektu najpierw należy określić czy dysponujemy jego kształtem. Ponieważ w wielu zastosowaniach industrialnych przedstawionego algorytmu cecha ta jest wiadoma z góry, dla potrzeby tej pracy możemy przyjąć, że dysponujemy takim modelem. Mamy więc podane dwa kształty: rzeczywisty model obiektu pobrany z kamery RGBD jako chmura punktów oraz wyidealizowany model, który posłuży jako szablon.
-\\
-Mamy więc dwa zbiory punktów, z których każdy opisany jest przez współrzędne x, y, z.
+Aby przejść do zadania estymacji położenia obiektu najpierw należy określić czy dysponujemy jego kształtem. Ponieważ w wielu zastosowaniach industrialnych przedstawionego algorytmu cecha ta jest wiadoma z góry, dla potrzeby tej pracy możemy przyjąć, że posiadamy taki model. Mamy więc podane dwa kształty: rzeczywisty model obiektu pobrany z kamery RGBD jako chmura punktów oraz wyidealizowany model, który posłuży nam za szablon. Oba są reprezentowane jako zbiory punktów, z których każdy opisany jest przez współrzędne x, y, z.
 
 \begin{figure}[h]
 \centering
@@ -256,12 +253,12 @@ Mamy więc dwa zbiory punktów, z których każdy opisany jest przez współrzę
 
 \subsection{Wyznaczenie najbliższego punktu}
 
-\textbf{Przypadek 1: dwa punkty}
-\\
-Odległość $d(p_{1}, p_{2})$ między dwoma punktami $p_{1} = (x_{1}, y_{1}, z_{1})$
-i $p_{2} = (x_{2}, y_{2}, z_{2})$ jest dana w metryce euklidesowej wzorem: 
+Najbardziej fundamentalny przykład sprowadza się do znalezienia długości odcinka łączącego dwa punkty $p_{1} = (x_{1}, y_{1}, z_{1})$ i $p_{2} = (x_{2}, y_{2}, z_{2})$. Odległość ta jest dana w metryce euklidesowej wzorem: 
 \[d(p_{1}, p_{2}) = ||p_{1} - p_{2}|| = \sqrt{(x_{2}-x_{1})^2+(y_{2}-y_{1})^2+(z_{2}-z_{1})^2}\]
-\\
+
+Kolejnym krokiem ku estymacji położenia jednego obiektu względem drugiego wydaje się być przeprowadzenie tej operacji dla wszystkich punktów. W tym miejscu nasuwa się jednak pewien problem. Mianowicie, nie tylko nie wiemy czy dany punkt ma swojego odpowiednika, ale też czy ich liczba w obu zbiorach się zgadza. W rzeczywistości próbujemy znaleźć najkrótszą drogę między punktami zbioru A a punktami zbioru B do czego posłuży algorytm najbliższego sąsiada.
+
+\begin{comment}
 \textbf{Przypadek 2: punkt i zbiór punktów}
 \\
 Załóżmy, że A jest zbiorem n punktów oznaczonych jako $a_{i}$. Odległość między punktem p a zbiorem punktów A jest równa:
@@ -281,9 +278,15 @@ gdzie $u \in [0, 1]$ i $v \in [0, 1]$
 Załóżmy, że t jest trójkątem opisanym przez trzy punkty leżące na jego wierzchołkach: $p_{1} = (x_{1}, y_{1}, z_{1})$, $p_{2} = (x_{2}, y_{2}, z_{2})$ oraz $p_{3} = (x_{3}, y_{3}, z_{3})$ Odległość między punktem p a trójkątem t jest dana:
 \[d(p, t) = \min_{u+v+w=1} ||up_{1}+vp_{2}-p+wp_{3}-p|| \]
 gdzie $u \in [0, 1]$ i $v \in [0, 1]$ 
-\\
+\end{comment}
+
+\subsection{Algorytm najbliższego sąsiada}
+Algorytm najbliższego sąsiada jest jedną z najbardziej podstawowych technik wykorzystywaną do rozpoznawania wzorców we współczesnym uczeniu maszynowym. Jest to algorytm zachłanny o złożoności czasowej $O(n^2)$.
+
+\lstinputlisting[language=Python]{knn.py}
+
 \subsection{Transformacje}
-Wspomniane algorytmy wyznaczenia najbliższego punktu mogą być rozwinięte do przestrzeni \emph{n}-wymiarowych. Aby dokonać takiej generalizacji do przestrzeni trójwymiarowej konieczne jest zastosowanie macierzy obrotu - rotacji \textbf{R} i wektora przesunięcia liniowego - translacji \textbf{T}.
+Wspomniane algorytmy wyznaczenia najbliższego punktu mogą być rozwinięte do przestrzeni \emph{n}-wymiarowych. Aby dokonać takiej generalizacji do przestrzeni trójwymiarowej konieczne jest zastosowanie macierzy obrotu - rotacji \textbf{R} i wektora przesunięcia liniowego - translacji $\vb{t}$.
 \[
 R = \begin{bmatrix}
 R_{xx} & R_{xy} & R_{xz} \\
@@ -291,15 +294,15 @@ R_{yx} & R_{yy} & R_{yz} \\
 R_{zx} & R_{zy} & R_{zz}
 \end{bmatrix}
 \qquad
-T = \begin{bmatrix}
-T_{x} \\ T_{y} \\ T_{z}
+\vb{t}^T = \begin{bmatrix}
+t_{x} \\ t_{y} \\ t_{z}
 \end{bmatrix}
 \]
 
-\subsubsection{Macierz rotacji}
+\subsubsection*{Macierz rotacji}
 W zależności od tego jakim sposobem chcemy wykonywać działania mamy do wyboru trzy równoważne opcje obrotu danego kształtu w przestrzeni. Możemy w tym celu posłużyć się macierzą opartą o kąty obrotu wokół wszystkich trzech osi w układzie kartezjańskim, macierzą opartą o oś obrotu i kąt o jaki dany obiekt ma zostać obrócony lub kwaternionem.
 
-\subsubsection{Kąty Eulera}
+\subsubsection*{Kąty Eulera}
 Odnosząc się do rysunku, w pierwszym przypadku po lewej stronie mamy dane trzy osie układu kartezjańskiego i wykonujemy składowe obroty wokół każdej z nich. 
 \[
 R_{z}(\gamma) = \begin{bmatrix}
@@ -340,7 +343,7 @@ R = \begin{bmatrix}
 \end{bmatrix}
 \]
 
-\subsubsection{Oś obrotu i kąt}
+\subsubsection*{Oś obrotu i kąt}
 W drugim - dysponujemy osią pożądanej rotacji, więc wykonujemy już tylko jeden obrót. Oś obrotu możemy przedstawić w postaci wektora jedenostkowego $\textbf{u} = [u_{x}, u_{y}, u_{z}]$ takiego, że $u_{x}^2+u_{y}^2+u_{z}^2 = 1$ 
 Dla ułatwienia oznaczmy $c = \cos \theta$ i $s = \sin \theta$
 \[
@@ -351,7 +354,7 @@ u_{z}u_{x}(1-c)-u_{z}s & u_{z}u_{y}(1-c)-u_{x}s & c+u_{z}^2(1-c)
 \end{bmatrix}
 \]
 
-\subsubsection{Kwaternion}
+\subsubsection*{Kwaternion}
 W trzecim przypadku posługujemy się kwaternionem, który możemy zapisać w postaci sumy algebraicznej jako
 \[q = a \cdot \textbf{e} + b \cdot \textbf{i} + c \cdot \textbf{j} + d \cdot \textbf{k} \]
 
@@ -362,7 +365,7 @@ Wówczas transformację tą możemy zapisać równoważnie w postaci macierzy:
 R = \begin{bmatrix}
 a^2+b^2-c^2-d^2 & 2(bc-ad) & 2(bd+ac) \\
 2(bc+ad) & a^2+c^2-b^2-d^2 & 2(cd-ab) \\
-2(bd-ac) & 2(cd*ab) & a^2+d^2-b^2-c^2
+2(bd-ac) & 2(cd \cdot ab) & a^2+d^2-b^2-c^2
 \end{bmatrix}
 \]
 
@@ -484,25 +487,34 @@ Taka interpretacja może również zostać uogólniona do $n$-wymiarowych przest
 \end{figure}
 
 \subsection{Algorytm Iterative Closest Point}
-Mając teoretyczne podstawy za sobą możemy przejść do implementacji końcowego programu stworzonego w oparciu o algorytm ICP (ang. \emph{Iterative Closest Point}). Dla danej chmury punktów jego celem jest znalezienie położenia i orientacji obiektu, który przedstawia. W tej sytuacji dane wejściowe stanowią: chmura punktów i szablon szukanego obiektu, do którego chcemy dopasować widoczny przedmiot. Przez dopasowanie rozumiemy znalezienie transformacji (obrotu i przesunięcia) wykrytego obiektu względem początkowego położenia szablonu. Tak więc, mamy dwa zbiory punktów: \emph{p} i \emph{p'} w postaci macierzy o wymiarach 3 $\times$ n. Równanie opisujące przejście punktu z jednego zbioru do drugiego wygląda następująco
-\[p' = R p + T + N \]
+Mając teoretyczne podstawy za sobą możemy przejść do implementacji końcowego programu stworzonego w oparciu o algorytm ICP (ang. \emph{Iterative Closest Point}). Dla danej chmury punktów jego celem jest znalezienie położenia i orientacji obiektu, który przedstawia. W tej sytuacji dane wejściowe stanowią: chmura punktów i szablon szukanego obiektu, do którego chcemy dopasować widoczny przedmiot. Przez dopasowanie rozumiemy znalezienie transformacji (obrotu i przesunięcia) wykrytego obiektu względem początkowego położenia szablonu. Możemy rozpisać pojedynczą iterację algorytmu w postaci listy kroków:
+
+\begin{enumerate}
+\item Wyznaczenie centroidów a i b dla obu chmur punktów A i B.
+\item Utworzenie A' i B' przez standaryzację wartości w A i B. Standaryzacja odbywa się przez  odjęcie od każdego punktu centroidu z całej chmury.
+\item Obliczenie macierzy H jako iloczynu A' i B'.
+\item Rozkład H według wartości osobliwych.
+\item Wyznaczenie macierzy obrotu i jej wyznacznika w celu sprawdzenia czy nie zaszedł przypadek odbicia.
+\item Obrócenie centroidu a zgodnie z macierzą rotacji i obliczenie wektora przesunięcia jako różnicy centroidów. 
+\end{enumerate}
+
+Dane są dwa zbiory punktów: A i B w postaci macierzy o wymiarach 3$\times$n. Każdy wiersz w obu z nich opisuje pojedynczy punkt w postaci współrzędnych x, y, z. Równanie opisujące przejście punktu z jednego zbioru do drugiego wygląda następująco
+\[A = R B + T + N \]
 
 Gdzie R jest macierzą rotacji o wymiarach 3 $\times$ 3, T - wektorem przesunięcia o wymiarach 3 $\times$ 1 a N - wektorem szumu. Zakładamy też, że obrót odbywa się wokół początku układu. Chcemy dobrać takie R i T, aby zminimalizować wyrażenie
-\[ d^2(p, p') = \sum_{i=1}^n || p'_{i} - (Rp_i+T)||^2 \]
+\[ d^2(a, b) = \sum_{i=1}^n \| b_{i} - (Ra_i+T)\|^2 \]
 
 Niech 
-\[p = \frac{1}{n} \sum_{i=1}^n p_i \]
-\[p' = \frac{1}{n} \sum_{i=1}^n p'_i \]
+\[a = \frac{1}{n} \sum_{i=1}^n a_i \qquad b = \frac{1}{n} \sum_{i=1}^n b_i \]
 
 Wówczas \emph{q} i \emph{q'} będą zbiorami odległości poszczególnych punktów w zbiorach \emph{p} i \emph{p'} od ich centroidów
-\[q_i = p_i - p \]
-\[q'_{i} = p'_{i} - p' \]
+\[a'_i = a_i - a \qquad b'_i = b_i - b \]
 
 Mamy
-\[d^2(q, q') = \sum_{i=1}^n || q'_{i} - Rq_{i}||^2 \]
+\[d^2(a', b') = \sum_{i=1}^n \| b_{i} - Rq_{i}\|^2 \]
 
 Następnym krokiem jest wyznaczenie macierzy 3 $\times$ 3 
-\[H = \sum_{i=1}^n q_{i} q_{i}^{'T} \]
+\[H = \sum_{i=1}^n a_i^{'} b_{i}^{'T} \]
 
 I rozłożenie jej na wartości osobliwe
 \[H = UDV^T \]
@@ -510,9 +522,22 @@ I rozłożenie jej na wartości osobliwe
 Ponieważ, zgodnie z tym co zostało wspomniane podczas interpretacji geometrycznej rozkładu SVD, macierz D jest odpowiedzialna za skalowanie - podczas wyznaczenia wynikowej rotacji możemy ją odrzucić. W ten sposób otrzymujemy wyrażenie
 \[R = VU^T \]
 
-Jeśli wyznacznik \emph{det R} = 1, R stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem \emph{det R}= -1 algorytm nie zwraca rozwiązań, ale ten przypadek z reguły nie występuje. 
+Jeśli wyznacznik \emph{det R} = 1, R stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem \emph{det R}= -1 algorytm nie zwraca rozwiązań, ale ten przypadek z reguły nie występuje. Gdy obrócimy centroid zbioru A zgodnie z wyznaczoną właśnie macierzą rotacji to wektor przesunięcia $\vb{t}$ będzie stanowił różnicę między dwoma centroidami.
+\[\vb{t} = b^T - R a^T \]
 
-Obliczona transformacja w postaci macierzy R i wektora $\vb{t}$ nie stanowi jeszcze ostatecznego rozwiązania algorytmu. Możemy jedynie stwierdzić, że poddany tej transformacji obiekt znajduje bliżej docelowego szablonu niż był do tej pory. Dążąc do ostatecznego wyniku, potrzebujemy ponownie wykonywać poprzednie kroki do momentu, aż odległości między korespondującymi punktami w zbiorach staną się akceptowalnie małe. Każdy taki etap nosi nazwę \textbf{iteracji}, dlatego też algorytm nazywany jest iteracyjnym.
+Wynikową transformację możemy osiągnąć w odpowiedni sposób konkatenując macierz obrotu z wektorem przesunięcia
+\[T = \left[
+\begin{array}{ccc|c}
+& & & \\
+& R & & \vb{t}^T \\
+& & & \\
+\hline
+0 & 0 & 0 & 1
+\end{array}
+\right]
+\]
+
+Obliczona transformacja nie stanowi jeszcze ostatecznego rozwiązania algorytmu. Możemy jedynie stwierdzić, że poddany tej transformacji obiekt znajduje bliżej docelowego szablonu niż był do tej pory. Dążąc do ostatecznego wyniku, potrzebujemy ponownie wykonywać poprzednie kroki do momentu, aż odległości między korespondującymi punktami w zbiorach staną się akceptowalnie małe. Każdy taki etap nosi nazwę \textbf{iteracji}, dlatego też algorytm nazywany jest iteracyjnym.
 
 \begin{figure}[h]
 \centering
@@ -544,6 +569,8 @@ Funkcja \emph{icp} przyjmuje cztery argumenty w tym jeden domyślny. Przyjmowane
 \section{Podsumowanie i wnioski}
 W tej pracy została zaproponowana metoda estymacji położenia obiektu, którego modelem dysponujemy. Rozważony problem jest kluczowy na polu współczesnej robotyki, głównie przez trend do stosowania coraz bardziej "elastycznych" sposobów sterowania manipulatorami. Problem został rozbity na podstawowe zagadnienia, których rozwiązania również zostały przeprowadzone. Ponieważ jest nie jest to temat nowy, podczas pisania pracy było wykorzystanych wiele obecnie istniejących źródeł opisujących pełne lub cząstkowe rozwiązanie problemu. Tak czy inaczej, główną motywacją było znalezienie możliwie prostego i skutecznego rozwiązania, co zostało osiągnięte.
 
+Praca, mimo wszelkich zalet nie stanowi samowystarczalnego systemu, który mógłby w obecnym stanie zostać wykorzystany na potrzeby przemysłu. Przede wszystkim dlatego, że obejmuje tylko część zagadnień jakie należałoby rozwiązać przed procesem komercjalizacji. Czynności takie jak nadzór działania czy zorientowanie chwytaka względem szablonu obiektu nadal wymagają interwencji człowieka. Projekt ma za to potencjał do stania się częścią większego oprogramowania, gdzie stanowiłby znaczny wkład na polu manipulacji i przemysłu 4.0.
+
 \subsection{Dalszy rozwój}
 Mimo, że zaproponowana metoda estymacji położenia obiektu wykonała założone zadanie z powodzeniem, zastosowana technika posiada również pewne ograniczenia. Do najważniejszych z nich należy brak możliwości wyłonienia pożądanego przedmiotu ze zbioru zawierającego więcej niż jeden element. Tą kwestię można oczywiście rozwiązać stosując metody segmentacji. Mielibyśmy wtedy chmurę punktów rozbitą na kilka elementów, ale rodziłoby to kolejny problem - algorytm musiałby rozpoznać, który z nich stanowi żądany obiekt. W tym miejscu mogłaby zostać zaimplementowana logika odpowiadająca za obsługę przypadków w zależności czy w danych, które są sprawdzane mamy do czynienia z jednym, kilkoma lub żadnym szukanym obiektem. Podsumowując, dalszy rozwój tej pracy mógłby obejmować:
 
@@ -557,6 +584,8 @@ Wracając do tematu segmentacji, zadanie to dla niewielkiej liczby elementów mo
 
 Niestety, taka metoda jest zachłanna obliczeniowo, przez co zużywa sporo czasu i może być stosowana tylko do małych $n$. Wówczas, liczba klastrów rozważanych w każdej iteracji rośnie o jeden zgodnie z ciągiem arytmetycznym: 1, 2, 3, ... $n$. Ponieważ, w każdej iteracji jest mowa o innych klastrach ich sumaryczną ilość przedstawia ciąg: 1, 3, 6, 10, 15, ... $\sum n$. Innym powodem, który utrudnia pracę w wieloma elementami jest przede wszystkim to, że im większy jest ten zbiór - tym więcej charakterystycznych cech obiektów może być przysłonięte przez inne elementy. Trudno jest się z nim uporać w sposób obliczeniowy, ale może zostać w najprostszy sposób rozwiązany przez umieszczenie elementów na podajniku wibracyjnym.
 
+Z drugiej strony do rozwiązania problemu wielu obiektów mogłaby zostać zaprzęgnięta sieć \emph{PointNet}. Struktura tej sieci została specjalnie przystosowana do radzenia sobie z danymi w postaci chmur punktów i była testowana w zadaniach klasyfikacji i segmentacji. Niestety, jak większość sieci neuronowych, \emph{PointNet} jest przykładem uczenia nadzorowanego, a więc jej użycie wymaga etykietowania danych, na których będzie trenowana. Jeśli zbiór uczący zostanie utworzony w postaci obrazów RGBD, a każdy kształt przedmiotu oznaczymy innym kolorem, wówczas takie etykietowanie może być przeprowadzone korzystając z nałożenia na siebie informacji o kolorze (RGB) i głębokości (D). Mówiąc prościej, mamy "zlepek" różnych kształtów, który chcemy podzielić na klastry. Kompletna informacja o nich, tj. ich liczba i położenie jest już zawarta w obrazie, więc tym co możemy zrobić jest przenieść te dane przypisując do każdego widzianego punktu w przestrzeni jego klaster reprezentowany przez kolor przedmiotu, do którego należy. To oczywiście niesie za sobą komplikacje w postaci różnego oświetlenia i cieni, ale na ogół nie stanowią one większego problemu.
+
 \newpage
 \section*{Bibliografia}
 \begin{enumerate}
@@ -568,11 +597,12 @@ Niestety, taka metoda jest zachłanna obliczeniowo, przez co zużywa sporo czasu
 \item \emph{The Representation of Tool Use in Humans and Monkeys: Common and Uniquely Human Features}, "Journal of Neuroscience" - Scott H. Jonhson-Frey
 \item \emph{Krótka historia rozumu. Od pierwszej myśli do rozumienia wszechświata} - Leonard Mlodinow
 \item \emph{Deep Learning. Systemy uczące się} - Ian Goodfellow, Yoshua Bengio, Aaron Courville
-\item \emph{Learning Dexterous In-Hand Manipulation} - OpenAI
+\item \emph{Solving Rubik's Cube with a Robot Hand} - OpenAI
 \item \emph{Linear Algebra with Applications} - Steven J. Leon
 \item \emph{A Singularly Valuable Decomposition} - Dan Kalman
 \item \emph{A Method for Registration of 3-D Shapes} - Paul J. Besl, Neil D. McKay
 \item \emph{Least-Squares Fitting of Two 3-D Point Sets} - K.S. Arun, T.S. Huang, S.D. Blostein
+\item \emph{PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation} - Charles R. Qi, Hao Su, Kaichun Mo, Leonidas J. Guibas
 \end{enumerate}
 
 \newpage
