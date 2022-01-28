@@ -1,4 +1,4 @@
-def knn(points, p, k):
+def knn(points, p, k=1):
   distances = []
   for idx in points:
     for coord in points[idx]:
