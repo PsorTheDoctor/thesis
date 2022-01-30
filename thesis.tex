@@ -96,7 +96,7 @@ PODPIS: \filling[4cm]
 \section*{\LARGE{Abstract}}
 In the recent years, a rising trend in application of autonomous robots can be observed. Nowadays, many solutions intended to this part of market are developed and each of these is based on solutions that are hard to algorithmizable. The examples of this kind of tasks are image processing, object position estimation and configuration of kinematics. I am going to focus on them in my thesis.
 
-The purpose of this thesis is to develop a solution resposible for recognition a given object and perform grasping it by a manipulator. The further development of the problem known as \emph{bin picking} aims at increasing a scope of industrial robots' operation in a context of their work.
+The purpose of this thesis is to develop a solution resposible for recognition a given object and perform grasping it by a manipulator. The further development of the problem known as \emph{bin picking} aims at increasing a scope of industrial robots' operation in a context of their work. It is quintessential in many modern robotic applications targeted for being more "flexible" and intuitive.
 
 Because the tasks I mentioned are often performed by a particular type of robots, in my work I am going to use UR5 manipulator by Danish manufacturer \emph{Universal Robots}. There will be implemented algorithm on it that will be able to define a location of seen objects based on the data from the computer vision sensors. In my work I will be using code examples written in Python. Thanks to this, it will be possible to deeply verified in practice the working of a robot.
 
@@ -104,7 +104,7 @@ Because the tasks I mentioned are often performed by a particular type of robots
 \section*{\LARGE{Streszczenie}}
 W ostatnich latach można zaobserwować wzrastający trend na zastosowanie robotów o działaniu autonomicznym. Powstaje obecnie wiele rozwiązań przeznaczonych dla tego segmentu rynku, a każdy z nich opiera swoje działanie o rozwiązania, które są przyjęte jako trudno algorytmizowalne. Przykładami takich zadań są przetwarzanie obrazu, estymacja położenia obiektów i konfiguracja kinematyki robota. Właśnie na nich zamieram skupić się w mojej pracy.
 
-Celem pracy jest opracowanie rozwiązania odpowiedzialnego za rozpoznawanie wskazanego obiektu i realizację chwycenia go przy wykorzystaniu manipulatora. Rozwinięcie problemu znanego pod nazwą \emph{bin picking} ma przede wszystkim na celu zwiększenie zakresu działania robotów przemysłowych w kontekście ich pracy.
+Celem pracy jest opracowanie rozwiązania odpowiedzialnego za rozpoznawanie wskazanego obiektu i realizację chwycenia go przy wykorzystaniu manipulatora. Rozwinięcie problemu znanego pod nazwą \emph{bin picking} ma przede wszystkim na celu zwiększenie zakresu działania robotów przemysłowych w kontekście ich pracy. Stanowi to kwintesencję w wielu współczesnych zastosowaniach robotyki dążącej do bycia bardziej "elastyczną" i intuicyjną.
 
 Ponieważ zadania, o których wspomniałem są często realizowane przez określony rodzaj robotów, w swojej pracy zamierzam wykorzytać manipulator UR5 duńskiego producenta Universal Robots. Na nim zostanie zaimplementowany algorytm, który w oparciu o dane z systemu wizyjnego będzie w stanie określić położenie widzianych przedmiotów. W pracy posłużę się programami stworzonymi w języku Python. Dzięki temu działanie robota będzie można gruntownie zweryfikować w praktyce.
 
@@ -172,22 +172,27 @@ Przykład kraba, mimo że może wydawać się surowy, niesie ze sobą istotne ws
 
 Tak więc, aby mogło zostać zrealizowane chwytanie -  wykorzystywane są informacje zawarte w obrazie. Pozwala to tłumaczyć dlaczego niektóre gatunki, przykładem tu mogą być wczesne homidy, wykształciły bardziej rozwinięty wzrok konieczny do wytypowania elementów otoczenia. Podobnie w robotyce, robot musi nauczyć się jak chwytać i operować uchwyconymi obiektami, tak aby osiągnąć wyznaczony cel. Różne przedmioty, np. młotek mogą być uchwycone na wiele różnych sposobów natomiast liczba optymalnych chwytów jest ograniczona w kontekście danego zadania. 
 
-\begin{comment}
-\subsection{Zarys pracy}
+\subsection{\LARGE{Zarys pracy}}
 Mając wprowadzenie za sobą możemy skupić się na wymienieniu kolejnych etapów pracy. Głównym jej dążeniem jest znalezienie znanego przedmiotu i uchwycenie go za pomocą manipulatora. Aby to osiągnąć najpierw możemy rozbić ten problem na mniejsze, do których należą estymacja położenia i orientacji obiektu, zadanie kinematyki odwrotnej oraz chwytanie.
 
 \begin{itemize}
 \item \textbf{Estymacja położenia i orientacji obiektu} \\
+Do rozwiązania tego zadania zostanie zaproponowana metoda inteligencji obliczeniowej znana pod nazwą ICP (ang. \emph{Iterative Closest Point}). W oparciu o model obiektu znajduje ona trnasformację jakiej ten model trzeba poddać, aby znalazł się w miejscu szukanego przedmiotu. Jej szczegółowe działanie zostanie szerzej opisane w kolejnych rozdziałach.
 
 \item \textbf{Zadanie kinematyki odwrotnej} \\
-Mając na uwadze, że większość robotów przemysłowych posiada wbudowaną implementację kinematyki odwrotnej nie będziemy wchodzić w jej szczegóły.
+Problem znalezienia odpowiednich wielkości opisujących manipulator jako łańcuch kinematyczny dzielimy na dwa mniejsze: zadanie kinematyki prostej i odwrotnej. Proste zadanie kinematyki odpowiada na pytanie w jakim miejscu znajduje się efektor końcowy dla danej pozy manipulatora. Natomiast kinematyka odwrotna zakłada, że znane jest docelowe położenie efektora końcowego a szukana jest pozycja (lub pozycje) robota, które pozwolą mu je osiągnąć, dlatego też zostanie wykorzystana w tej pracy. Mając na uwadze, że większość robotów przemysłowych posiada wbudowaną implementację kinematyki odwrotnej nie będziemy wchodzić w jej szczegóły.
 
 \item \textbf{Chwytanie} \\
 Do realizacji chwytania posłużymy się chwytakiem, którego orientacja wobec chwytanego przedmiotu zostanie dobrana z góry. Stanowić to może pewien mankament, ponieważ działanie uzależniane jest tym samym od ingerencji człowieka. Z drugiej strony, daje to większe prawdopodobieństwo pewniejszego i bardziej stabilnego chwytu, który może okazać się kluczowy w praktycznych zastosowaniach.
 \end{itemize}
 
-Zanim przejdziemy do przedstawienia proponowanego rozwiązania przez rozwinięcie powyższych kwestii zostanie zrobiony przegląd najważniejszych obecnie stosowanych metod. Następnie będzie miał miejsce teoretyczny opis pewnych zagadnień. Pod koniec zostanie zrobione podsumowanie, podczas którego będą wyciągnięte wnioski odnośnie działania proponowanego rozwiązania oraz możliwości dalszego rozwoju.
-\end{comment}
+\begin{figure}[h]
+\centering
+\includegraphics[width=15cm]{catch}
+\caption{Ręczne zorientowanie szczęk chwytaka robota UR5 wobec obiektu. Wizualizacja została wykonana na potrzeby pracy z użyciem biblioteki \emph{pybullet}.}
+\end{figure}
+
+Zanim przejdziemy do przedstawienia proponowanego rozwiązania przez rozwinięcie powyższych kwestii zostanie zrobiony przegląd najważniejszych obecnie stosowanych metod. Następnie będzie miał miejsce teoretyczny opis pewnych zagadnień. Zostaną pokazane matematyczne podstawy algorytmu \emph{Iterative Closest Point} i jego implementacja. Pod koniec zostanie zrobione podsumowanie, podczas którego będą wyciągnięte wnioski odnośnie działania proponowanego rozwiązania oraz możliwości dalszego rozwoju.
 
 \newpage
 \section{\LARGE{Przegląd dotychczasowych rozwiązań}}
@@ -542,7 +547,7 @@ Gdzie R jest macierzą rotacji o wymiarach 3 $\times$ 3, T - wektorem przesunię
 Niech 
 \[a = \frac{1}{n} \sum_{i=1}^n a_i \qquad b = \frac{1}{n} \sum_{i=1}^n b_i \]
 
-Wówczas \emph{q} i \emph{q'} będą zbiorami odległości poszczególnych punktów w zbiorach \emph{p} i \emph{p'} od ich centroidów
+Wówczas \emph{a'} i \emph{b'} będą zbiorami odległości poszczególnych punktów w zbiorach \emph{A} i \emph{B} od ich centroidów
 \[a'_i = a_i - a \qquad b'_i = b_i - b \]
 
 Mamy
