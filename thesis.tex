@@ -13,6 +13,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{xcolor}
+\usepackage{fancyhdr}
 \usepackage{comment}
 \graphicspath{{./images/}}
 
@@ -20,6 +21,11 @@
 \setstretch{1.5}
 \geometry{a4paper, left=30mm, right=20mm, top=25mm, bottom=25mm}
 \captionsetup[figure]{font=Large}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[C]{Rozpoznawanie i estymacja pozycji obiektu z użyciem systemu wizyjnego \\w zadaniu chwytania realizowanego przez manipulator}
+\fancyfoot[C]{\thepage}
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -68,9 +74,8 @@
 
 \begin{document}
 \begin{center}
-\huge{\textbf{POLITECHNIKA BIAŁOSTOCKA}} 
-\vfill
-\Large{\textbf{WYDZIAŁ MECHANICZNY}} 
+\huge{\textbf{POLITECHNIKA BIAŁOSTOCKA}} \\
+\LARGE{\textbf{WYDZIAŁ MECHANICZNY}} 
 \vfill
 \huge{PRACA DYPLOMOWA INŻYNIERSKA}
 \vfill
@@ -85,6 +90,8 @@ PODPIS: \filling[4cm]
 \vfill
 \end{flushright}
 \Large{PROMOTOR: Dr Adam Wolniakowski}
+\vfill
+PODPIS: \filling[4cm]
 \vfill
 
 \begin{center}
@@ -110,6 +117,19 @@ Ponieważ zadania, o których wspomniałem są często realizowane przez określ
 
 \newpage
 \tableofcontents
+
+\newpage
+\section*{\LARGE{Wykaz oznaczeń}}
+Podczas pisania pracy została użyta podana notacja.
+\begin{itemize}
+\item $\mathbf{A}$ - macierze oznaczone zostały pogrubionymi wielkimi literami
+\item $\vb{v}$ - wektory oznaczone zostały pogrubionymi małymi literami
+\item $s$ - wartości skalarne oznaczone zostały małymi literami
+\item $\mathbb{R}$ - zbiory liczb oznaczone zostały konturowymi wielkimi literami
+\item $\mathbf{R}$ - macierz rotacji (obrotu) 3 $\times$ 3
+\item $\vb{t}$ - wektor translacji (przesunięcia) 1 $\times$ 3
+\item $\mathbf{T}$ - macierz transformacji 4 $\times$ 4
+\end{itemize}
 
 \newpage
 \section{\LARGE{Wprowadzenie}}
