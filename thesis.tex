@@ -13,6 +13,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{xcolor}
+\usepackage{xpatch}
 \usepackage{fancyhdr}
 \usepackage{comment}
 \graphicspath{{./images/}}
@@ -25,7 +26,11 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[C]{Rozpoznawanie i estymacja pozycji obiektu z użyciem systemu wizyjnego \\w zadaniu chwytania realizowanego przez manipulator}
-\fancyfoot[C]{\thepage}
+\fancyfoot[C]{\large\thepage}
+
+\makeatletter
+\xpatchcmd{\tableofcontents}{\contentsname \@mkboth}{\LARGE\contentsname \@mkboth}{}{}
+\makeatother
 
 \definecolor{codegreen}{rgb}{0,0.6,0}
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
@@ -132,7 +137,8 @@ Podczas pisania pracy została użyta podana notacja.
 \end{itemize}
 
 \newpage
-\section{\LARGE{Wprowadzenie}}
+\section*{\LARGE{1. Wprowadzenie}} \addcontentsline{toc}{section}{1. Wprowadzenie}
+
 Definiując robotykę jako dziedzinę wiedzy mamy na uwadze zajmowanie się urządzeniami mechanicznymi, które mogą być przystosowane do realizacji wielu różnych zadań przez zmianę programu nimi sterującego. Jest to podstawowa różnica pozwalająca wyodrębnić robotykę na tle sztywnej automatyzacji zajmującej się maszynami przeznaczonymi do wykonywania jednego rodzaju zadań przez dłuższy czas. Współczesna robotyka stanowi przede wszystkim zbiór pewnych rozwiązań ukierunkowanych na tworzenie i sterowanie robotami. Mając to na uwadze, możemy wyróżnić dwa problemy: natury konstrukcyjnej i sterowania. Ponieważ wielu producentów z branży robotyki oferuje szeroką gamę rozwiązań spełniających potrzeby niniejszej pracy, posłużymy się manipulatorem przegubowym - najbardziej powszechną odmianą robota przemysłowego, w którego konstrukcję nie będziemy ingerować. Dlatego, aby zrozumieć koncepcje zawarte w tej pracy nie jest wymagana dogłębna znajomość budowy robota. Natomiast, jeśli chodzi o sterowanie to możemy ponownie wyodrębnić dwie podrzędne kategorie: manipulację i lokomocję. 
 
 \begin{itemize}
@@ -149,7 +155,8 @@ Definiując robotykę jako dziedzinę wiedzy mamy na uwadze zajmowanie się urz�
 
 Musimy jednak mieć na uwadze, że jest to dość ogólna i luźna klasyfikacja. Pierwotnie, definicję wyodrębniającą robotykę i automatyzację zaproponował John J. Craig, natomiast podział na manipulację i lokomocję został został przytoczony w książce Marca H. Raiberta \emph{Legged Robots That Balance} w ostatnim rozdziale w pytaniu \emph{Do Locomotion and Manipulation Have a Common Ground?} Tam też problem został rozwinięty w kontekście badań nad lokomocją i manipulacją oraz tego jak te dwie dziedziny wpływają na siebie nawzajem.
 
-\subsection{\LARGE{Manipulacja a percepcja}}
+\subsection*{\LARGE{Manipulacja a percepcja}} \addcontentsline{toc}{subsection}{Manipulacja a percepcja}
+
 Gdy mamy już wyjaśnione ogólne zagadnienia możemy skupić się na danym zadaniu manipulatora. Załóżmy, że zadaniem robota jest pobranie kilku kostek z podajnika w miejscu A i przeniesienie ich w odpowiednie miejsca na palecie B, tzw. paletyzacja. Aby wykonać to zadanie możemy podejść do niego na dwa sposoby: zapewniając maszynie odpowiednią percepcję lub nie. 
 
 \begin{itemize}
@@ -170,7 +177,8 @@ Przez system wizyjny możemy rozumieć dowolny rodzaj kamery, jak również proj
 \caption{Przykład zadania \emph{bin picking} wykonywanego przez robota KUKA w oparciu o dane z systemu wizyjnego. Widoczne po lewej obrazy zostały wygenerowane sztucznie jako hipotetyczne dane z kamery umieszczonej nieruchomo względem bazy robota. Od góry - ujęcie powstałe jako bezpośrednia projekcja, obraz niosący dane o głębii i obraz poddany segmentacji. Symulacja została stworzona w języku Python z wykorzystaniem biblioteki \emph{pybullet}.}
 \end{figure}
 
-\subsection{\LARGE{Cele manipulacji}}
+\subsection*{\LARGE{Cele manipulacji}} \addcontentsline{toc}{subsection}{Cele manipulacji}
+
 Chociaż pierwsze w pełni sprawne manipulatory istnieją w sektorze industrialnym od dekad, wykorzystanie ich w zadaniu manipulacji stanowi wyzwanie, podczas gdy często stosowane rozwiązania nie wykorzystują w pełni ich potencjału. Dlatego chcąc określić potrzebę implementacji omawianych tu rozwiązań warto jest przyjrzeć się celom przed, którymi staje współczesna robotyka. Przede wszystkim chcemy, aby dane rozwiązanie było możliwie jak najbardziej \textbf{uniwersalne}, to znaczy działało poprawnie w różnych środowiskach, było odporne na zaszumienia i efektywne. Aby te cechy mogły zostać spełnione należy pewne kwestie muszą zostać rozwiązane, a należą do nich:
 
 \begin{itemize}
@@ -183,7 +191,8 @@ Chociaż pierwsze w pełni sprawne manipulatory istnieją w sektorze industrialn
 
 Do powyższej listy moglibyśmy także dopisać zdolność do przenoszenia zachowań z symulacji do rzeczywistego świata, ale ponieważ nie we wszytkich problemach stosuje się metody symulacji - nie dopisywałem jej.
 
-\subsection{\LARGE{Afordancje}}
+\subsection*{\LARGE{Afordancje}} \addcontentsline{toc}{subsection}{Afordancje}
+
 Zdolność oddziaływania na jakiś obiekt lub środowisko została określona mianem \textbf{afordancji} przez psychologa Jamesa J. Gibsona w 1966 roku w książce \emph{The Senses Considered as Perceptual Systems} i opisana w artykule \emph{The  Theory  of  Affordance.  In:  Perceiving,  Acting  and  Knowing  Toward  an Ecological Psychology}. Definicja ta przyjęła szerokie znaczenie w dziedzinach tj. psychologia, kognitywistyka, sztuczna inteligencja czy robotyka. Możemy zdefiniować afordancje na przykładzie ludzi, ale człowiek ze względu na swoją złożoność często pozostaje niewdzięcznym modelem. Dlatego dla naszych rozważań posłużymy się morskim bezkręgowcem - krabem \emph{Limulus polyphemus}. Przykład ten został opisany m.in. w \emph{Biocybernetyce} Ryszarda Tadeusiewicza. Korzystnymi cechami tego stawonoga z naszego punktu widzenia są posiadanie ośrodkowego układu nerwowego oraz oczu, z których impulsy jesteśmy w stanie śledzić. Tak więc, jesteśmy w stanie w przybliżeniu zobrazować jego pole widzenia. 
 
 Co wobec tego widzi krab? Przede wszystkim \textbf{obiekty} stanowiące najczęściej zagrożenie lub będące przedmiotem łowów niezależnie od tła. W warunkach laboratoryjnych możemy także osiągnąć pobudzenie neuronalne za pomocą punktowego oświetlenia lub gwałtownych zmian światła. Krab nie widzi natomiast równomiernych gradientów oświetlenia czy monotonnego pastelowego tła. Jest to biologicznie uzasadnione, ponieważ informacje te nie są dla niego w żaden sposób niezbędne do życia. Presja ewolucyjna wywierana na mózgi zwierząt kształtowała się z najbardziej podstawowych powodów: żeby umożliwić im lepszą zdolność poruszania się i odpowiednią zdolność postrzegania otoczenia. Te umiejętności znajdowały odzwierciedlenie w najbardziej fundamentalnych cechach życiowych, czyli poszukiwaniu pożywienia i schronienia oraz ucieczki przed zagrożeniem. Dlatego jeśli prześledzimy drogę ewolucji prowadzącą do prostych bezkręgowców tj. glisty czy małże, zauważymy, że ich ośrodkowy układ nerwowy odpowiada głównie za kontrolę ruchu przez pobudzanie właściwych mięśni. A ponieważ nawet u najbardziej prymitywnych zwierząt ruch wykształcał się w parze ze zdolnością postrzegania środowiska - receptory reagujące na sygnały zewnętrzne (substancje chemiczne lub światło) przesyłają impulsy elektryczne do nerwów odpowiedzialnych za poruszanie się. 
@@ -192,7 +201,8 @@ Przykład kraba, mimo że może wydawać się surowy, niesie ze sobą istotne ws
 
 Tak więc, aby mogło zostać zrealizowane chwytanie -  wykorzystywane są informacje zawarte w obrazie. Pozwala to tłumaczyć dlaczego niektóre gatunki, przykładem tu mogą być wczesne homidy, wykształciły bardziej rozwinięty wzrok konieczny do wytypowania elementów otoczenia. Podobnie w robotyce, robot musi nauczyć się jak chwytać i operować uchwyconymi obiektami, tak aby osiągnąć wyznaczony cel. Różne przedmioty, np. młotek mogą być uchwycone na wiele różnych sposobów natomiast liczba optymalnych chwytów jest ograniczona w kontekście danego zadania. 
 
-\subsection{\LARGE{Zarys pracy}}
+\subsection*{\LARGE{Zarys pracy}} \addcontentsline{toc}{subsection}{Zarys pracy}
+
 Mając wprowadzenie za sobą możemy skupić się na wymienieniu kolejnych etapów pracy. Głównym jej dążeniem jest znalezienie znanego przedmiotu i uchwycenie go za pomocą manipulatora. Aby to osiągnąć najpierw możemy rozbić ten problem na mniejsze, do których należą estymacja położenia i orientacji obiektu, zadanie kinematyki odwrotnej oraz chwytanie.
 
 \begin{itemize}
@@ -215,10 +225,12 @@ Do realizacji chwytania posłużymy się chwytakiem, którego orientacja wobec c
 Zanim przejdziemy do przedstawienia proponowanego rozwiązania przez rozwinięcie powyższych kwestii zostanie zrobiony przegląd najważniejszych obecnie stosowanych metod. Następnie będzie miał miejsce teoretyczny opis pewnych zagadnień. Zostaną pokazane matematyczne podstawy algorytmu \emph{Iterative Closest Point} i jego implementacja. Pod koniec zostanie zrobione podsumowanie, podczas którego będą wyciągnięte wnioski odnośnie działania proponowanego rozwiązania oraz możliwości dalszego rozwoju.
 
 \newpage
-\section{\LARGE{Przegląd dotychczasowych rozwiązań}}
+\section*{\LARGE{2. Przegląd dotychczasowych rozwiązań}} \addcontentsline{toc}{section}{2. Przegląd dotychczasowych rozwiązań}
+
 Problem sterowania robotami z wykorzystaniem informacji zwrotnej z otoczenia sięga początków współczesnej robotyki. Chcąc zapewnić możliwość pracy robota w środowiskach, w których nie mamy wystarczającej wiedzy na temat położenia obiektów z jakimi ma wchodzić w interakcje, konieczne jest zaimplementowanie podstawowej percepcji. Najprostszy przypadek może stanowić robot wyposażony w czujnik koloru w zadaniu sortowania kolorowych kulek. Wiele rozwiązań jednak opiera się na wykorzystaniu danych i przetworzeniu obrazu z kamery i czujników w taki sposób, aby robot był w stanie rozpoznać lub zlokalizować wskazane obiekty. W tym rozdziale przyjrzymy się obecnie stosowanym rozwiązaniom, które wpisują się w popularne trendy na tym polu. Aby wprowadzić pewien porządek, wyodrębnione zostały trzy najbardziej istotne grupy: widzenie maszynowe, sieci neuronowe oraz uczenie przez wzmacnianie. Ponieważ są to tematy dosyć obszerne, uwaga zostanie skupiona na podstawowych zasadach ich działania bez szczególnego wchodzenia obliczenia i metody matematyczne, które za nimi stoją - takie rozważania wychodziły poza temat tej pracy. Nabycie takiej intuicji okaże się pomocne przy późniejszej ocenie proponowanego rozwiązania.
 
-\subsection{\LARGE{Widzenie maszynowe}}
+\subsection*{\LARGE{Widzenie maszynowe}} \addcontentsline{toc}{subsection}{Widzenie maszynowe}
+
 Analizę i przetwarzanie obrazu nazywany widzeniem maszynowym lub krócej CV od angielskich słów \emph{Computer Vision}. Stało się ono popularne szczególnie na początku lat '00 wraz ze wzrostem wydajności obliczeniowej ówczesnych komputerów. Wyróżniamy kilka typów problemów związanych z obrazami, takich jak: detekcja, lokalizacja i segmentacja.
 
 \begin{itemize}
@@ -234,7 +246,8 @@ a także w niektórych przypadkach, otrzymujemy prawdopodobieństwo jego wystąp
 
 Wymieniowe wyżej problemy należą do dość złożonych zadań wymagających sporej mocy obliczeniowej. Z pomocą przychodzą programy takie jak SIFT i algorytm Violi-Jonesa (w celu detekcji i lokalizacji danych obiektów na podstawie podobieństwa cech) czy metody uczenia nienadzorowanego (pomocne przy segmentacji). Często jednak stosowane są sztuczne sieci neuronowe, a szczególnie popularne są sieci zawierające operację splotu, czyli sieci splotowe.
 
-\subsection{\LARGE{Sztuczne sieci neuronowe}}
+\subsection*{\LARGE{Sztuczne sieci neuronowe}} \addcontentsline{toc}{subsection}{Sztuczne sieci neuronowe}
+
 Mówiąc o sieciach neuronowych w kontekście przedmiotów zajmujących się przetwarzaniem sygnałów mamy na myśli struktury matematyczne, które w pewnym stopniu przypominają budowę i działanie ludzkiego mózgu. Są one jedną z najbardziej popularnych technik współczesnej sztucznej inteligencji. Stosujemy je przede wszystkim wtedy, gdy nie znamy reguł rozwiązania danego problemu, ale dysponujemy zbiorem przykładowych zadań (zbiorem uczącym), które zostały poprawnie rozwiązane. 
 
 Sztuczne sieci neuronowe składają się z wzajemnie połączonych neuronów, które są uproszczonymi modelami biologicznych odpowiedników. Jest to spowodowane tym, że rzeczywiste neurony są tworami niezmiernie skomplikowanymi i wymagającymi pod względem obliczeniowym. Gdy przedstawimy taką sieć w postaci grafu - jego wierzchołki będą reprezentować neurony, a krawędzie - poszczególne wagi sieci. Jej trening polega na znalezieniu takich wartości wag, które zapewnią poprawne rozwiązanie problemu. Zazwyczaj odbywa się to za pomocą algorytmu wstecznej propagacji błędów (ang. \emph{backpropagation}). Trenując sieć, generalizuje ona wiedzę na podstawie zbioru uczącego, od którego zależy jej późniejsze działanie.
@@ -268,7 +281,8 @@ Oprócz zdolności do rozwiązywania problemów, które nie są efektywnie algor
 \subsubsection*{\Large{Wady sieci neuronowych}}
 Sieci neuronowe mają wiele wad - trenowane algorytmem \emph{backpropagation} dokonują coraz mniejszych zmian w kolejnych warstwach idących wgłąb sieci (problem zanikającego gradientu) oraz łatwo przeuczają się, ponieważ większa liczba zmieniających się podczas uczenia sieci parametrów sprzyja przetrenowaniu. Skutkiem tego jest mniejsza wydajność proces ekstrakcji cech występujących w zbiorze uczącym. Trenując sieci neuronowe, w szczególności duże modele, nie do końca wiemy w jaki sposób przetwarzają one informacje. Pociąga to za sobą wiele implikacji, a patrząc z technicznej perspektywy, często nie jesteśmy pewni czy zastosowany przez nas model sieci nie mógłby zostać uproszczony. Gdybyśmy dysponowali większą wiedzą na temat przetwarzania przez nie informacji, najprawdopodobniej możliwa była by redukcja czasu, danych i zasobów obliczeniowych potrzebnych do ich uczenia. Są to najbardziej istotne czynniki wpływające na jakość działania modelu.
 
-\subsection{\LARGE{Uczenie przez wzmacnianie}}
+\subsection*{\LARGE{Uczenie przez wzmacnianie}} \addcontentsline{toc}{subsection}{Uczenie przez wzmacnianie}
+
 Uczenie przez wzmacnianie zwane też uczeniem z krytykiem lub \emph{Reinforcement Learning} opisuje metody uczenia maszynowego, w którym optymalne rozwiązanie danego zadania powstaje na skutek interakcji agenta ze środowiskiem. W zastosowaniach tego podejścia w robotyce, środowiskiem jest symulacja lub rzeczywiste otoczenie, z którym agent (robot) wchodzi w interakcję. Celem jest maksymalizacja zysku ściśle związanego z pożądanym rezultatem. W ten sposób robot próbując osiągnąć jak najwyższy wynik uczy się rozwiązywać zadany problem.
 
 \begin{figure}[h]
@@ -309,7 +323,8 @@ Do niewątpliwych zalet uczenia przez wzmacnianie należy zdolność do tworzeni
 Jak już zostało wspomniane we wprowadzeniu, do wad podejścia wykorzystującego uczenie przez wzmacnianie w robotyce zaliczamy czas i często zasoby obliczeniowe potrzebne do przetrenowania algorytmu oraz niewydajne i często chaotyczne ruchy, które są jego rezultatem.
 
 \newpage
-\section{\LARGE{Estymacja położenia obiektu}}
+\section*{\LARGE{3. Estymacja położenia obiektu}} \addcontentsline{toc}{section}{3. Estymacja położenia obiektu}
+
 Aby przejść do zadania estymacji położenia obiektu najpierw należy określić czy dysponujemy jego kształtem. Ponieważ w wielu zastosowaniach industrialnych przedstawionego algorytmu cecha ta jest wiadoma z góry, dla potrzeby tej pracy możemy przyjąć, że posiadamy taki model. Mamy więc podane dwa kształty: rzeczywisty model obiektu pobrany z kamery RGBD jako chmura punktów oraz wyidealizowany model, który posłuży nam za szablon. Oba są reprezentowane jako zbiory punktów, z których każdy opisany jest przez współrzędne x, y, z. W tym rozdziale omówiony szerzej zostanie problem estymacji położenia, zanim jednak do tego przejdziemy skupimy się na podstawowych założeniach i sposobach, które do niego prowadzą. Zostaną opisane także konstrukcje matematyczne, tj. elementarne macierze transformacji, kwaterniony czy rozkład według wartości osobliwych, które pozwolą lepiej zrozumieć temat przewodni pracy.
 
 \begin{figure}[h]
@@ -318,14 +333,15 @@ Aby przejść do zadania estymacji położenia obiektu najpierw należy określi
 \caption{Model obiektu i utworzona sztucznie chmura punktów.}
 \end{figure}
 
-\subsection{\LARGE{Wyznaczenie najbliższego punktu}}
+\subsection*{\LARGE{Wyznaczenie najbliższego punktu}} \addcontentsline{toc}{subsection}{Wyznaczenie najbliższego punktu}
 
-Najbardziej fundamentalny przykład sprowadza się do znalezienia długości odcinka łączącego dwa punkty $p_{1} = (x_{1}, y_{1}, z_{1})$ i $p_{2} = (x_{2}, y_{2}, z_{2})$. Odległość ta jest dana w metryce euklidesowej wzorem
-\[d(p_{1}, p_{2}) = ||p_{1} - p_{2}|| = \sqrt{(x_{2}-x_{1})^2+(y_{2}-y_{1})^2+(z_{2}-z_{1})^2}\]
+Najbardziej fundamentalny przykład sprowadza się do znalezienia długości odcinka łączącego dwa punkty $\vb{p}_{1} = (x_{1}, y_{1}, z_{1})$ i $\vb{p}_{2} = (x_{2}, y_{2}, z_{2})$. Odległość ta jest dana w metryce euklidesowej wzorem
+\[d(\vb{p}_{1}, \vb{p}_{2}) = ||\vb{p}_{1} - \vb{p}_{2}|| = \sqrt{(x_{2}-x_{1})^2+(y_{2}-y_{1})^2+(z_{2}-z_{1})^2}\]
 
-Kolejnym krokiem ku estymacji położenia jednego obiektu względem drugiego wydaje się być przeprowadzenie tej operacji dla wszystkich punktów. W tym miejscu nasuwa się jednak pewien problem. Mianowicie, nie tylko nie wiemy czy dany punkt ma swojego odpowiednika, ale też czy ich liczba w obu zbiorach się zgadza. W rzeczywistości próbujemy znaleźć najkrótszą drogę między punktami zbioru A a punktami zbioru B do czego posłuży algorytm najbliższego sąsiada.
+Kolejnym krokiem ku estymacji położenia jednego obiektu względem drugiego wydaje się być przeprowadzenie tej operacji dla wszystkich punktów. W tym miejscu nasuwa się jednak pewien problem. Mianowicie, nie tylko nie wiemy czy dany punkt ma swojego odpowiednika, ale też czy ich liczba w obu zbiorach się zgadza. W rzeczywistości próbujemy znaleźć najkrótszą drogę między punktami zbioru $\mathbf{A}$ a punktami zbioru $\mathbf{B}$ do czego posłuży algorytm najbliższego sąsiada.
 
-\subsection{\LARGE{Algorytm najbliższego sąsiada}}
+\subsection*{\LARGE{Algorytm najbliższego sąsiada}} \addcontentsline{toc}{subsection}{Algorytm najbliższego sąsiada}
+
 Algorytm najbliższego sąsiada (ang. \emph{Nearest Neighbour algorithm}) jest jedną z najbardziej podstawowych technik wykorzystywaną do rozpoznawania wzorców we współczesnym uczeniu maszynowym. Jest to algorytm zachłanny o złożoności czasowej $O(n^2)$ o czym świadczy zagnieżdżenie dwóch pętli. Może zostać wykorzystany zarówno do klasyfikacji, regresji jak i do rozwiązania problemu komiwojażera. 
 
 \begin{comment}
@@ -333,7 +349,7 @@ Chcąc znaleźć najlepsze dopasowanie między dwoma zbiorami punktów potrzebuj
 
 \begin{enumerate}
 \item Ustawienie statutu wszystkich punktów jako nieodwiedzone.
-\item Wybranie jednego z nich i zmierzenie odległości między nim a punktem $p$.
+\item Wybranie jednego z nich i zmierzenie odległości między nim a punktem $\vb{p}$.
 \item Znalezienie najkrótszej odległości między 
 \end{enumerate}
 \end{comment}
@@ -342,20 +358,17 @@ Chcąc znaleźć najlepsze dopasowanie między dwoma zbiorami punktów potrzebuj
 
 Opisując powyższy kod, dana jest funkcja \emph{knn} przyjmująca trzy argumenty: zbiór punktów w postaci listy, punkt $p$ oraz liczbę najbliższych sąsiadów domyślnie ustawioną na jeden. Działanie funkcji zaczyna się od zdefiniowania pustej listy, w której będą przechowywane poszczególne odległości. Poniżej znajduje się zagnieżdżenie dwóch pętli, z których pierwsza iteruje po punktach, a druga - po ich współrzędnych. W linijkach 6-7 liczona jest odległość euklidesowa między danym punktem w zbiorze, a punktem $p$, która następnie zapisywana jest do listy $distances$. Po wyjściu z obu pętli, lista ta jest sortowana i zwracana na wyjściu funkcji.
 
-\begin{comment}
-Wspomniane algorytmy wyznaczenia najbliższego punktu mogą być rozwinięte do przestrzeni \emph{n}-wymiarowych. Aby dokonać takiej generalizacji do przestrzeni trójwymiarowej konieczne jest zastosowanie macierzy obrotu - rotacji \textbf{R} i wektora przesunięcia liniowego - translacji $\vb{t}$.
-\end{comment}
+\subsection*{\LARGE{Transformacje}} \addcontentsline{toc}{subsection}{Transformacje}
 
-\subsection{\LARGE{Transformacje}}
-Mianem transformacji określana jest funkcja przekształcająca jeden obiekt w drugi. Ze względu, że przez cały czas trwania tej pracy będziemy rozważać przedmioty jako bryły sztywne - omówione zostaną jedynie transformacje afiniczne, a wśród nich takie, które nie zmieniają kształtu ani rozmiaru obiektu. 
+Mianem transformacji określana jest funkcja przekształcająca jeden obiekt w drugi. Ze względu, że przez cały czas trwania tej pracy będziemy rozważać przedmioty jako bryły sztywne - omówione zostaną jedynie transformacje, które nie zmieniają kształtu ani rozmiaru obiektu. 
 \[
-R = \begin{bmatrix}
+\mathbf{R} = \begin{bmatrix}
 R_{xx} & R_{xy} & R_{xz} \\
 R_{yx} & R_{yy} & R_{yz} \\
 R_{zx} & R_{zy} & R_{zz}
 \end{bmatrix}
 \qquad
-\vb{t}^T = \begin{bmatrix}
+\vb{t}^\top = \begin{bmatrix}
 t_{x} \\ t_{y} \\ t_{z}
 \end{bmatrix}
 \]
@@ -364,33 +377,34 @@ t_{x} \\ t_{y} \\ t_{z}
 W zależności od tego jakim sposobem chcemy wykonywać działania mamy do wyboru trzy równoważne opcje obrotu danego kształtu w przestrzeni. Możemy w tym celu posłużyć się macierzą opartą o kąty obrotu wokół wszystkich trzech osi w układzie kartezjańskim, macierzą opartą o oś obrotu i kąt o jaki dany obiekt ma zostać obrócony lub kwaternionem. Dla zadanej rotacji wszystkie trzy sposoby z większą lub mniejszą dokładnością zwrócą numerycznie te same wyniki.
 
 \subsubsection*{\Large{Elementarne macierze rotacji}}
+Najprostszym sposobem na obrócenie obiektu w przestrzeni trójwymiarowej jest skorzystanie z elementarnych macierzy transformacji. Jest to podejście, którego używamy gdy dane są trzy kąty położone na prostopadłych płaszczyznach, wokół których należy obrócić obiekt. katy Eulera. Czasami można spotkać się także z nazwami \emph{pitch-roll-yaw} oznaczającymi to samo. Obrót o każdy taki kąt możemy zapisać w postaci macierzy
 \[
-R_{z}(\gamma) = \begin{bmatrix}
+\mathbf{R}_z(\gamma) = \begin{bmatrix}
 \cos \gamma & -\sin \gamma & 0 \\
 \sin \gamma & \cos \gamma & 0 \\
 0 & 0 & 1
 \end{bmatrix}
 \]
 \[
-R_{y}(\beta) = \begin{bmatrix}
+\mathbf{R}_y(\beta) = \begin{bmatrix}
 \cos \beta & 0 & \sin \beta \\
 0 & 1 & 0 \\
 -\sin \beta & 0 & \cos \beta
 \end{bmatrix}
 \]
 \[
-R_{x}(\alpha) = \begin{bmatrix}
+\mathbf{R}_x(\alpha) = \begin{bmatrix}
 1 & 0 & 0 \\
 0 & \cos \alpha & -\sin \alpha \\
 0 & \sin \alpha & \cos \alpha \\
 \end{bmatrix}
 \]
-Mamy więc trzy obroty, które składają się na wynikową rotację.
-\[R = R_{z}(\gamma)R_{y}(\beta)R_{x}(\alpha)\]
+Gdy chcemy dokonać rotacji wokół więcej niż jednej osi składamy poszczególne obroty mnożąc je przez siebie. Mamy więc trzy obroty, które składają się na wynikową rotację.
+\[\mathbf{R} = \mathbf{R}_z(\gamma)\mathbf{R}_y(\beta)\mathbf{R}_x(\alpha)\]
 
-Macierz rotacji przyjmuje wtedy postać
+Po przemnożeniu przez siebie wszystkich trzech obrotów składowych macierz rotacji przyjmuje postać
 \[
-R = \begin{bmatrix}
+\mathbf{R} = \begin{bmatrix}
 \cos \gamma \cos \beta & 
 \cos \gamma \sin \beta \sin \alpha - \sin \gamma \cos \alpha &
 \cos \gamma \sin \beta \cos \alpha + \sin \gamma \sin \alpha \\
@@ -402,11 +416,11 @@ R = \begin{bmatrix}
 \]
 
 \subsubsection*{\Large{Oś obrotu i kąt}}
-W drugim - dysponujemy osią pożądanej rotacji, więc wykonujemy już tylko jeden obrót. Oś obrotu możemy przedstawić w postaci wektora jednostkowego $\textbf{u} = [u_{x}, u_{y}, u_{z}]$ takiego, że 
-\[u_{x}^2+u_{y}^2+u_{z}^2 = 1 \]
+Podczas rozpisywania złożonych transformacji za pomocą elementarnych macierzy rotacji możemy zauważyć, że w rzeczywistości zamiast obracać obiekt trzykrotnie wokół różnych osi - moglibyśmy tak dobrać jedną oś i kąt obrotu wokół niej, aby wynikowa rotacja pozostała tożsama. Dlatego w tym podejściu zakładamy, że dysponujemy taką osią i wykonujemy już tylko jeden obrót. Oś obrotu możemy przedstawić w postaci wektora jednostkowego $\textbf{u} = [u_x, u_y, u_z]$ takiego, że 
+\[u_x^2+u_y^2+u_z^2 = 1 \]
 Dla ułatwienia oznaczmy $c = \cos \theta$ i $s = \sin \theta$
 \[
-R = \begin{bmatrix}
+\mathbf{R} = \begin{bmatrix}
 c+u_{x}^2(1-c) & u_{x}u_{y}(1-c)-u_{z}s & u_{x}u_{z}(1-c)+u_{y}s \\
 u_{y}u_{x}(1-c)-u_{z}s & c+u_{y}^2(1-c) & u_{y}u_{z}(1-c)+u_{x}s \\
 u_{z}u_{x}(1-c)-u_{z}s & u_{z}u_{y}(1-c)-u_{x}s & c+u_{z}^2(1-c)
@@ -414,7 +428,7 @@ u_{z}u_{x}(1-c)-u_{z}s & u_{z}u_{y}(1-c)-u_{x}s & c+u_{z}^2(1-c)
 \]
 
 \subsubsection*{\Large{Kwaternion}}
-W trzecim przypadku posługujemy się kwaternionem, który możemy zapisać w postaci sumy algebraicznej jako
+Podejście wykorzystujące kwaternion różni się od dwóch powyższych głównie tym, że nie są tu używane funkcje trygonometryczne. Jest też pod pewnym względem podobne do przypadku wykorzystującego os obrotu i kąt, ponieważ ich obu nie da się rozbić na mniejsze obroty składowe. Same kwaterniony są przykładem liczb hiperzespolonych z jedną wartością rzeczywistą i trzema urojonymi. Kwaternion możemy zapisać w postaci sumy algebraicznej jako
 \[q = a \cdot \textbf{e} + b \cdot \textbf{i} + c \cdot \textbf{j} + d \cdot \textbf{k} \qquad gdzie \quad a, b, c, d \in \mathbb{R} \]
 
 Zaś $\textbf{e, i, j, k}$ to pewne jednostki urojone, między którymi zachodzi zależność 
@@ -422,174 +436,177 @@ Zaś $\textbf{e, i, j, k}$ to pewne jednostki urojone, między którymi zachodzi
 
 Wówczas transformację tą możemy zapisać równoważnie w postaci macierzy
 \[
-R = \begin{bmatrix}
+\mathbf{R} = \begin{bmatrix}
 a^2+b^2-c^2-d^2 & 2(bc-ad) & 2(bd+ac) \\
 2(bc+ad) & a^2+c^2-b^2-d^2 & 2(cd-ab) \\
-2(bd-ac) & 2(cd \cdot ab) & a^2+d^2-b^2-c^2
+2(bd-ac) & 2(cd + ab) & a^2+d^2-b^2-c^2
 \end{bmatrix}
 \]
 
-\newpage
-\subsection{\LARGE{Rozkład macierzy według wartości osobliwych}}
+\subsection*{\LARGE{Rozkład macierzy według wartości osobliwych}} \addcontentsline{toc}{subsection}{Rozkład macierzy według wartości osobliwych}
+
 Celem rozkładu według wartości osobliwych, w skrócie rozkładu SVD (ang. \emph{Singular Value Decomposition}) w proponowanym algorytmie jest znalezienie macierzy rotacji, która stanowi transformację między chmurą punktów a szablonem, do którego próbujemy ją dopasować. Umożliwi to późniejsze uchwycenie przedmiotu przez chwytak manipulatora, ponieważ szablon jest obiektem, który jest znany, a więc możemy zamodelować poprawny proces chwytania.
 
-Opisany w ten sposób problem stanowi jedynie pewien szczególny przypadek zastosowania rozkładu SVD. Ogólnie rzecz biorąc, SVD jest metodą pozwalającą na znalezienie rzędu macierzy, co teoretycznie może zostać wyznaczone metodą eliminacji Gaussa. To podejście jest jednak niepraktyczne, gdy ma zostać zrealizowane za pomocą metod numerycznych. Błędy biorą się często z niedoszacowań z powodu zaokrąglania wartości. Na przykład gdy rząd macierzy A jest niedoszacowany a U stanowi obliczoną numerycznie postać schodkową, wówczas możliwe jest, że U będzie miało niepoprawną liczbę niezerowych wierszy.
+Opisany w ten sposób problem stanowi jedynie pewien szczególny przypadek zastosowania rozkładu SVD. Ogólnie rzecz biorąc, SVD jest metodą pozwalającą na znalezienie rzędu macierzy, co teoretycznie może zostać wyznaczone metodą eliminacji Gaussa. To podejście jest jednak niepraktyczne, gdy ma zostać zrealizowane za pomocą metod numerycznych. Błędy biorą się często z niedoszacowań z powodu zaokrąglania wartości. Na przykład gdy rząd macierzy $\mathbf{A}$ jest niedoszacowany a $\mathbf{U}$ stanowi obliczoną numerycznie postać schodkową, wówczas możliwe jest, że $\mathbf{U}$ będzie miało niepoprawną liczbę niezerowych wierszy.
 
-Najprostszym sposobem na zrozumienie rozkładu według wartości osobliwych jest zapisanie macierzy rzeczywistej A w postaci iloczynu trzech czynników, z których środkowy to macierz z pewnymi wartościami rosnącymi wzdłuż przekątnej. Taki rozkład jest zawsze możliwy, co można zapisać jako
-\[A = UDV^T \]
+Najprostszym sposobem na zrozumienie rozkładu według wartości osobliwych jest zapisanie macierzy rzeczywistej $\mathbf{A}$ w postaci iloczynu trzech czynników, z których środkowy to macierz z pewnymi wartościami rosnącymi wzdłuż przekątnej. Taki rozkład jest zawsze możliwy, co można zapisać jako
+\[\mathbf{A = UDV^\top} \]
 
-Zakładając, że A jest macierzą $m \times n$, wówczas U stanie się macierzą ortogonalną o wymiarach $m \times m$, V - macierzą ortogonalną o wymiarach $n \times n$, a D macierzą $m \times n$, której wartości nieleżące na przekątnej są równe 0, a wartości na przekątnej spełniają zależność
+Zakładając, że $\mathbf{A}$ jest macierzą $m \times n$, wówczas $\mathbf{U}$ stanie się macierzą ortogonalną o wymiarach $m \times m$, $\mathbf{V}$ - macierzą ortogonalną o wymiarach $n \times n$, a $\mathbf{D}$ macierzą $m \times n$, której wartości nieleżące na przekątnej są równe 0, a wartości na przekątnej spełniają zależność
 \[\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_n \geq 0\]
 
 \[
-D = \begin{bmatrix}
+\mathbf{D} = \begin{bmatrix}
 \sigma_1 & & & \\
 & \sigma_2 & & \\
 & & \ddots & \\
 & & & \sigma_n \\\\
 \end{bmatrix}
 \]
-Wartości $\sigma_i$ określone przez rozkład są różne i są nazywane \textbf{wartościami osobliwymi} macierzy A. Liczba niezerowych wartości osobliwych jest równa rzędowi macierzy A, a ich wielkość stanowi miarę jak bardzo ta macierz różni się od macierzy niższego rzędu. Z kolei kolumny macierzy U stanowią \textbf{lewostronne wektory osobliwe} a kolumny V - \textbf{prawostronne wektory osobliwe}.
+Wartości $\sigma_i$ określone przez rozkład są różne i są nazywane \textbf{wartościami osobliwymi} macierzy $\mathbf{A}$. Liczba niezerowych wartości osobliwych jest równa rzędowi macierzy $\mathbf{A}$, a ich wielkość stanowi miarę jak bardzo ta macierz różni się od macierzy niższego rzędu. Z kolei kolumny macierzy $\mathbf{U}$ stanowią \textbf{lewostronne wektory osobliwe} a kolumny $\mathbf{V}$ - \textbf{prawostronne wektory osobliwe}.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{five_svd}
-\caption{Graficzne przedstawienie zasady działania SVD na przykładzie obrazu ręcznie pisanej cyfry pięć o wymiarach 28 $\times$ 28 pikseli. Kolory zbliżone do fioletu reprezentują niskie wartości, a jaskrawe zbliżone ku żółci - wysokie. Możemy zauważyć, że sposób w jakim na obrazie macierzy D układają się coraz ciemniejsze kolory jest zgodny z założonym wzorem $\sigma_i \geq \sigma_{i+1} \geq 0$.}
+\caption{Graficzne przedstawienie zasady działania SVD na przykładzie obrazu ręcznie pisanej cyfry pięć o wymiarach 28 $\times$ 28 pikseli. Kolory zbliżone do fioletu reprezentują niskie wartości, a jaskrawe zbliżone ku żółci - wysokie. Możemy zauważyć, że sposób w jakim na obrazie macierzy $\mathbf{D}$ układają się coraz ciemniejsze kolory jest zgodny z założonym wzorem $\sigma_i \geq \sigma_{i+1} \geq 0$.}
 \end{figure}
 
-Twierdzenie związane z SVD zakłada, że jeśli A jest macierzą o wymiarach $m \times n$ możliwy jest jej rozkład według wartości osobliwych. Aby to wykazać, posłużmy się macierzą $A^T A$. Jest to macierz symetryczna, toteż wszystkie jej wartości własne są liczbami rzeczywistymi i istnieje taka macierz ortogonalna V, która ją diagonalizuje. Co więcej, jej wartości własne muszą być nieujemne. Aby to zobaczyć, niech $\lambda$ będzie wartością własną $A^T A$ a $\vb{x}$ wektorem własnym związanym z $\lambda$. Wynika z tego, że
-\[||A \vb{x}||^2 = \vb{x}^{T}A^T A\vb{x} = \lambda\vb{x}^T \vb{x} = \lambda||\vb{x}||^2 \]
+Twierdzenie związane z SVD zakłada, że jeśli $\mathbf{A}$ jest macierzą o wymiarach $m \times n$ możliwy jest jej rozkład według wartości osobliwych. Aby to wykazać, posłużmy się macierzą $\mathbf{A^\top A}$. Jest to macierz symetryczna, toteż wszystkie jej wartości własne są liczbami rzeczywistymi i istnieje taka macierz ortogonalna $\mathbf{V}$, która ją diagonalizuje. Co więcej, jej wartości własne muszą być nieujemne. Aby to zobaczyć, niech $\lambda$ będzie wartością własną $\mathbf{A^\top A}$ a $\vb{x}$ wektorem własnym związanym z $\lambda$. Wynika z tego, że
+\[||\mathbf{A} \vb{x}||^2 = \vb{x}^\top \mathbf{A^\top A}\vb{x} = \lambda\vb{x}^\top \vb{x} = \lambda||\vb{x}||^2 \]
 
 Aby wyznaczyć $\lambda$ z powyższego równania wykonujemy dzielenie
-\[\lambda = \frac{||A\vb{x}||^2}{||\vb{x}||^2} \geq 0 \]
+\[\lambda = \frac{||\mathbf{A}\vb{x}||^2}{||\vb{x}||^2} \geq 0 \]
 
-Podniesienie do kwadratu dowodzi, że $\lambda$ jest dodatnia. Załóżmy, że kolumny macierzy V zostały uporządkowane tak, że odpowiednie wartości własne spełniają zależność
+Podniesienie do kwadratu dowodzi, że $\lambda$ jest dodatnia. Załóżmy, że kolumny macierzy $\mathbf{V}$ zostały uporządkowane tak, że odpowiednie wartości własne spełniają zależność
 \[\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_n \geq 0 \]
 
-Wartości własne macierzy A są dane
+Wartości własne macierzy $\mathbf{A}$ są dane
 \[\sigma_i = \sqrt{\lambda_i} \quad i = 1, 2,..., n \]
 
-Niech r oznacza rząd macierzy A. Należy zauważyć, że macierz $A^T A$ też będzie rzędu r. Ponieważ $A^T A$ jest symetryczna jej rząd będzie równy liczbie niezerowych wartości własnych.
+Niech r oznacza rząd macierzy $\mathbf{A}$. Należy zauważyć, że macierz $\mathbf{A^\top A}$ też będzie rzędu r. Ponieważ $\mathbf{A^\top A}$ jest symetryczna jej rząd będzie równy liczbie niezerowych wartości własnych.
 \[\lambda_1 \geq \lambda_2 \geq \ldots \geq \lambda_r \geq 0 \qquad \lambda_{r+1} = \lambda_{r+2} = \ldots = \lambda_n \geq 0 \]
 
 Ta sama zależność zachodzi dla wartości osobliwych
 \[\sigma_1 \geq \sigma_2 \geq \ldots \geq \sigma_r \geq 0 \qquad \sigma_{r+1} = \sigma_{r+2} = \ldots = \sigma_n \geq 0 \]
 
-Dla naszych dalszych rozważań konieczne jest przedstawienie poszczególnych czynników U, D i V  w rozbiciu na mniejsze macierze, z których są złożone. Zaczynając od macierzy V mamy
-\[V_1 = (\vb{v}_1, \vb{v}_2,... \vb{v}_r), \quad V_1 = (\vb{v}_{r+1}, \vb{v}_{r+2},... \vb{v}_n) \]
+Dla naszych dalszych rozważań konieczne jest przedstawienie poszczególnych czynników $\mathbf{U}$, $\mathbf{D}$ i $\mathbf{V}$ w rozbiciu na mniejsze macierze, z których są złożone. Zaczynając od macierzy V mamy
+\[\mathbf{V}_1 = (\vb{v}_1, \vb{v}_2,... \vb{v}_r), \quad \mathbf{V}_1 = (\vb{v}_{r+1}, \vb{v}_{r+2},... \vb{v}_n) \]
 
 \[
-D_1 = \begin{bmatrix}
+\mathbf{D}_1 = \begin{bmatrix}
 \sigma_1 & & & \\
 & \sigma_2 & & \\
 & & \ddots & \\
 & & & \sigma_r
 \end{bmatrix}
 \qquad
-D = \begin{bmatrix}
-D_1 & 0 \\
+\mathbf{D} = \begin{bmatrix}
+\mathbf{D}_1 & 0 \\
 0 & 0 \\
 \end{bmatrix}
 \]
-Wektory $V_2$ stanowią wektory własne macierzy $A^T A$ związane z $\lambda = 0$
-\[A_T A \vb{x}_i = 0 \quad i = r+1, r+2,..., n \]
-\[AV_2 = 0 \]
+Wektory $\mathbf{V}_2$ stanowią wektory własne macierzy $\mathbf{A^\top A}$ związane z $\lambda = 0$
+\[\mathbf{A}^\top \mathbf{A} \vb{x}_i = 0 \quad i = r+1, r+2,..., n \]
+\[\mathbf{AV}_2 = 0 \]
 
 Ponieważ V jest macierzą ortogonalną możemy zapisać
-\[I = VV^T \]
-\[A = AI = AVV^T \]
+\[\mathbf{I = VV^\top} \]
+\[\mathbf{A = AI = AVV^\top} \]
 
-Zostało nam jeszcze skonstruować macierz ortogonalną U o wymiarach $m \times m$ taką, że
-\[A = UDV^T \]
+Zostało nam jeszcze skonstruować macierz ortogonalną $\mathbf{U}$ o wymiarach $m\times m$ taką, że
+\[\mathbf{A = UDV^\top} \]
 
-Co po przeniesieniu V na lewą stronę możemy równoważnie zapisać jako
-\[AV = UD \]
+Co po przeniesieniu $\mathbf{V}$ na lewą stronę możemy równoważnie zapisać jako
+\[\mathbf{AV = UD} \]
 
 Porównując pierwsze r kolumn po obu stronach możemy zauważyć
-\[A \vb{v}_i = \sigma_i \vb{u}_i \quad i = 1, 2,..., n \]
+\[\mathbf{A} \vb{v}_i = \sigma_i \vb{u}_i \quad i = 1, 2,..., n \]
 
 Zatem jeśli, ustalimy 
 \[\vb{u}_i = \frac{1}{\sigma_i}A \vb{v}_i \quad i = 1, 2,..., n \]
 
-\[U_1 = (\vb{u}_1, \vb{u}_2,..., \vb{u}_r) \]
+\[\mathbf{U}_1 = (\vb{u}_1, \vb{u}_2,..., \vb{u}_r) \]
 
 To będzie wynikać z tego
-\[AV_1 = U_1 D_1 \]
+\[\mathbf{AV_1 = U_1 D_1} \]
 
-\[\vb{u}_i^T \vb{u}_j = \left(\frac{1}{\sigma_i}\vb{v}_i^T A^T \right) \left(\frac{1}{\sigma_j}A \vb{v}_j \right)
-= \frac{1}{\sigma_i \sigma_j}\vb{v}_i^T \left( A^T A \vb{v}_j \right)
-= \frac{\sigma_j}{\sigma_i} \vb{v}_i^T \vb{v}_j 
+\[\vb{u}_i^\top \vb{u}_j = \left(\frac{1}{\sigma_i}\vb{v}_i^\top \mathbf{A}^\top \right) \left(\frac{1}{\sigma_j}\mathbf{A} \vb{v}_j \right)
+= \frac{1}{\sigma_i \sigma_j}\vb{v}_i^\top \left( \mathbf{A^\top A} \vb{v}_j \right)
+= \frac{\sigma_j}{\sigma_i} \vb{v}_i^\top \vb{v}_j 
 = \delta_ij \]
 
-Jeśli $\vb{u}_1,..., \vb{u}_m$ tworzy bazę ortonormalną dla $\mathbb{R}^m$ to U jest macierzą ortogonalną. Wówczas ostatnim krokiem jest wykazanie, że A rzeczywiście jet równe $UDV^T$
-\[UDV^T = \begin{bmatrix}
-U_1 & U_2
+Jeśli $\vb{u}_1,..., \vb{u}_m$ tworzy bazę ortonormalną dla $\mathbb{R}^m$ to $\mathbf{U}$ jest macierzą ortogonalną. Wówczas ostatnim krokiem jest wykazanie, że $\mathbf{A}$ rzeczywiście jet równe $\mathbf{UDV^\top}$
+\[\mathbf{UDV^\top} = \begin{bmatrix}
+\mathbf{U_1} & \mathbf{U_2}
 \end{bmatrix}
 \begin{bmatrix}
-D_1 & 0 \\
+\mathbf{D_1} & 0 \\
 0 & 0 \\
 \end{bmatrix}
 \begin{bmatrix}
-V_1^T \\
-V_2^T \\
+\mathbf{V_1^\top} \\
+\mathbf{V_2^\top} \\
 \end{bmatrix}
-= U_1 D_1 V_1^T = AV_1 V_1^T = A \]
+= \mathbf{U_1 D_1 V_1^\top = AV_1 V_1^\top = A} \]
 
-\subsubsection*{\Large{Interpretacja geometryczna rozkładu SVD}}
-W interpretacji geometrycznej wartości osobliwe mogą być rozumiane jako długości półosi elipsy na płaszczyźnie, co pokazano na rysunku. Wówczas zakładając, że A stanowi przekształcenie liniowe przestrzeni - macierze U i V reprezentują rotacje i odbicie tej przestrzeni, a D odpowiada za skalowanie. Innymi słowy, rozkład SVD rozkłada dowolne przekształcenie liniowe na złożenie funkcji trzech przekształceń: obrotu lub odbicia (V), skalowania (D) i kolejnego obrotu lub odbicia (U). W szczególności, jeśli wyznacznik poddawanej przekształcaniu macierzy jest dodatni, wówczas macierze U i V mogą odpowiadać zarówno za rotację jak i odbicie. Jeśli wyznacznik jest ujemny tylko jedna z nich odpowiada za odbicie, jeśli jest równy zero - odbicia nie ma wcale.
+\subsection*{\Large{Interpretacja geometryczna rozkładu SVD}} \addcontentsline{toc}{subsection}{Interpretacja geometryczna rozkładu SVD}
+
+W interpretacji geometrycznej wartości osobliwe mogą być rozumiane jako długości półosi elipsy na płaszczyźnie, co pokazano na rysunku. Wówczas zakładając, że $\mathbf{A}$ stanowi przekształcenie liniowe przestrzeni - macierze $\mathbf{U}$ i $\mathbf{V}$ reprezentują rotacje i odbicie tej przestrzeni, a $\mathbf{D}$ odpowiada za skalowanie. Innymi słowy, rozkład SVD rozkłada dowolne przekształcenie liniowe na złożenie funkcji trzech przekształceń: obrotu lub odbicia ($\mathbf{V}$), skalowania ($\mathbf{D}$) i kolejnego obrotu lub odbicia ($\mathbf{U}$). W szczególności, jeśli wyznacznik poddawanej przekształcaniu macierzy jest dodatni, wówczas macierze $\mathbf{U}$ i $\mathbf{V}$ mogą odpowiadać zarówno za rotację jak i odbicie. Jeśli wyznacznik jest ujemny tylko jedna z nich odpowiada za odbicie, jeśli jest równy zero - odbicia nie ma wcale.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=10cm]{svd_geom}
-\caption{Interpretacja geometryczna SVD macierzy A o wymiarach 2$\times$2. Celem jest przekształcenie przestrzeni pokazanej w lewym górnym rogu, tak aby uzyskać obraz widoczny w prawym górnym. Transformacja zostaje rozłożona przez SVD na trzy etapy: rotację, skalowanie i ponowną rotację.}
+\caption{Interpretacja geometryczna SVD macierzy $\mathbf{A}$ o wymiarach 2$\times$2. Celem jest przekształcenie przestrzeni pokazanej w lewym górnym rogu, tak aby uzyskać obraz widoczny w prawym górnym. Transformacja zostaje rozłożona przez SVD na trzy etapy: rotację, skalowanie i ponowną rotację.}
 \end{figure}
 
 Taka interpretacja może również zostać uogólniona do $n$-wymiarowych przestrzeni euklidesowych. Wówczas wartości osobliwe dowolnej macierzy kwadratowej n $\times$ n staną się długościami półosi $n$-wymiarowej elipsoidy. Wartości osobliwe zawierają w sobie informację o długościach a wektory osobliwe - o kierunku półosi. Nie jest to jednak zbyt praktyczne rozwiązanie, dlatego mówiąc o rozkładzie SVD w proponowanym algorytmie będziemy posługiwać się uproszczonym SVD. Przede wszystkim, zakładamy, że dysponujemy szablonem, który ma dokładnie te same wymiary co szukany obiekt oraz szukany przedmiot jest bryłą sztywną (więc również jego szablon traktujemy w ten sam sposób). Te założenia sporo upraszczają. Przede wszystkim, odnosząc się do praktycznego zastosowania możemy pominąć operację skalowania.
 
-\subsection{\LARGE{Algorytm Iterative Closest Point}}
+\newpage
+\subsection*{\LARGE{4. Algorytm Iterative Closest Point}} \addcontentsline{toc}{section}{4. Algorytm Iterative Closest Point}
+
 Mając teoretyczne podstawy za sobą możemy przejść do implementacji końcowego programu stworzonego w oparciu o algorytm ICP (ang. \emph{Iterative Closest Point}). Dla danej chmury punktów jego celem jest znalezienie położenia i orientacji obiektu, który przedstawia. W tej sytuacji dane wejściowe stanowią: chmura punktów i szablon szukanego obiektu, do którego chcemy dopasować widoczny przedmiot. Przez dopasowanie rozumiemy znalezienie transformacji (obrotu i przesunięcia) wykrytego obiektu względem początkowego położenia szablonu. Możemy rozpisać pojedynczą iterację algorytmu w postaci listy kroków:
 
 \begin{enumerate}
-\item Wyznaczenie centroidów a i b dla obu chmur punktów A i B.
-\item Utworzenie A' i B' przez standaryzację wartości w A i B. Standaryzacja odbywa się przez  odjęcie od każdego punktu centroidu z całej chmury.
-\item Obliczenie macierzy H jako iloczynu A' i B'.
-\item Rozkład H według wartości osobliwych.
+\item Wyznaczenie centroidów $\vb{a}$ i $\vb{b}$ dla obu chmur punktów $\mathbf{A}$ i $\mathbf{B}$.
+\item Utworzenie $\mathbf{A'}$ i $\mathbf{B'}$ przez standaryzację wartości w $\mathbf{A}$ i $\mathbf{B}$. Standaryzacja odbywa się przez odjęcie od każdego punktu centroidu z całej chmury.
+\item Obliczenie macierzy $\mathbf{H}$ jako iloczynu $\mathbf{A'}$ i $\mathbf{B'}$.
+\item Rozkład $\mathbf{H}$ według wartości osobliwych.
 \item Wyznaczenie macierzy obrotu i jej wyznacznika w celu sprawdzenia czy nie zaszedł przypadek odbicia.
-\item Obrócenie centroidu a zgodnie z macierzą rotacji i obliczenie wektora przesunięcia jako różnicy centroidów. 
+\item Obrócenie centroidu $\vb{a}$ zgodnie z macierzą rotacji i obliczenie wektora przesunięcia jako różnicy centroidów. 
 \end{enumerate}
 
-Dane są dwa zbiory punktów: A i B w postaci macierzy o wymiarach 3$\times$n. Każdy wiersz w obu z nich opisuje pojedynczy punkt w postaci współrzędnych x, y, z. Równanie opisujące przejście punktu z jednego zbioru do drugiego wygląda następująco
-\[A = R B + T + N \]
+Dane są dwa zbiory punktów: $\mathbf{A}$ i $\mathbf{B}$ w postaci macierzy o wymiarach 3$\times$n. Każdy wiersz w obu z nich opisuje pojedynczy punkt w postaci współrzędnych x, y, z. Równanie opisujące przejście punktu z jednego zbioru do drugiego wygląda następująco
+\[\mathbf{A = R B + T + N} \]
 
-Gdzie R jest macierzą rotacji o wymiarach 3 $\times$ 3, T - wektorem przesunięcia o wymiarach 3 $\times$ 1 a N - wektorem szumu. Zakładamy też, że obrót odbywa się wokół początku układu. Chcemy dobrać takie R i T, aby zminimalizować wyrażenie
-\[ d^2(a, b) = \sum_{i=1}^n \| b_{i} - (Ra_i+T)\|^2 \]
+Gdzie $\mathbf{R}$ jest macierzą rotacji o wymiarach 3 $\times$ 3, $\mathbf{T}$ - wektorem przesunięcia o wymiarach 3 $\times$ 1 a $\mathbf{N}$ - wektorem szumu. Zakładamy też, że obrót odbywa się wokół początku układu. Chcemy dobrać takie $\mathbf{R}$ i $\mathbf{T}$, aby zminimalizować wyrażenie
+\[d^2(\vb{a}, \vb{b}) = \sum_{i=1}^n \| \vb{b}_{i} - (\mathbf{R} \vb{a}_i + \mathbf{T})\|^2 \]
 
 Niech 
-\[a = \frac{1}{n} \sum_{i=1}^n a_i \qquad b = \frac{1}{n} \sum_{i=1}^n b_i \]
+\[\vb{a} = \frac{1}{n} \sum_{i=1}^n \vb{a}_i \qquad \vb{b} = \frac{1}{n} \sum_{i=1}^n \vb{b}_i \]
 
-Wówczas \emph{a'} i \emph{b'} będą zbiorami odległości poszczególnych punktów w zbiorach \emph{A} i \emph{B} od ich centroidów
-\[a'_i = a_i - a \qquad b'_i = b_i - b \]
+Wówczas $\vb{a'}$ i $\vb{b'}$ będą zbiorami odległości poszczególnych punktów w zbiorach $\mathbf{A}$ i $\mathbf{B}$ od ich centroidów
+\[\vb{a'_i = a_i - a \qquad b'_i = b_i - b} \]
 
 Mamy
-\[d^2(a', b') = \sum_{i=1}^n \| b_{i} - Rq_{i}\|^2 \]
+\[d^2(\vb{a'}, \vb{b'}) = \sum_{i=1}^n \| \vb{b}_{i} - \mathbf{R} \vb{q}_{i}\|^2 \]
 
 Następnym krokiem jest wyznaczenie macierzy 3 $\times$ 3 
-\[H = \sum_{i=1}^n a_i^{'} b_{i}^{'T} \]
+\[\mathbf{H} = \sum_{i=1}^n \vb{a}_i^{'} \vb{b}_{i}^{'\top} \]
 
 I rozłożenie jej na wartości osobliwe
-\[H = UDV^T \]
+\[\mathbf{H = UDV^\top} \]
 
-Ponieważ, zgodnie z tym co zostało wspomniane podczas interpretacji geometrycznej rozkładu SVD, macierz D jest odpowiedzialna za skalowanie - podczas wyznaczenia wynikowej rotacji możemy ją odrzucić. W ten sposób otrzymujemy wyrażenie
-\[R = VU^T \]
+Ponieważ, zgodnie z tym co zostało wspomniane podczas interpretacji geometrycznej rozkładu SVD, macierz $\mathbf{D}$ jest odpowiedzialna za skalowanie - podczas wyznaczenia wynikowej rotacji możemy ją odrzucić. W ten sposób otrzymujemy wyrażenie
+\[\mathbf{R = VU^\top} \]
 
-Jeśli wyznacznik \emph{det R} = 1, R stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem \emph{det R}= -1 algorytm nie zwraca rozwiązań, ale ten przypadek z reguły nie występuje. Gdy obrócimy centroid zbioru A zgodnie z wyznaczoną właśnie macierzą rotacji to wektor przesunięcia $\vb{t}$ będzie stanowił różnicę między dwoma centroidami.
-\[\vb{t} = b^T - R a^T \]
+Jeśli wyznacznik $\det \mathbf{R} = 1$ to  $\mathbf{R}$ stanowi macierz obrotu. W przeciwnym wypadku, gdy mamy do czynienia z wyznacznikiem $\det \mathbf{R}= -1$ algorytm nie zwraca rozwiązań, ale ten przypadek z reguły nie występuje. Gdy obrócimy centroid zbioru $\mathbf{A}$ zgodnie z wyznaczoną właśnie macierzą rotacji to wektor przesunięcia $\vb{t}$ będzie stanowił różnicę między dwoma centroidami.
+\[\vb{t} = \vb{b}^\top - \mathbf{R} \vb{a}^\top \]
 
 Wynikową transformację możemy osiągnąć w odpowiedni sposób konkatenując macierz obrotu z wektorem przesunięcia
-\[T = \left[
+\[\mathbf{T} = \left[
 \begin{array}{ccc|c}
 & & & \\
-& R & & \vb{t}^T \\
+& \mathbf{R} & & \vb{t}^\top \\
 & & & \\
 \hline
 0 & 0 & 0 & 1
@@ -606,18 +623,18 @@ Obliczona transformacja nie stanowi jeszcze ostatecznego rozwiązania algorytmu.
 \end{figure}
 
 \newpage
-\subsection{\LARGE{Implementacja algorytmu}}
+\subsection*{\LARGE{Implementacja algorytmu}} \addcontentsline{toc}{subsection}{Implementacja algorytmu}
 Poniżej zamieszczona została minimalistyczna implementacja omówionej listy kroków w języku Python. Pełna wersja algorytmu ICP wraz z komentarzami znajduje się w sekcji \emph{Appendix}.
 
 \lstinputlisting[language=Python]{transform_matrix.py}
 
-Funkcja \emph{transform matrix} przyjmuje dwa argumenty w postaci macierzy A i B i. A jest macierzą obiektu, który chcemy dopasować do szablonu B. W rozważanym przypadku obie macierze są wymiaru 3 $\times$ n, czyli składają się z trzech kolumn, z których pierwsza zawiera wartości współrzędnej x, druga - y, a trzecia - z. Każdy wiersz w obu macierzach reprezentuje jeden z $n$ punktów. W linijkach piątej i szóstej następuje wyznaczenie centroidów A i B w postaci wektorów o długości trzy przez obliczenie średniej dla każdej kolumny współrzędnych. Macierze A1 i B1 zostają utworzone przez odjęcię od A i B ich centroidów. Pomaga nam to ustandaryzować wartości zmiennych. W linijce jedenastej liczony jest iloczyn nowo utworzonych macierzy (transponujemy A1, żeby miała tyle samo kolumn co B1 wierszy). Następnie następuje rozkład H według wartości osobliwych, który zwraca trzy czynniki w postaci macierzy U, D i Vt. Mnożąc przez siebie U i Vt (obie transponowane) otrzymujemy otrzymujemy macierz rotacji R. Warunek poniżej obsługuje specjalny przypadek odbicia. Wektor przesunięcia t jest liczony jako różnica centroidu B i obróconego przez R centroidu A. Funkcja zwraca R i t.
+Funkcja \emph{transform matrix} przyjmuje dwa argumenty w postaci macierzy \textbf{A} i \textbf{B} i. \textbf{A} jest macierzą obiektu, który chcemy dopasować do szablonu \textbf{B}. W rozważanym przypadku obie macierze są wymiaru 3 $\times$ n, czyli składają się z trzech kolumn, z których pierwsza zawiera wartości współrzędnej x, druga - y, a trzecia - z. Każdy wiersz w obu macierzach reprezentuje jeden z $n$ punktów. W linijkach piątej i szóstej następuje wyznaczenie centroidów \textbf{A} i \textbf{B} w postaci wektorów o długości trzy przez obliczenie średniej dla każdej kolumny współrzędnych. Macierze \textbf{A1} i \textbf{B1} zostają utworzone przez odjęcię od \textbf{A} i \textbf{B} ich centroidów. Pomaga nam to ustandaryzować wartości zmiennych. W linijce jedenastej liczony jest iloczyn nowo utworzonych macierzy (transponujemy \textbf{A1}, żeby miała tyle samo kolumn co B1 wierszy). Następnie następuje rozkład \textbf{H} według wartości osobliwych, który zwraca trzy czynniki w postaci macierzy \textbf{U}, \textbf{D} i \textbf{Vt}. Mnożąc przez siebie \textbf{U} i \textbf{Vt} (obie transponowane) otrzymujemy otrzymujemy macierz rotacji R. Warunek poniżej obsługuje specjalny przypadek odbicia. Wektor przesunięcia \textbf{t} jest liczony jako różnica centroidu \textbf{B} i obróconego przez \textbf{R} centroidu \textbf{A}. Funkcja zwraca \textbf{R} i \textbf{t}.
 
 Gdy mamy zaimplementowane wyznaczanie transformacji dla pojedynczej iteracji możemy przejść do ostatecznego algorytmu ICP.
 
 \lstinputlisting[language=Python]{icp.py}
 
-Funkcja \emph{icp} przyjmuje cztery argumenty w tym jeden domyślny. Przyjmowane są zmienne A i B jako macierze o wymiarach 3 $\times$ n, maksymalna liczba iteracji oraz domyślnie ustawiony próg tolerancji. W linijkach 5-8 tworzone są macierze A1 i B1 jako czterokolumnowe odpowiedniki A i B. Dzieje się to przez skopiowanie wartości A i B i dostawienie kolumny jedynek. Linijki 11-23 zawierają główną pętlę programu wykonującą się maksymalnie \emph{max iterations} razy. Przed wejściem do pętli została zainicjalizowana zmienna \emph{prev error}, która będzie nadpisywana przy każdej iteracji. Następnie funkcja \emph{calculate distance} zwraca odległości euklidesowe między poszczególnymi punktami i ich indeksy. Będą one potem nam potrzebne do wyznaczenia średniego błędu dopasowania. Wyznaczana jest najlepsza transformacja T między A1 i B1, po czym zostaje ona zastosowana do przesunięcia A1. Pod koniec działania pętli liczony jest średni błąd jako średnia odległości między punktami. Jeśli wartość bezwzględna z różnicy średniego i poprzedniego błędu jest większa niż przyjęta toleracja, a dotychczasowa liczba iteracji mniejsza niż \emph{max iterations} - pętla wykonuje się ponownie. W momencie znalezienia wystarczająco dokładnej transformacji przed zakończeniem pętli - jest ona przerywana.
+Funkcja \emph{icp} przyjmuje cztery argumenty w tym jeden domyślny. Przyjmowane są zmienne \textbf{A} i \textbf{B} jako macierze o wymiarach 3 $\times$ n, maksymalna liczba iteracji oraz domyślnie ustawiony próg tolerancji. W linijkach 5-8 tworzone są macierze \textbf{A1} i \textbf{B1} jako czterokolumnowe odpowiedniki \textbf{A} i \textbf{B}. Dzieje się to przez skopiowanie wartości \textbf{A} i \textbf{B} i dostawienie kolumny jedynek. Linijki 11-23 zawierają główną pętlę programu wykonującą się maksymalnie \emph{max iterations} razy. Przed wejściem do pętli została zainicjalizowana zmienna \emph{prev error}, która będzie nadpisywana przy każdej iteracji. Następnie funkcja \emph{calculate distance} zwraca odległości euklidesowe między poszczególnymi punktami i ich indeksy. Będą one potem nam potrzebne do wyznaczenia średniego błędu dopasowania. Wyznaczana jest najlepsza transformacja \textbf{T} między \textbf{A1} i \textbf{B1}, po czym zostaje ona zastosowana do przesunięcia \textbf{A1}. Pod koniec działania pętli liczony jest średni błąd jako średnia odległości między punktami. Jeśli wartość bezwzględna z różnicy średniego i poprzedniego błędu jest większa niż przyjęta toleracja, a dotychczasowa liczba iteracji mniejsza niż \emph{max iterations} - pętla wykonuje się ponownie. W momencie znalezienia wystarczająco dokładnej transformacji przed zakończeniem pętli - jest ona przerywana.
 
 \begin{figure}[h!]
 \centering
@@ -626,7 +643,8 @@ Funkcja \emph{icp} przyjmuje cztery argumenty w tym jeden domyślny. Przyjmowane
 \end{figure}
 
 \newpage
-\section{\LARGE{Podsumowanie i wnioski}}
+\section*{\LARGE{5. Podsumowanie i wnioski}} \addcontentsline{toc}{section}{5. Podsumowanie i wnioski}
+
 W tej pracy została zaproponowana metoda estymacji położenia obiektu, którego modelem dysponujemy. Rozważony problem jest kluczowy na polu współczesnej robotyki, głównie przez trend do stosowania coraz bardziej "elastycznych" sposobów sterowania manipulatorami. Problem został rozbity na podstawowe zagadnienia, których rozwiązania również zostały przeprowadzone. Ponieważ jest nie jest to temat nowy, podczas pisania pracy było wykorzystanych wiele obecnie istniejących źródeł opisujących pełne lub cząstkowe rozwiązanie problemu. Tak czy inaczej, główną motywacją było znalezienie możliwie prostego i skutecznego rozwiązania, co zostało osiągnięte. 
 
 Mając na uwadze dotychczasowe rozwiązania opisane w rozdziale drugim, pomysł na opracowanie kolejnej metody interakcji maszyn z otoczeniem może się wydawać co najmniej błahy, a w najgorszym wypadku zbędny. Takie stwierdzenia jednak tracą na sile po bliższym przyjrzeniu się motywacjom jakie przyświecały powstaniu tej pracy. Gdybyśmy chcieli wykorzystać sieci neuronowe lub uczenie przez wzmacnianie opisane w rozdziale 2. wiązałoby się to z dodatkowym czasem jaki trzeba by było poświęcić na przetrenowanie tych modeli. Metody widzenia maszynowego z kolei nie są najczęściej przystosowane do radzenia sobie z analizą przestrzeni trójwymiarowych. Poza tym, te algorytmy wydają się nadmiernie złożone, co często utrudnia pracę z nimi. Trudno jest natomiast znaleźć wymierny wskaźnik poziomu skomplikowania danego algorytmu. Moglibyśmy posłużyć się miarą złożoności Kołmogorowa, która określa jak długi musi być najkrótszy możliwy kod, aby wygenerować dany obiekt, w tym wypadku macierz transformacji.  Niestety, ponieważ w składni programów znajduje się wiele odwołań i wcześniej zaimplementowanych funkcjonalności - złożoność Kołmogorowa jest w stanie jedynie zgrubnie oszacować poziom komplikacji, dlatego nie została przeze mnie zastosowana.
@@ -635,7 +653,8 @@ Z drugiej strony, istnieje wiele podobieństw między proponowaną pracą a prze
 
 Podsumowując, praca, mimo wszelkich zalet nie stanowi samowystarczalnego systemu, który mógłby w obecnym stanie zostać wykorzystany na potrzeby przemysłu. Przede wszystkim dlatego, że obejmuje tylko część zagadnień jakie należałoby rozwiązać przed procesem komercjalizacji. Czynności takie jak nadzór działania czy zorientowanie chwytaka względem szablonu obiektu nadal wymagają interwencji człowieka. Projekt ma za to potencjał do stania się częścią większego oprogramowania, gdzie stanowiłby znaczny wkład na polu manipulacji i przemysłu 4.0.
 
-\subsection{\LARGE{Dalszy rozwój}}
+\subsection*{\LARGE{Dalszy rozwój}} \addcontentsline{toc}{subsection}{Dalszy rozwój}
+
 Mimo, że zaproponowana metoda estymacji położenia obiektu wykonała założone zadanie z powodzeniem, zastosowana technika posiada również pewne ograniczenia. Do najważniejszych z nich należy brak możliwości wyłonienia pożądanego przedmiotu ze zbioru zawierającego więcej niż jeden element. Tą kwestię można oczywiście rozwiązać stosując metody segmentacji. Mielibyśmy wtedy chmurę punktów rozbitą na kilka elementów, ale rodziłoby to kolejny problem - algorytm musiałby rozpoznać, który z nich stanowi żądany obiekt. W tym miejscu mogłaby zostać zaimplementowana logika odpowiadająca za obsługę przypadków w zależności czy w danych, które są sprawdzane mamy do czynienia z jednym, kilkoma lub żadnym szukanym obiektem. Podsumowując, dalszy rozwój tej pracy mógłby obejmować:
 
 \begin{itemize}
@@ -651,7 +670,7 @@ Niestety, taka metoda jest zachłanna obliczeniowo, przez co zużywa sporo czasu
 Z drugiej strony do rozwiązania problemu wielu obiektów mogłyby zostać zaprzęgnięte sieci neuronowe, a szczególną uwagę w tym względzie przykuwają modele tj. \emph{Mask R-CNN} i \emph{PointNet}. Pierwsza z nich jest przykładem sieci R-CNN (ang. \emph{Region Based Convolutional Neural Networks}) przygotowanym specjalnie pod problem segmentacji. Natomiast struktura sieci \emph{PointNet} została przystosowana do radzenia sobie z danymi w postaci chmur punktów i była testowana w zadaniach klasyfikacji i segmentacji. Niestety, jak większość sieci neuronowych, obie są przykładem uczenia nadzorowanego, a więc ich użycie wymaga etykietowania danych, na których będą trenowane. Jeśli zbiór uczący zostanie utworzony w postaci obrazów RGBD, a każdy kształt przedmiotu oznaczymy innym kolorem, wówczas takie etykietowanie może być przeprowadzone korzystając z nałożenia na siebie informacji o kolorze (RGB) i głębokości (D). Mówiąc prościej, mamy "zlepek" różnych kształtów, który chcemy podzielić na klastry. Kompletna informacja o nich, tj. ich liczba i położenie jest już zawarta w obrazie, więc tym co możemy zrobić jest przenieść te dane przypisując do każdego widzianego punktu w przestrzeni jego klaster reprezentowany przez kolor przedmiotu, do którego należy. To oczywiście niesie za sobą komplikacje w postaci różnego oświetlenia i cieni, ale na ogół nie stanowią one większego problemu.
 
 \newpage
-\section*{\LARGE{Bibliografia}}
+\section*{\LARGE{Bibliografia}} \addcontentsline{toc}{section}{Bibliografia}
 \begin{enumerate}
 \item \emph{Wprowadzenie do robotyki} - John. J. Craig
 \item \emph{Legged Robots That Balance} - Marc H. Raibert
