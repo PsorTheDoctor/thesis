@@ -1,7 +1,5 @@
 def transform_matrix(A, B):
-
   n = A.shape[1]
-
   centroid_A = np.mean(A, axis=0)
   centroid_B = np.mean(B, axis=0)
 
@@ -17,5 +15,4 @@ def transform_matrix(A, B):
     R = np.dot(Vt.T, U.T)
 
   t = centroid_B.T - np.dot(R, centroid_A.T)
-
   return R, t

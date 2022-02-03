@@ -22,6 +22,7 @@
 \setstretch{1.5}
 \geometry{a4paper, left=30mm, right=20mm, top=25mm, bottom=25mm}
 \captionsetup[figure]{font=Large}
+\setlength\parindent{1cm}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -89,15 +90,16 @@
 \LARGE{TEMAT: Rozpoznawanie i estymacja pozycji obiektu z użyciem systemu wizyjnego w zadaniu chwytania realizowanego przez manipulator}
 \vfill
 \begin{flushright}
-\Large{WYKONAWCA: Adam Wołkowycki}
+\LARGE{WYKONAWCA: Adam Wołkowycki}
 \vfill
-PODPIS: \filling[4cm]
+\LARGE{PODPIS: \filling[4cm]}
 \vfill
 \end{flushright}
-\Large{PROMOTOR: Dr Adam Wolniakowski}
+\LARGE{PROMOTOR: Dr Adam Wolniakowski}
 \vfill
-PODPIS: \filling[4cm]
+\LARGE{PODPIS: \filling[4cm]}
 \vfill
+\Large{}
 
 \begin{center}
 \Large{\textbf{BIAŁYSTOK 2022}}
@@ -182,7 +184,7 @@ Przez system wizyjny możemy rozumieć dowolny rodzaj kamery, jak również proj
 Chociaż pierwsze w pełni sprawne manipulatory istnieją w sektorze industrialnym od dekad, wykorzystanie ich w zadaniu manipulacji stanowi wyzwanie, podczas gdy często stosowane rozwiązania nie wykorzystują w pełni ich potencjału. Dlatego chcąc określić potrzebę implementacji omawianych tu rozwiązań warto jest przyjrzeć się celom przed, którymi staje współczesna robotyka. Przede wszystkim chcemy, aby dane rozwiązanie było możliwie jak najbardziej \textbf{uniwersalne}, to znaczy działało poprawnie w różnych środowiskach, było odporne na zaszumienia i efektywne. Aby te cechy mogły zostać spełnione należy pewne kwestie muszą zostać rozwiązane, a należą do nich:
 
 \begin{itemize}
-\item \textbf{Zdolność do operowania wieloma różnymi obiektami.} Uniwersalność może zostać osiągnięta przez adaptację, czyli trwający w czasie proces, którego celem jest przystosowanie danego podmiotu do obserwowanego środowiska. Algorytmy działające zgodnie z tą zasadą stają się dość popularne szczególnie w ostatnich latach, a techniki wiodące prym na tym polu określane są mianem \emph{Reinforcement Learning} (w języku polskim przyjęły się nazwy uczenia ze wspomaganiem i uczenia z krytykiem). Nie zawsze stanowią jednak wydajne rozwiązanie zadania, głownie ze względu na wspomniany wyżej czas potrzebny do przetrenowania algorytmu. Problematyczne mogą być również dość chaotyczne, a przez to nieoptymalne i trudne do przewidzenia trajektorie jakie algorytmy tego typu generują.
+\item \textbf{Zdolność do operowania wieloma różnymi obiektami.} Uniwersalność może zostać osiągnięta przez adaptację, czyli trwający w czasie proces, którego celem jest przystosowanie danego podmiotu do obserwowanego środowiska. Algorytmy działające zgodnie z tą zasadą stają się dość popularne szczególnie w ostatnich latach, a techniki wiodące prym na tym polu określane są mianem \emph{Reinforcement Learning} (w języku polskim przyjęły się nazwy uczenia ze wspomaganiem i uczenia z krytykiem). Nie zawsze stanowią jednak wydajne rozwiązanie zadania, głównie ze względu na wspomniany wyżej czas potrzebny do przetrenowania algorytmu. Problematyczne mogą być również dość chaotyczne, a przez to nieoptymalne i trudne do przewidzenia trajektorie jakie algorytmy tego typu generują.
 
 \item \textbf{Sterowanie we wszystkich stopniach swobody}. Manipulator przemysłowy wykorzystany w tej pracy charakteryzuje się sześcioma stopniami swobody (bez chwytaka), co sprawia, że dla niektórych pozycji zadanie kinematyki odwrotnej będzie miało więcej niż jedno rozwiązanie i wiele możliwych trajektorii, z których nie wszystkie są optymalne.
 
@@ -223,6 +225,12 @@ Do realizacji chwytania posłużymy się chwytakiem, którego orientacja wobec c
 \end{figure}
 
 Zanim przejdziemy do przedstawienia proponowanego rozwiązania przez rozwinięcie powyższych kwestii zostanie zrobiony przegląd najważniejszych obecnie stosowanych metod. Następnie będzie miał miejsce teoretyczny opis pewnych zagadnień. Zostaną pokazane matematyczne podstawy algorytmu \emph{Iterative Closest Point} i jego implementacja. Pod koniec zostanie zrobione podsumowanie, podczas którego będą wyciągnięte wnioski odnośnie działania proponowanego rozwiązania oraz możliwości dalszego rozwoju.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=15cm]{workbench}
+\caption{Stanowisko z robotem UR5. Na niebiesko jest widoczna umieszczona pod kątem kamera \emph{Intel RealSense} skierowana na stół.}
+\end{figure}
 
 \newpage
 \section*{\LARGE{2. Przegląd dotychczasowych rozwiązań}} \addcontentsline{toc}{section}{2. Przegląd dotychczasowych rozwiązań}
@@ -354,7 +362,9 @@ Chcąc znaleźć najlepsze dopasowanie między dwoma zbiorami punktów potrzebuj
 \end{enumerate}
 \end{comment}
 
+\vspace{5mm}
 \lstinputlisting[language=Python]{knn.py}
+\vspace{5mm}
 
 Opisując powyższy kod, dana jest funkcja \emph{knn} przyjmująca trzy argumenty: zbiór punktów w postaci listy, punkt $p$ oraz liczbę najbliższych sąsiadów domyślnie ustawioną na jeden. Działanie funkcji zaczyna się od zdefiniowania pustej listy, w której będą przechowywane poszczególne odległości. Poniżej znajduje się zagnieżdżenie dwóch pętli, z których pierwsza iteruje po punktach, a druga - po ich współrzędnych. W linijkach 6-7 liczona jest odległość euklidesowa między danym punktem w zbiorze, a punktem $p$, która następnie zapisywana jest do listy $distances$. Po wyjściu z obu pętli, lista ta jest sortowana i zwracana na wyjściu funkcji.
 
@@ -622,24 +632,53 @@ Obliczona transformacja nie stanowi jeszcze ostatecznego rozwiązania algorytmu.
 \caption{Wykres średnich odległości korespondujących punktów między dwiema chmurami przeprowadzony dla rotacji w zakresie 0.25$\pi$. Zależność ta została powtórzona przez największą liczbę prób. Z przebiegu widać, że algorytm w największej liczbie przypadków znajdował ostateczną transformację przy osiemnastej iteracji.}
 \end{figure}
 
-\newpage
-\subsection*{\LARGE{Implementacja algorytmu}} \addcontentsline{toc}{subsection}{Implementacja algorytmu}
-Poniżej zamieszczona została minimalistyczna implementacja omówionej listy kroków w języku Python. Pełna wersja algorytmu ICP wraz z komentarzami znajduje się w sekcji \emph{Appendix}.
-
-\lstinputlisting[language=Python]{transform_matrix.py}
-
-Funkcja \emph{transform matrix} przyjmuje dwa argumenty w postaci macierzy \textbf{A} i \textbf{B} i. \textbf{A} jest macierzą obiektu, który chcemy dopasować do szablonu \textbf{B}. W rozważanym przypadku obie macierze są wymiaru 3 $\times$ n, czyli składają się z trzech kolumn, z których pierwsza zawiera wartości współrzędnej x, druga - y, a trzecia - z. Każdy wiersz w obu macierzach reprezentuje jeden z $n$ punktów. W linijkach piątej i szóstej następuje wyznaczenie centroidów \textbf{A} i \textbf{B} w postaci wektorów o długości trzy przez obliczenie średniej dla każdej kolumny współrzędnych. Macierze \textbf{A1} i \textbf{B1} zostają utworzone przez odjęcię od \textbf{A} i \textbf{B} ich centroidów. Pomaga nam to ustandaryzować wartości zmiennych. W linijce jedenastej liczony jest iloczyn nowo utworzonych macierzy (transponujemy \textbf{A1}, żeby miała tyle samo kolumn co B1 wierszy). Następnie następuje rozkład \textbf{H} według wartości osobliwych, który zwraca trzy czynniki w postaci macierzy \textbf{U}, \textbf{D} i \textbf{Vt}. Mnożąc przez siebie \textbf{U} i \textbf{Vt} (obie transponowane) otrzymujemy otrzymujemy macierz rotacji R. Warunek poniżej obsługuje specjalny przypadek odbicia. Wektor przesunięcia \textbf{t} jest liczony jako różnica centroidu \textbf{B} i obróconego przez \textbf{R} centroidu \textbf{A}. Funkcja zwraca \textbf{R} i \textbf{t}.
-
-Gdy mamy zaimplementowane wyznaczanie transformacji dla pojedynczej iteracji możemy przejść do ostatecznego algorytmu ICP.
-
-\lstinputlisting[language=Python]{icp.py}
-
-Funkcja \emph{icp} przyjmuje cztery argumenty w tym jeden domyślny. Przyjmowane są zmienne \textbf{A} i \textbf{B} jako macierze o wymiarach 3 $\times$ n, maksymalna liczba iteracji oraz domyślnie ustawiony próg tolerancji. W linijkach 5-8 tworzone są macierze \textbf{A1} i \textbf{B1} jako czterokolumnowe odpowiedniki \textbf{A} i \textbf{B}. Dzieje się to przez skopiowanie wartości \textbf{A} i \textbf{B} i dostawienie kolumny jedynek. Linijki 11-23 zawierają główną pętlę programu wykonującą się maksymalnie \emph{max iterations} razy. Przed wejściem do pętli została zainicjalizowana zmienna \emph{prev error}, która będzie nadpisywana przy każdej iteracji. Następnie funkcja \emph{calculate distance} zwraca odległości euklidesowe między poszczególnymi punktami i ich indeksy. Będą one potem nam potrzebne do wyznaczenia średniego błędu dopasowania. Wyznaczana jest najlepsza transformacja \textbf{T} między \textbf{A1} i \textbf{B1}, po czym zostaje ona zastosowana do przesunięcia \textbf{A1}. Pod koniec działania pętli liczony jest średni błąd jako średnia odległości między punktami. Jeśli wartość bezwzględna z różnicy średniego i poprzedniego błędu jest większa niż przyjęta toleracja, a dotychczasowa liczba iteracji mniejsza niż \emph{max iterations} - pętla wykonuje się ponownie. W momencie znalezienia wystarczająco dokładnej transformacji przed zakończeniem pętli - jest ona przerywana.
-
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{bunny_icp}
 \caption{Działanie algorytmu ICP na przykładzie obiektu w kształcie królika.}
+\end{figure}
+
+\newpage
+\subsection*{\LARGE{Implementacja algorytmu}} \addcontentsline{toc}{subsection}{Implementacja algorytmu}
+Na następnych stronach zamieszczona została minimalistyczna implementacja omówionej listy kroków w języku Python. Pełna wersja algorytmu ICP wraz z komentarzami znajduje się w sekcji \emph{Appendix}.
+
+\newpage
+\lstinputlisting[language=Python]{transform_matrix.py}
+\vspace{5mm}
+
+Funkcja \emph{transform matrix} przyjmuje dwa argumenty w postaci macierzy \textbf{A} i \textbf{B} i. \textbf{A} jest macierzą obiektu, który chcemy dopasować do szablonu \textbf{B}. W rozważanym przypadku obie macierze są wymiaru 3 $\times$ n, czyli składają się z trzech kolumn, z których pierwsza zawiera wartości współrzędnej x, druga - y, a trzecia - z. Każdy wiersz w obu macierzach reprezentuje jeden z $n$ punktów. W linijkach trzeciej i czwartej następuje wyznaczenie centroidów \textbf{A} i \textbf{B} w postaci wektorów o długości trzy przez obliczenie średniej dla każdej kolumny współrzędnych. Macierze \textbf{A1} i \textbf{B1} zostają utworzone przez odjęcię od \textbf{A} i \textbf{B} ich centroidów. Pomaga nam to ustandaryzować wartości zmiennych. W linijce dziewiątej liczony jest iloczyn nowo utworzonych macierzy (transponujemy \textbf{A1}, żeby miała tyle samo kolumn co B1 wierszy). Następnie następuje rozkład \textbf{H} według wartości osobliwych, który zwraca trzy czynniki w postaci macierzy \textbf{U}, \textbf{D} i \textbf{Vt}. Mnożąc przez siebie \textbf{U} i \textbf{Vt} (obie transponowane) otrzymujemy otrzymujemy macierz rotacji R. Warunek poniżej obsługuje specjalny przypadek odbicia. Wektor przesunięcia \textbf{t} jest liczony jako różnica centroidu \textbf{B} i obróconego przez \textbf{R} centroidu \textbf{A}. Funkcja zwraca przekształcenie jako \textbf{R} i \textbf{t}.
+
+Gdy mamy zaimplementowane wyznaczanie transformacji dla pojedynczej iteracji możemy przejść do ostatecznego algorytmu ICP.
+
+\vspace{5mm}
+\lstinputlisting[language=Python]{icp.py}
+\vspace{5mm}
+
+Funkcja \emph{icp} przyjmuje cztery argumenty w tym jeden domyślny. Przyjmowane są zmienne \textbf{A} i \textbf{B} jako macierze o wymiarach 3 $\times$ n, maksymalna liczba iteracji oraz domyślnie ustawiony próg tolerancji. W linijkach 4-7 tworzone są macierze \textbf{A1} i \textbf{B1} jako czterokolumnowe odpowiedniki \textbf{A} i \textbf{B}. Dzieje się to przez skopiowanie wartości \textbf{A} i \textbf{B} i dostawienie kolumny jedynek. Linijki 10-19 zawierają główną pętlę programu wykonującą się maksymalnie \emph{max iterations} razy. Przed wejściem do pętli została zainicjalizowana zmienna \emph{prev error}, która będzie nadpisywana przy każdej iteracji. Następnie funkcja \emph{calculate distance} zwraca odległości euklidesowe między poszczególnymi punktami i ich indeksy. Będą one potem nam potrzebne do wyznaczenia średniego błędu dopasowania. Wyznaczana jest najlepsza transformacja \textbf{T} między \textbf{A1} i \textbf{B1}, po czym zostaje ona zastosowana do przesunięcia \textbf{A1}. Pod koniec działania pętli liczony jest średni błąd jako średnia odległości między punktami. Jeśli wartość bezwzględna z różnicy średniego i poprzedniego błędu jest większa niż przyjęta toleracja, a dotychczasowa liczba iteracji mniejsza niż \emph{max iterations} - pętla wykonuje się ponownie. W momencie znalezienia wystarczająco dokładnej transformacji przed zakończeniem pętli - jest ona przerywana.
+
+\subsection*{\LARGE{Działanie robota w praktyce}} \addcontentsline{toc}{subsection}{Działanie robota w praktyce}
+
+Przejście od teorii do praktyki wymagało dodatkowo implementacji funkcji odpowiedzialnych za poruszanie manipulatorem. Został w tym celu użyty popularny middleware ROS (\emph{Robot Operating System}), do którego odwołania były kierowanie z kodu Pythona. Omawiając program, możemy zwrócić uwagę, że wykorzystane zostały dwa serwisy: jeden odpowiedzialny za chwytak i drugi - za przeguby manipulatora. Funkcja \emph{move gripper} sterująca chwytakiem przyjmuje argument logiczny otwierający go w przypadku prawdy i zamykający w przypadku przeciwnym. Metoda \emph{move} kontrolująca ustawienie manipulatora jako argument przyjmuje z kolei tablicę sześciu wartości opisujących dane miejsce w przestrzeni przez jego współrzędne kartezjańskie i kąty Eulera.
+
+\vspace{5mm}
+\lstinputlisting[language=Python]{gripper.py}
+
+\newpage
+\lstinputlisting[language=Python]{move.py} 
+\vspace{5mm}
+
+Również z ROSa korzystając zostało obsłużone zachowanie kamery. W tej roli została użyta niewielkich rozmiarów kamera \emph{Intel RealSense} zdolna zapewnić obraz w formacie RGBD. W linijce 26. przytoczonego kodu źródłowego znajduje się funkcja odpowiedzialna za zrobienie zdjęcia. Zapisuje ona bieżącą klatkę do pliku, który następnie może zostać załadowany do programu korzystającego z ICP w celu wyznaczenia ostatecznej transformacji.
+
+\vspace{5mm}
+\lstinputlisting[language=Python]{camera.py}
+\vspace{5mm}
+
+Mimo wszelkich starań działanie proponowanego systemu w praktyce często różniło się od pożądanego. Głównym problemem była rozbieżność między chmurą punktów widzianą z kamery a rzeczywistym kształtem przedmiotu. Gdy ta rozbieżność była zbyt duża - algorytm nie był w stanie odnaleźć poprawnego przekształcenia. Przez to w niektórych przypadkach konieczne okazało się znajdowanie pozycji obiektu zastępując niekształtną chmurę punktów jej centroidem. Jest to metoda działająca w przypadku odpowiednio małych obiektów, które trudno wykryć za pomocą kamery, natomiast nie dostarcza tak dokładnych informacji jak proponowane rozwiązanie.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{robot}
+\caption{Doświadczenie wykonane przez ramię robota UR5. Drewniany klocek niewielkich rozmiarów z trudem został wyodrębniony na tle chmury punktów pobranej z kamery, natomiast ze wzgledu na maksymalny rozstaw szczęk chytaka niemożliwe było chwytanie większych elementów.}
 \end{figure}
 
 \newpage
@@ -658,10 +697,14 @@ Podsumowując, praca, mimo wszelkich zalet nie stanowi samowystarczalnego system
 Mimo, że zaproponowana metoda estymacji położenia obiektu wykonała założone zadanie z powodzeniem, zastosowana technika posiada również pewne ograniczenia. Do najważniejszych z nich należy brak możliwości wyłonienia pożądanego przedmiotu ze zbioru zawierającego więcej niż jeden element. Tą kwestię można oczywiście rozwiązać stosując metody segmentacji. Mielibyśmy wtedy chmurę punktów rozbitą na kilka elementów, ale rodziłoby to kolejny problem - algorytm musiałby rozpoznać, który z nich stanowi żądany obiekt. W tym miejscu mogłaby zostać zaimplementowana logika odpowiadająca za obsługę przypadków w zależności czy w danych, które są sprawdzane mamy do czynienia z jednym, kilkoma lub żadnym szukanym obiektem. Podsumowując, dalszy rozwój tej pracy mógłby obejmować:
 
 \begin{itemize}
-\item Odszumienie i \textbf{segmentację} wejściowej chmury punktów w celu sprawdzenia z iloma elementami mamy do czynienia i gdzie się one znajdują.
+\item \textbf{Odszumienie} wejściowej chmury punktów przez odcięcie powierzchni stołu i pozbycie się nieistotnych elementów podczas przetwarzania danych.
+
+\item \textbf{Segmentację} w celu sprawdzenia z iloma elementami mamy do czynienia i gdzie się one znajdują.
 
 \item \textbf{Rozpoznanie} jak bardzo dany przedmiot odbiega od swojego szablonu. To pozwoliłoby stwierdzić czy mamy do czynienia z właściwym obiektem. Jeśli tak nie jest - dalsza estymacja położenia nie ma sensu.
 \end{itemize}
+
+Odszumienie przychodzących danych w przypadku chmur punktów nie jest łatwym zajęciem. Może zostać przeprowadzone ręcznie przez wyśrodkowanie obiektu i "przycięcie" chmury wzdłuż jego granic. W przypadku gdy oś z jest skierowana do góry i prostopadła do stołu, punkty do niego należące mogą zostać odcięte przez usunięcie wszystkich punktów, dla których z jest większe od wysokości stołu. Wymaga to jednak pewnej interwencji człowieka. Chcąc ten proces zautomatyzować moglibyśmy posłużyć się metodą RANSAC (\emph{Random sample consensus}) - algorytmem iteracyjnym do usuwania z danych elementów odstających. Problem ten można uprościć również zaniżając pozycję kamery względem stołu, dzięki czemu stosunek liczby punktów obiektu do wszystkich punktów byłby większy. 
 
 Wracając do tematu segmentacji, zadanie to dla niewielkiej liczby elementów może zostać zrealizowane przy pomocy technik analizy skupień, do którego zaliczamy algorytmy uczenia nienadzorowanego takie jak DBSCAN, grupowanie hierarchiczne i metodę $k$-średnich. Jeśli podział zostałby zrealizowany dla każdej liczby klastrów od 1 do $n$ (przy czym $n$ to założona maksymalna liczba klastrów) - wówczas do dyspozycji mielibyśmy miarę dopasowania do każdej z tych ewentualności. Taką miarą jest najczęściej kryterium sumy kwadratów w obrębie klastra WCSS \emph{(Within-Cluster Sum of Squared)}. Z niej możliwe stałoby się odczytanie optymalnej liczby elementów. 
 
@@ -680,11 +723,12 @@ Z drugiej strony do rozwiązania problemu wielu obiektów mogłyby zostać zaprz
 \item \emph{The Representation of Tool Use in Humans and Monkeys: Common and Uniquely Human Features}, "Journal of Neuroscience" - Scott H. Jonhson-Frey
 \item \emph{Krótka historia rozumu. Od pierwszej myśli do rozumienia wszechświata} - Leonard Mlodinow
 \item \emph{Deep Learning. Systemy uczące się} - Ian Goodfellow, Yoshua Bengio, Aaron Courville
-\item \emph{Solving Rubik's Cube with a Robot Hand} - OpenAI
+\item \emph{Solving Rubik's Cube with a Robot Hand} - praca zbiorowa OpenAI
 \item \emph{Linear Algebra with Applications} - Steven J. Leon
 \item \emph{A Singularly Valuable Decomposition} - Dan Kalman
 \item \emph{A Method for Registration of 3-D Shapes} - Paul J. Besl, Neil D. McKay
 \item \emph{Least-Squares Fitting of Two 3-D Point Sets} - K.S. Arun, T.S. Huang, S.D. Blostein
+\item \emph{Mask R-CNN} - Kaiming He, Georgia Gkioxari, Piotr Dollár, Ross Girshick
 \item \emph{PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation} - Charles R. Qi, Hao Su, Kaichun Mo, Leonidas J. Guibas
 \end{enumerate}
 
