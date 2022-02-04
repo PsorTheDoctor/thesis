@@ -110,9 +110,9 @@
 \section*{\LARGE{Abstract}}
 In the recent years, a rising trend in application of autonomous robots can be observed. Nowadays, many solutions intended for this part of market are developed and each of these is based on solutions that are hard to algorithmize. The examples of this kind of tasks are image processing, object position estimation and configuration of kinematics. I am going to focus on them in my thesis.
 
-The purpose of this thesis is to develop a solution that allows for recognition a given object and perform grasping of it by a manipulator. The further development of the problem known as \emph{bin picking} aims at increasing a scope of industrial robots' operation in a context of their work. It is quintessential in many modern robotic applications targeted for being more "flexible" and intuitive.
+The purpose of this thesis is to develop a solution that allows for recognition of a given object and perform grasping of it by a manipulator. The further development of the problem known as \emph{bin picking} aims at increasing a scope of industrial robots' operation in a context of their work. It is quintessential in many modern robotic applications targeted for being more "flexible" and intuitive.
 
-Because the tasks I mentioned are often performed by a particular type of robots, in my work I am going to use UR5 manipulator by Danish manufacturer \emph{Universal Robots}. There will be implemented algorithm on it that will be able to define a location of seen objects based on the data from the computer vision sensors. In my work I will be using code examples written in Python. Thanks to this, it will be possible to deeply verified in practice the working of a robot.
+Because the tasks I mentioned are often performed by a particular type of robots, in my work I am going to use UR5 manipulator by Danish manufacturer \emph{Universal Robots}. There will be implemented algorithm on it that will be able to define a location of seen objects based on the data from the computer vision sensors. In my work I will be using code examples written in Python. Thanks to this, it will be possible to thoroughly verify in practice the working of a robot.
 
 \newpage
 \section*{\LARGE{Streszczenie}}
@@ -157,7 +157,7 @@ Definiując robotykę jako dziedzinę wiedzy mamy na uwadze zajmowanie się urz�
 
 Musimy jednak mieć na uwadze, że jest to dość ogólna i luźna klasyfikacja. Pierwotnie, definicję wyodrębniającą robotykę i automatyzację zaproponował John J. Craig, natomiast podział na manipulację i lokomocję został został przytoczony w książce Marca H. Raiberta \emph{Legged Robots That Balance} w ostatnim rozdziale w pytaniu \emph{Do Locomotion and Manipulation Have a Common Ground?} Tam też problem został rozwinięty w kontekście badań nad lokomocją i manipulacją oraz tego jak te dwie dziedziny wpływają na siebie nawzajem.
 
-\subsection*{\LARGE{Manipulacja a percepcja}} \addcontentsline{toc}{subsection}{Manipulacja a percepcja}
+\subsection*{\LARGE{1.1. Manipulacja a percepcja}} \addcontentsline{toc}{subsection}{1.1. Manipulacja a percepcja}
 
 Gdy mamy już wyjaśnione ogólne zagadnienia możemy skupić się na danym zadaniu manipulatora. Załóżmy, że zadaniem robota jest pobranie kilku kostek z podajnika w miejscu A i przeniesienie ich w odpowiednie miejsca na palecie B, tzw. paletyzacja. Aby wykonać to zadanie możemy podejść do niego na dwa sposoby: zapewniając maszynie odpowiednią percepcję lub nie. 
 
@@ -179,7 +179,7 @@ Przez system wizyjny możemy rozumieć dowolny rodzaj kamery, jak również proj
 \caption{Przykład zadania \emph{bin picking} wykonywanego przez robota KUKA w oparciu o dane z systemu wizyjnego. Widoczne po lewej obrazy zostały wygenerowane sztucznie jako hipotetyczne dane z kamery umieszczonej nieruchomo względem bazy robota. Od góry - ujęcie powstałe jako bezpośrednia projekcja, obraz niosący dane o głębii i obraz poddany segmentacji. Symulacja została stworzona w języku Python z wykorzystaniem biblioteki \emph{pybullet}.}
 \end{figure}
 
-\subsection*{\LARGE{Cele manipulacji}} \addcontentsline{toc}{subsection}{Cele manipulacji}
+\subsection*{\LARGE{1.2. Cele manipulacji}} \addcontentsline{toc}{subsection}{1.2. Cele manipulacji}
 
 Chociaż pierwsze w pełni sprawne manipulatory istnieją w sektorze industrialnym od dekad, wykorzystanie ich w zadaniu manipulacji stanowi wyzwanie, podczas gdy często stosowane rozwiązania nie wykorzystują w pełni ich potencjału. Dlatego chcąc określić potrzebę implementacji omawianych tu rozwiązań warto jest przyjrzeć się celom przed, którymi staje współczesna robotyka. Przede wszystkim chcemy, aby dane rozwiązanie było możliwie jak najbardziej \textbf{uniwersalne}, to znaczy działało poprawnie w różnych środowiskach, było odporne na zaszumienia i efektywne. Aby te cechy mogły zostać spełnione należy pewne kwestie muszą zostać rozwiązane, a należą do nich:
 
@@ -193,7 +193,7 @@ Chociaż pierwsze w pełni sprawne manipulatory istnieją w sektorze industrialn
 
 Do powyższej listy moglibyśmy także dopisać zdolność do przenoszenia zachowań z symulacji do rzeczywistego świata, ale ponieważ nie we wszytkich problemach stosuje się metody symulacji - nie dopisywałem jej.
 
-\subsection*{\LARGE{Afordancje}} \addcontentsline{toc}{subsection}{Afordancje}
+\subsection*{\LARGE{1.3. Afordancje}} \addcontentsline{toc}{subsection}{1.3. Afordancje}
 
 Zdolność oddziaływania na jakiś obiekt lub środowisko została określona mianem \textbf{afordancji} przez psychologa Jamesa J. Gibsona w 1966 roku w książce \emph{The Senses Considered as Perceptual Systems} i opisana w artykule \emph{The  Theory  of  Affordance.  In:  Perceiving,  Acting  and  Knowing  Toward  an Ecological Psychology}. Definicja ta przyjęła szerokie znaczenie w dziedzinach tj. psychologia, kognitywistyka, sztuczna inteligencja czy robotyka. Możemy zdefiniować afordancje na przykładzie ludzi, ale człowiek ze względu na swoją złożoność często pozostaje niewdzięcznym modelem. Dlatego dla naszych rozważań posłużymy się morskim bezkręgowcem - krabem \emph{Limulus polyphemus}. Przykład ten został opisany m.in. w \emph{Biocybernetyce} Ryszarda Tadeusiewicza. Korzystnymi cechami tego stawonoga z naszego punktu widzenia są posiadanie ośrodkowego układu nerwowego oraz oczu, z których impulsy jesteśmy w stanie śledzić. Tak więc, jesteśmy w stanie w przybliżeniu zobrazować jego pole widzenia. 
 
@@ -203,24 +203,24 @@ Przykład kraba, mimo że może wydawać się surowy, niesie ze sobą istotne ws
 
 Tak więc, aby mogło zostać zrealizowane chwytanie -  wykorzystywane są informacje zawarte w obrazie. Pozwala to tłumaczyć dlaczego niektóre gatunki, przykładem tu mogą być wczesne homidy, wykształciły bardziej rozwinięty wzrok konieczny do wytypowania elementów otoczenia. Podobnie w robotyce, robot musi nauczyć się jak chwytać i operować uchwyconymi obiektami, tak aby osiągnąć wyznaczony cel. Różne przedmioty, np. młotek mogą być uchwycone na wiele różnych sposobów natomiast liczba optymalnych chwytów jest ograniczona w kontekście danego zadania. 
 
-\subsection*{\LARGE{Zarys pracy}} \addcontentsline{toc}{subsection}{Zarys pracy}
+\subsection*{\LARGE{1.4. Zarys pracy}} \addcontentsline{toc}{subsection}{1.4. Zarys pracy}
 
 Mając wprowadzenie za sobą możemy skupić się na wymienieniu kolejnych etapów pracy. Głównym jej dążeniem jest znalezienie znanego przedmiotu i uchwycenie go za pomocą manipulatora. Aby to osiągnąć najpierw możemy rozbić ten problem na mniejsze, do których należą estymacja położenia i orientacji obiektu, zadanie kinematyki odwrotnej oraz chwytanie.
 
 \begin{itemize}
 \item \textbf{Estymacja położenia i orientacji obiektu} \\
-Do rozwiązania tego zadania zostanie zaproponowana metoda inteligencji obliczeniowej znana pod nazwą ICP (ang. \emph{Iterative Closest Point}). W oparciu o model obiektu znajduje ona trnasformację jakiej ten model trzeba poddać, aby znalazł się w miejscu szukanego przedmiotu. Jej szczegółowe działanie zostanie szerzej opisane w kolejnych rozdziałach.
+Do rozwiązania tego zadania zostanie zaproponowana metoda inteligencji obliczeniowej znana pod nazwą ICP (ang. \emph{Iterative Closest Point}). W oparciu o model obiektu znajduje ona transformację jakiej ten model trzeba poddać, aby znalazł się w pozycji szukanego przedmiotu. Jej szczegółowe działanie zostanie szerzej opisane w rozdziale czwartym. Zostaną tam wyłożone matematyczne podstawy algorytmu, jego implementacja oraz jak to wygląda w praktyce.
 
 \item \textbf{Zadanie kinematyki odwrotnej} \\
 Problem znalezienia odpowiednich wielkości opisujących manipulator jako łańcuch kinematyczny dzielimy na dwa mniejsze: zadanie kinematyki prostej i odwrotnej. Proste zadanie kinematyki odpowiada na pytanie w jakim miejscu znajduje się efektor końcowy dla danej pozy manipulatora. Natomiast kinematyka odwrotna zakłada, że znane jest docelowe położenie efektora końcowego a szukana jest pozycja (lub pozycje) robota, które pozwolą mu je osiągnąć, dlatego też zostanie wykorzystana w tej pracy. Mając na uwadze, że większość robotów przemysłowych posiada wbudowaną implementację kinematyki odwrotnej nie będziemy wchodzić w jej szczegóły.
 
 \item \textbf{Chwytanie} \\
-Do realizacji chwytania posłużymy się chwytakiem, którego orientacja wobec chwytanego przedmiotu zostanie dobrana z góry. Stanowić to może pewien mankament, ponieważ działanie uzależniane jest tym samym od ingerencji człowieka. Z drugiej strony, daje to większe prawdopodobieństwo pewniejszego i bardziej stabilnego chwytu, który może okazać się kluczowy w praktycznych zastosowaniach.
+Do realizacji chwytania posłużymy się chwytakiem, którego orientacja wobec chwytanego przedmiotu zostanie dobrana z góry. Stanowić to może pewien mankament, ponieważ działanie uzależniane jest tym samym od ingerencji człowieka. Z drugiej strony, daje to większe prawdopodobieństwo pewniejszego i bardziej stabilnego chwytu, który może okazać się kluczowy w praktycznych zastosowaniach. Taki nadzór pozwala również stwierdzić czy stosowany chwytak jest odpowiedni i prawidłowo spełnia swoja rolę. Realizacja chwytu manipulatorem UR5 zostanie pokazana pod koniec rozdziału czwartego.
 \end{itemize}
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=15cm]{catch}
+\includegraphics[width=13cm]{catch}
 \caption{Ręczne zorientowanie szczęk chwytaka robota UR5 wobec obiektu. Wizualizacja została wykonana na potrzeby pracy z użyciem biblioteki \emph{pybullet}.}
 \end{figure}
 
@@ -237,7 +237,7 @@ Zanim przejdziemy do przedstawienia proponowanego rozwiązania przez rozwinięci
 
 Problem sterowania robotami z wykorzystaniem informacji zwrotnej z otoczenia sięga początków współczesnej robotyki. Chcąc zapewnić możliwość pracy robota w środowiskach, w których nie mamy wystarczającej wiedzy na temat położenia obiektów z jakimi ma wchodzić w interakcje, konieczne jest zaimplementowanie podstawowej percepcji. Najprostszy przypadek może stanowić robot wyposażony w czujnik koloru w zadaniu sortowania kolorowych kulek. Wiele rozwiązań jednak opiera się na wykorzystaniu danych i przetworzeniu obrazu z kamery i czujników w taki sposób, aby robot był w stanie rozpoznać lub zlokalizować wskazane obiekty. W tym rozdziale przyjrzymy się obecnie stosowanym rozwiązaniom, które wpisują się w popularne trendy na tym polu. Aby wprowadzić pewien porządek, wyodrębnione zostały trzy najbardziej istotne grupy: widzenie maszynowe, sieci neuronowe oraz uczenie przez wzmacnianie. Ponieważ są to tematy dosyć obszerne, uwaga zostanie skupiona na podstawowych zasadach ich działania bez szczególnego wchodzenia obliczenia i metody matematyczne, które za nimi stoją - takie rozważania wychodziły poza temat tej pracy. Nabycie takiej intuicji okaże się pomocne przy późniejszej ocenie proponowanego rozwiązania.
 
-\subsection*{\LARGE{Widzenie maszynowe}} \addcontentsline{toc}{subsection}{Widzenie maszynowe}
+\subsection*{\LARGE{2.1. Widzenie maszynowe}} \addcontentsline{toc}{subsection}{2.1. Widzenie maszynowe}
 
 Analizę i przetwarzanie obrazu nazywany widzeniem maszynowym lub krócej CV od angielskich słów \emph{Computer Vision}. Stało się ono popularne szczególnie na początku lat '00 wraz ze wzrostem wydajności obliczeniowej ówczesnych komputerów. Wyróżniamy kilka typów problemów związanych z obrazami, takich jak: detekcja, lokalizacja i segmentacja.
 
@@ -254,13 +254,13 @@ a także w niektórych przypadkach, otrzymujemy prawdopodobieństwo jego wystąp
 
 Wymieniowe wyżej problemy należą do dość złożonych zadań wymagających sporej mocy obliczeniowej. Z pomocą przychodzą programy takie jak SIFT i algorytm Violi-Jonesa (w celu detekcji i lokalizacji danych obiektów na podstawie podobieństwa cech) czy metody uczenia nienadzorowanego (pomocne przy segmentacji). Często jednak stosowane są sztuczne sieci neuronowe, a szczególnie popularne są sieci zawierające operację splotu, czyli sieci splotowe.
 
-\subsection*{\LARGE{Sztuczne sieci neuronowe}} \addcontentsline{toc}{subsection}{Sztuczne sieci neuronowe}
+\subsection*{\LARGE{2.2. Sztuczne sieci neuronowe}} \addcontentsline{toc}{subsection}{2.2. Sztuczne sieci neuronowe}
 
 Mówiąc o sieciach neuronowych w kontekście przedmiotów zajmujących się przetwarzaniem sygnałów mamy na myśli struktury matematyczne, które w pewnym stopniu przypominają budowę i działanie ludzkiego mózgu. Są one jedną z najbardziej popularnych technik współczesnej sztucznej inteligencji. Stosujemy je przede wszystkim wtedy, gdy nie znamy reguł rozwiązania danego problemu, ale dysponujemy zbiorem przykładowych zadań (zbiorem uczącym), które zostały poprawnie rozwiązane. 
 
 Sztuczne sieci neuronowe składają się z wzajemnie połączonych neuronów, które są uproszczonymi modelami biologicznych odpowiedników. Jest to spowodowane tym, że rzeczywiste neurony są tworami niezmiernie skomplikowanymi i wymagającymi pod względem obliczeniowym. Gdy przedstawimy taką sieć w postaci grafu - jego wierzchołki będą reprezentować neurony, a krawędzie - poszczególne wagi sieci. Jej trening polega na znalezieniu takich wartości wag, które zapewnią poprawne rozwiązanie problemu. Zazwyczaj odbywa się to za pomocą algorytmu wstecznej propagacji błędów (ang. \emph{backpropagation}). Trenując sieć, generalizuje ona wiedzę na podstawie zbioru uczącego, od którego zależy jej późniejsze działanie.
 
-\subsubsection*{\Large{Sieci jednokierunkowe}}
+\subsubsection*{\Large{2.2.1. Sieci jednokierunkowe}}
 Sztandarowym przykładem jest tu wielowarstwowa sieć jednokierunkowa, zwana również perceptronem wielowarstwowym lub MLP (ang. \emph{Multi-Layer Perceptron}). Jak sama nazwa wskazuje jest to struktura, w której zostały wyodrębnione \textbf{warstwy}, z których pierwszą nazywamy wejściową, środkowe - ukrytymi, a ostatnią - wyjściową. Warstwy te reprezentują kolejne poziomy abstrakcji tworząc model hierarchiczny. Najniższe z nich wykrywają proste cechy sygnału wejściowego, a najwyższe, opierając się o informacje z poprzednich warstw - są w stanie znaleźć pewne coraz bardziej abstrakcyjne cechy. 
 
 Posługując się przykładem, załóżmy, że chcemy przetrenować pięciowarstwową sieć pod kątem zdolności do rozpoznawania obrazu. Przechodząc przez warstwy ukryte w najbardziej powszechnym przypadku pierwsza z nich wykryje krawędzie na podstawie różnic kolorów między pikselami, druga - korzystając z informacji o krawędziach będzie w stanie znaleźć kontury i zaokrąglenia, trzecia - pewne relacje pomiędzy nimi. Na ich podstawie z większym prawdopodobieństwem będzie mogła stwierdzić do jakiej klasy należy widziany obraz. W ten sposób, najczęściej w postaci rozkładu prawdopodobieństwa, dostaniemy informację o rozpoznanym obiekcie.
@@ -271,10 +271,10 @@ Posługując się przykładem, załóżmy, że chcemy przetrenować pięciowarst
 \caption{Idea działania sieci neuronowej w zadaniu rozpoznawania obiektu. Przedstawiona została sieć składająca się z pięciu warstw: wejściowej, trzech ukrytych i wyjściowej. Na wejście trafiają dane, np. obraz lub chmura punktów, którą chcemy rozpoznać. Następnie kolejne warstwy ukryte wydobywają z nich coraz bardziej abstrakcyjne cechy. Pod koniec, informacja o przynależności do danej klasy A, B lub C jest zwracana na wyjściu sieci. Obraz został zaczerpnięty z książki \emph{Deep Learning: Systemy uczące się}.}
 \end{figure}
 
-\subsubsection*{\Large{Sieci splotowe}}
+\subsubsection*{\Large{2.2.2. Sieci splotowe}}
 Rodzaj sieci, na który szczególnie warto jest zwrócić uwagę stanowią sieci splotowe zwane częściej sieciami konwolucyjnymi, w skrócie CNN (ang. \emph{Convolutional Neural Network}). Te sieci zawdzięczają swoją popularność przede wszystkim dzięki wykorzystaniu do problemów związanych z analizą obrazów, przy których ich możliwości przewyższają zwykłe sieci jednokierunkowe. Ich nazwa wzięła się od operacji splotu (konwolucji), która jest wykorzystywana do ekstrakcji cech przez splot obrazu z filtrem. Sieci splotowe są z powodzeniem stosowane w rozpoznawaniu, klasyfikacji i segmentacji obrazów. Ponieważ możliwe jest przeprowadzenie operacji splotu na danych o zarówno jednym, dwóch oraz trzech wymiarach, użycie sieci CNN da się poszerzyć do analizy danych takich jak dźwięk, obrazy RGBD czy chmury punktów, a to z kolei implikuje ich przydatność w robotyce.
 
-\subsubsection*{\Large{GraspNet}}
+\subsubsection*{\Large{2.2.3. GraspNet}}
 Daleko idącym przykładem wykorzystania sieci neuronowych w robotyce jest projekt \emph{GraspNet}. Celem przedsięwzięcia było przetrenowanie modelu sztucznej inteligencji na zbiorze obrazów pochodzących z kamer RGBD przedstawiających przedmioty z możliwymi chwytami wyznaczonymi analitycznie. Twórcom projektu udało się zgromadzić 97280 obrazów RGBD zawierających ponad miliard możliwych pozycji chwytu. Zbiór ten został ujawniony i opublikowany pod nazwą \emph{GraspNet-1Billion}. W rzeczywistości \emph{GraspNet} jest modelem składającym się z kilku mniejszych sieci, który oprócz nich wykorzystuje funkcje tj. grupowanie, wyśrodkowywanie i filtrowanie danych. Tak więc, dla danych wejściowych w postaci chmury punktów przyporządkowuje pewną ilość chwytów jakie mogą zostać zastosowane podczas próby uchwycenia obiektów w niej przedstawionych. Możliwe chwyty zostają wyznaczone w sposób, na który mogą zostać przeprowadzone z użyciem chwytaka dwupalczastego.
 
 \begin{figure}[h]
@@ -283,13 +283,13 @@ Daleko idącym przykładem wykorzystania sieci neuronowych w robotyce jest proje
 \caption{Wizualizacja możliwych chwytów wykrytych przez sieć \emph{GraspNet}. Na niebiesko oznaczone jest położenie szczęk chwytaka.}
 \end{figure}
 
-\subsubsection*{\Large{Zalety sieci neuronowych}}
+\subsubsection*{\Large{2.2.4. Zalety sieci neuronowych}}
 Oprócz zdolności do rozwiązywania problemów, które nie są efektywnie algorytmizowalne w oparciu o matematyczne modelowanie wiedzy, do zalet sieci neuronowych możemy zaliczyć ich wszechstronność. To znaczy, dana struktura sieci może zostać przetrenowana do wielu różnych niezwiązanych ze sobą zadań. Jest to w pewnym sensie cecha wspólna wszystkich technik uczenia maszynowego wyróżniająca je na tle innych algorytmów.
 
-\subsubsection*{\Large{Wady sieci neuronowych}}
+\subsubsection*{\Large{2.2.5. Wady sieci neuronowych}}
 Sieci neuronowe mają wiele wad - trenowane algorytmem \emph{backpropagation} dokonują coraz mniejszych zmian w kolejnych warstwach idących wgłąb sieci (problem zanikającego gradientu) oraz łatwo przeuczają się, ponieważ większa liczba zmieniających się podczas uczenia sieci parametrów sprzyja przetrenowaniu. Skutkiem tego jest mniejsza wydajność proces ekstrakcji cech występujących w zbiorze uczącym. Trenując sieci neuronowe, w szczególności duże modele, nie do końca wiemy w jaki sposób przetwarzają one informacje. Pociąga to za sobą wiele implikacji, a patrząc z technicznej perspektywy, często nie jesteśmy pewni czy zastosowany przez nas model sieci nie mógłby zostać uproszczony. Gdybyśmy dysponowali większą wiedzą na temat przetwarzania przez nie informacji, najprawdopodobniej możliwa była by redukcja czasu, danych i zasobów obliczeniowych potrzebnych do ich uczenia. Są to najbardziej istotne czynniki wpływające na jakość działania modelu.
 
-\subsection*{\LARGE{Uczenie przez wzmacnianie}} \addcontentsline{toc}{subsection}{Uczenie przez wzmacnianie}
+\subsection*{\LARGE{2.3. Uczenie przez wzmacnianie}} \addcontentsline{toc}{subsection}{2.3. Uczenie przez wzmacnianie}
 
 Uczenie przez wzmacnianie zwane też uczeniem z krytykiem lub \emph{Reinforcement Learning} opisuje metody uczenia maszynowego, w którym optymalne rozwiązanie danego zadania powstaje na skutek interakcji agenta ze środowiskiem. W zastosowaniach tego podejścia w robotyce, środowiskiem jest symulacja lub rzeczywiste otoczenie, z którym agent (robot) wchodzi w interakcję. Celem jest maksymalizacja zysku ściśle związanego z pożądanym rezultatem. W ten sposób robot próbując osiągnąć jak najwyższy wynik uczy się rozwiązywać zadany problem.
 
@@ -301,10 +301,10 @@ Uczenie przez wzmacnianie zwane też uczeniem z krytykiem lub \emph{Reinforcemen
 
 Istnieje wiele wariantów algorytmów wykorzystujących \emph{Reinforcement Learning}, które możemy podzielić ze względu na kryterium optymalizacji na oparte na polityce lub funkcji zmiany stanu.
 
-\subsubsection*{\Large{Oparte na polityce}}
-W tym podejściu przyjmowana jest polityka, którą należy zoptymalizować. Politykę możemy definiować jako odpowiedzialną za zachowanie agenta funkcję, która na wejściu przyjmuje obserwację, a na wyjściu zwraca akcję.  
+\subsubsection*{\Large{2.3.1. Oparte na strategii}}
+W tym podejściu przyjmowana jest strategia, którą należy zoptymalizować. Strategię możemy definiować jako odpowiedzialną za zachowanie agenta funkcję, która na wejściu przyjmuje obserwację, a na wyjściu zwraca akcję.  
 
-\subsubsection*{\Large{Oparte na funkcji wartości stanu}}
+\subsubsection*{\Large{2.3.2. Oparte na funkcji wartości stanu}}
 Funkcja wartości stanu $V_{\pi}(s)$ określa jak wysoki będzie zysk, gdy zaczniemy ze stanu $s$ i będziemy opierać się o politykę $\pi$. 
 
 \[V_{\pi}(s) = \mathbb{E}[R | s_0=s] = \mathbb{E} \left[\sum_{t=0}^n \gamma^t r_t | s_0=s \right]\]
@@ -315,7 +315,7 @@ W tym kryterium zostaje wprowadzona wartość $R$ jako całkowity \textbf{zysk},
 
 Ponieważ $\gamma$ jest mniejsza niż 1, odległe przyszłe zdarzenia są mniej istotne od zdarzeń w bliskiej i niedalekiej przyszłości. Jest to istotne, ponieważ zależy nam na najszybszym możliwym uzyskaniu zysku.
 
-\subsubsection*{\Large{Deep Reinforcement Learning}}
+\subsubsection*{\Large{2.3.3. Deep Reinforcement Learning}}
 Związek uczenia przez wzmacnianie z robotyką stale się zacieśnia, zwłaszcza popularne w ostatnich latach stały się techniki wykorzystujące głębokie uczenie przez wzmacnianie, czyli \emph{Deep Reinforcement Learning}. Jest to w pewnym sensie połączenie dwóch omawianych wyżej metod: sieci neuronowych i \emph{Reinforcement Learningu} stosowane w sytuacjach, gdy mamy do czynienia z bardziej złożonymi problemami. Posługując się konkretnym przykładem, załóżmy że chcemy, aby robot na podstawie obrazu chmury punktów pochodzącej z kamery RGBD znalazł zadany przedmiot i go uchwycił. Jest to problem, na którym skupia się ta praca, szerzej znany pod nazwą \emph{bin picking}. Wówczas, gdy mamy wielowymiarowe obserwacje w postaci chmury punktów - niemożliwe się staje rozwiązanie go za pomocą tradycyjnego \emph{Reinforcement Learningu}. 
 
 \begin{figure}[h]
@@ -324,10 +324,10 @@ Związek uczenia przez wzmacnianie z robotyką stale się zacieśnia, zwłaszcza
 \caption{Robot wykorzystujący techniki uczenia ze wzmacnianiem podczas układania kostki Rubika. Eksperyment został opisany w publikacji \emph{Solving Rubik's Cube with a Robot Hand} i miał na celu przetrenowanie sztucznej inteligencji pod kątem umiejętności motorycznych - praca zbiorowa OpenAI.}
 \end{figure}
 
-\subsubsection*{\Large{Zalety uczenia przez wzmacnianie}}
+\subsubsection*{\Large{2.3.4. Zalety uczenia przez wzmacnianie}}
 Do niewątpliwych zalet uczenia przez wzmacnianie należy zdolność do tworzenia zachowań \textbf{emergentnych}. Przez emergencję rozumiemy powstawanie zachowań, do których instrukcje nie zostały bezpośrednio udzielone, a znalezione metodą prób i błędów i następnie z powodzeniem stosowane. Drugą ważną zaletą jest jego uniwersalność - metody oparte na \emph{Reinforcement Learning} mogą zostać z lepszym lub gorszym skutkiem użyte w większości problemów związanych z motoryką w robotyce, tj. nauka chodzenia, chwytania itp.
 
-\subsubsection*{\Large{Wady uczenia przez wzmacnianie}}
+\subsubsection*{\Large{2.3.5. Wady uczenia przez wzmacnianie}}
 Jak już zostało wspomniane we wprowadzeniu, do wad podejścia wykorzystującego uczenie przez wzmacnianie w robotyce zaliczamy czas i często zasoby obliczeniowe potrzebne do przetrenowania algorytmu oraz niewydajne i często chaotyczne ruchy, które są jego rezultatem.
 
 \newpage
@@ -341,14 +341,14 @@ Aby przejść do zadania estymacji położenia obiektu najpierw należy określi
 \caption{Model obiektu i utworzona sztucznie chmura punktów.}
 \end{figure}
 
-\subsection*{\LARGE{Wyznaczenie najbliższego punktu}} \addcontentsline{toc}{subsection}{Wyznaczenie najbliższego punktu}
+\subsection*{\LARGE{3.1. Wyznaczenie najbliższego punktu}} \addcontentsline{toc}{subsection}{3.1. Wyznaczenie najbliższego punktu}
 
 Najbardziej fundamentalny przykład sprowadza się do znalezienia długości odcinka łączącego dwa punkty $\vb{p}_{1} = (x_{1}, y_{1}, z_{1})$ i $\vb{p}_{2} = (x_{2}, y_{2}, z_{2})$. Odległość ta jest dana w metryce euklidesowej wzorem
 \[d(\vb{p}_{1}, \vb{p}_{2}) = ||\vb{p}_{1} - \vb{p}_{2}|| = \sqrt{(x_{2}-x_{1})^2+(y_{2}-y_{1})^2+(z_{2}-z_{1})^2}\]
 
 Kolejnym krokiem ku estymacji położenia jednego obiektu względem drugiego wydaje się być przeprowadzenie tej operacji dla wszystkich punktów. W tym miejscu nasuwa się jednak pewien problem. Mianowicie, nie tylko nie wiemy czy dany punkt ma swojego odpowiednika, ale też czy ich liczba w obu zbiorach się zgadza. W rzeczywistości próbujemy znaleźć najkrótszą drogę między punktami zbioru $\mathbf{A}$ a punktami zbioru $\mathbf{B}$ do czego posłuży algorytm najbliższego sąsiada.
 
-\subsection*{\LARGE{Algorytm najbliższego sąsiada}} \addcontentsline{toc}{subsection}{Algorytm najbliższego sąsiada}
+\subsection*{\LARGE{3.2. Algorytm najbliższego sąsiada}} \addcontentsline{toc}{subsection}{3.2. Algorytm najbliższego sąsiada}
 
 Algorytm najbliższego sąsiada (ang. \emph{Nearest Neighbour algorithm}) jest jedną z najbardziej podstawowych technik wykorzystywaną do rozpoznawania wzorców we współczesnym uczeniu maszynowym. Jest to algorytm zachłanny o złożoności czasowej $O(n^2)$ o czym świadczy zagnieżdżenie dwóch pętli. Może zostać wykorzystany zarówno do klasyfikacji, regresji jak i do rozwiązania problemu komiwojażera. 
 
@@ -368,7 +368,7 @@ Chcąc znaleźć najlepsze dopasowanie między dwoma zbiorami punktów potrzebuj
 
 Opisując powyższy kod, dana jest funkcja \emph{knn} przyjmująca trzy argumenty: zbiór punktów w postaci listy, punkt $p$ oraz liczbę najbliższych sąsiadów domyślnie ustawioną na jeden. Działanie funkcji zaczyna się od zdefiniowania pustej listy, w której będą przechowywane poszczególne odległości. Poniżej znajduje się zagnieżdżenie dwóch pętli, z których pierwsza iteruje po punktach, a druga - po ich współrzędnych. W linijkach 6-7 liczona jest odległość euklidesowa między danym punktem w zbiorze, a punktem $p$, która następnie zapisywana jest do listy $distances$. Po wyjściu z obu pętli, lista ta jest sortowana i zwracana na wyjściu funkcji.
 
-\subsection*{\LARGE{Transformacje}} \addcontentsline{toc}{subsection}{Transformacje}
+\subsection*{\LARGE{3.3. Transformacje}} \addcontentsline{toc}{subsection}{3.3. Transformacje}
 
 Mianem transformacji określana jest funkcja przekształcająca jeden obiekt w drugi. Ze względu, że przez cały czas trwania tej pracy będziemy rozważać przedmioty jako bryły sztywne - omówione zostaną jedynie transformacje, które nie zmieniają kształtu ani rozmiaru obiektu. 
 \[
@@ -383,10 +383,10 @@ t_{x} \\ t_{y} \\ t_{z}
 \end{bmatrix}
 \]
 
-\subsubsection*{\Large{Macierz rotacji}}
+\subsubsection*{\Large{3.3.1. Macierz rotacji}}
 W zależności od tego jakim sposobem chcemy wykonywać działania mamy do wyboru trzy równoważne opcje obrotu danego kształtu w przestrzeni. Możemy w tym celu posłużyć się macierzą opartą o kąty obrotu wokół wszystkich trzech osi w układzie kartezjańskim, macierzą opartą o oś obrotu i kąt o jaki dany obiekt ma zostać obrócony lub kwaternionem. Dla zadanej rotacji wszystkie trzy sposoby z większą lub mniejszą dokładnością zwrócą numerycznie te same wyniki.
 
-\subsubsection*{\Large{Elementarne macierze rotacji}}
+\subsubsection*{\Large{3.3.2. Elementarne macierze rotacji}}
 Najprostszym sposobem na obrócenie obiektu w przestrzeni trójwymiarowej jest skorzystanie z elementarnych macierzy transformacji. Jest to podejście, którego używamy gdy dane są trzy kąty położone na prostopadłych płaszczyznach, wokół których należy obrócić obiekt. katy Eulera. Czasami można spotkać się także z nazwami \emph{pitch-roll-yaw} oznaczającymi to samo. Obrót o każdy taki kąt możemy zapisać w postaci macierzy
 \[
 \mathbf{R}_z(\gamma) = \begin{bmatrix}
@@ -425,7 +425,7 @@ Po przemnożeniu przez siebie wszystkich trzech obrotów składowych macierz rot
 \end{bmatrix}
 \]
 
-\subsubsection*{\Large{Oś obrotu i kąt}}
+\subsubsection*{\Large{3.3.3. Oś obrotu i kąt}}
 Podczas rozpisywania złożonych transformacji za pomocą elementarnych macierzy rotacji możemy zauważyć, że w rzeczywistości zamiast obracać obiekt trzykrotnie wokół różnych osi - moglibyśmy tak dobrać jedną oś i kąt obrotu wokół niej, aby wynikowa rotacja pozostała tożsama. Dlatego w tym podejściu zakładamy, że dysponujemy taką osią i wykonujemy już tylko jeden obrót. Oś obrotu możemy przedstawić w postaci wektora jednostkowego $\textbf{u} = [u_x, u_y, u_z]$ takiego, że 
 \[u_x^2+u_y^2+u_z^2 = 1 \]
 Dla ułatwienia oznaczmy $c = \cos \theta$ i $s = \sin \theta$
@@ -437,7 +437,7 @@ u_{z}u_{x}(1-c)-u_{z}s & u_{z}u_{y}(1-c)-u_{x}s & c+u_{z}^2(1-c)
 \end{bmatrix}
 \]
 
-\subsubsection*{\Large{Kwaternion}}
+\subsubsection*{\Large{3.3.4. Kwaternion}}
 Podejście wykorzystujące kwaternion różni się od dwóch powyższych głównie tym, że nie są tu używane funkcje trygonometryczne. Jest też pod pewnym względem podobne do przypadku wykorzystującego os obrotu i kąt, ponieważ ich obu nie da się rozbić na mniejsze obroty składowe. Same kwaterniony są przykładem liczb hiperzespolonych z jedną wartością rzeczywistą i trzema urojonymi. Kwaternion możemy zapisać w postaci sumy algebraicznej jako
 \[q = a \cdot \textbf{e} + b \cdot \textbf{i} + c \cdot \textbf{j} + d \cdot \textbf{k} \qquad gdzie \quad a, b, c, d \in \mathbb{R} \]
 
@@ -453,7 +453,7 @@ a^2+b^2-c^2-d^2 & 2(bc-ad) & 2(bd+ac) \\
 \end{bmatrix}
 \]
 
-\subsection*{\LARGE{Rozkład macierzy według wartości osobliwych}} \addcontentsline{toc}{subsection}{Rozkład macierzy według wartości osobliwych}
+\subsection*{\LARGE{3.4. Rozkład macierzy według wartości osobliwych}} \addcontentsline{toc}{subsection}{3.4. Rozkład macierzy według wartości osobliwych}
 
 Celem rozkładu według wartości osobliwych, w skrócie rozkładu SVD (ang. \emph{Singular Value Decomposition}) w proponowanym algorytmie jest znalezienie macierzy rotacji, która stanowi transformację między chmurą punktów a szablonem, do którego próbujemy ją dopasować. Umożliwi to późniejsze uchwycenie przedmiotu przez chwytak manipulatora, ponieważ szablon jest obiektem, który jest znany, a więc możemy zamodelować poprawny proces chwytania.
 
@@ -559,7 +559,7 @@ Jeśli $\vb{u}_1,..., \vb{u}_m$ tworzy bazę ortonormalną dla $\mathbb{R}^m$ to
 \end{bmatrix}
 = \mathbf{U_1 D_1 V_1^\top = AV_1 V_1^\top = A} \]
 
-\subsection*{\Large{Interpretacja geometryczna rozkładu SVD}} \addcontentsline{toc}{subsection}{Interpretacja geometryczna rozkładu SVD}
+\subsection*{\Large{3.5. Interpretacja geometryczna rozkładu SVD}} \addcontentsline{toc}{subsection}{3.5. Interpretacja geometryczna rozkładu SVD}
 
 W interpretacji geometrycznej wartości osobliwe mogą być rozumiane jako długości półosi elipsy na płaszczyźnie, co pokazano na rysunku. Wówczas zakładając, że $\mathbf{A}$ stanowi przekształcenie liniowe przestrzeni - macierze $\mathbf{U}$ i $\mathbf{V}$ reprezentują rotacje i odbicie tej przestrzeni, a $\mathbf{D}$ odpowiada za skalowanie. Innymi słowy, rozkład SVD rozkłada dowolne przekształcenie liniowe na złożenie funkcji trzech przekształceń: obrotu lub odbicia ($\mathbf{V}$), skalowania ($\mathbf{D}$) i kolejnego obrotu lub odbicia ($\mathbf{U}$). W szczególności, jeśli wyznacznik poddawanej przekształcaniu macierzy jest dodatni, wówczas macierze $\mathbf{U}$ i $\mathbf{V}$ mogą odpowiadać zarówno za rotację jak i odbicie. Jeśli wyznacznik jest ujemny tylko jedna z nich odpowiada za odbicie, jeśli jest równy zero - odbicia nie ma wcale.
 
@@ -639,8 +639,8 @@ Obliczona transformacja nie stanowi jeszcze ostatecznego rozwiązania algorytmu.
 \end{figure}
 
 \newpage
-\subsection*{\LARGE{Implementacja algorytmu}} \addcontentsline{toc}{subsection}{Implementacja algorytmu}
-Na następnych stronach zamieszczona została minimalistyczna implementacja omówionej listy kroków w języku Python. Pełna wersja algorytmu ICP wraz z komentarzami znajduje się w sekcji \emph{Appendix}.
+\subsection*{\LARGE{4.1. Implementacja algorytmu}} \addcontentsline{toc}{subsection}{4.1. Implementacja algorytmu}
+Na następnych stronach zamieszczona została minimalistyczna implementacja omówionej listy kroków w języku Python. Pełna wersja algorytmu ICP wraz z komentarzami znajduje się w sekcji \emph{Dodatki}.
 
 \newpage
 \lstinputlisting[language=Python]{transform_matrix.py}
@@ -656,14 +656,24 @@ Gdy mamy zaimplementowane wyznaczanie transformacji dla pojedynczej iteracji mo�
 
 Funkcja \emph{icp} przyjmuje cztery argumenty w tym jeden domyślny. Przyjmowane są zmienne \textbf{A} i \textbf{B} jako macierze o wymiarach 3 $\times$ n, maksymalna liczba iteracji oraz domyślnie ustawiony próg tolerancji. W linijkach 4-7 tworzone są macierze \textbf{A1} i \textbf{B1} jako czterokolumnowe odpowiedniki \textbf{A} i \textbf{B}. Dzieje się to przez skopiowanie wartości \textbf{A} i \textbf{B} i dostawienie kolumny jedynek. Linijki 10-19 zawierają główną pętlę programu wykonującą się maksymalnie \emph{max iterations} razy. Przed wejściem do pętli została zainicjalizowana zmienna \emph{prev error}, która będzie nadpisywana przy każdej iteracji. Następnie funkcja \emph{calculate distance} zwraca odległości euklidesowe między poszczególnymi punktami i ich indeksy. Będą one potem nam potrzebne do wyznaczenia średniego błędu dopasowania. Wyznaczana jest najlepsza transformacja \textbf{T} między \textbf{A1} i \textbf{B1}, po czym zostaje ona zastosowana do przesunięcia \textbf{A1}. Pod koniec działania pętli liczony jest średni błąd jako średnia odległości między punktami. Jeśli wartość bezwzględna z różnicy średniego i poprzedniego błędu jest większa niż przyjęta toleracja, a dotychczasowa liczba iteracji mniejsza niż \emph{max iterations} - pętla wykonuje się ponownie. W momencie znalezienia wystarczająco dokładnej transformacji przed zakończeniem pętli - jest ona przerywana.
 
-\subsection*{\LARGE{Działanie robota w praktyce}} \addcontentsline{toc}{subsection}{Działanie robota w praktyce}
+\subsection*{\LARGE{4.2. Działanie robota w praktyce}} \addcontentsline{toc}{subsection}{4.2. Działanie robota w praktyce}
 
-Przejście od teorii do praktyki wymagało dodatkowo implementacji funkcji odpowiedzialnych za poruszanie manipulatorem. Został w tym celu użyty popularny middleware ROS (\emph{Robot Operating System}), do którego odwołania były kierowanie z kodu Pythona. Omawiając program, możemy zwrócić uwagę, że wykorzystane zostały dwa serwisy: jeden odpowiedzialny za chwytak i drugi - za przeguby manipulatora. Funkcja \emph{move gripper} sterująca chwytakiem przyjmuje argument logiczny otwierający go w przypadku prawdy i zamykający w przypadku przeciwnym. Metoda \emph{move} kontrolująca ustawienie manipulatora jako argument przyjmuje z kolei tablicę sześciu wartości opisujących dane miejsce w przestrzeni przez jego współrzędne kartezjańskie i kąty Eulera.
+Zadanie zostało zrealizowane przez manipulator UR5, którego sterownik był podłączony do jednostki centralnej komputera z systemem Linux Ubuntu. Efektor końcowy robota zakończony był chwytakiem dwupalczastym o równoległych szczękach. Jego sterownik również łączył się z jednostką centralną. Rolę systemu wizyjnego pełniła kamera \emph{Intel RealSense} na bieżąco wysyłająca dane do komputera przez USB.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=12cm]{diagram}
+\caption{Diagram całego systemu.}
+\end{figure}
+
+Przejście od teorii do praktyki wymagało dodatkowo implementacji funkcji odpowiedzialnych za poruszanie manipulatorem. Został w tym celu użyty popularny middleware ROS (\emph{Robot Operating System}), do którego odwołania były kierowanie z kodu Pythona. Omawiając program, możemy zwrócić uwagę, że wykorzystane zostały dwa serwisy: jeden odpowiedzialny za chwytak i drugi - za przeguby manipulatora. Funkcja \emph{move gripper} sterująca chwytakiem przyjmuje argument logiczny otwierający go w przypadku prawdy i zamykający w przypadku przeciwnym.
+
+\lstinputlisting[language=Python]{gripper.py}
+\vspace{5mm}
+
+Metoda \emph{move} kontrolująca ustawienie manipulatora jako argument przyjmuje z kolei tablicę sześciu wartości opisujących dane miejsce w przestrzeni przez jego współrzędne kartezjańskie i kąty Eulera.
 
 \vspace{5mm}
-\lstinputlisting[language=Python]{gripper.py}
-
-\newpage
 \lstinputlisting[language=Python]{move.py} 
 \vspace{5mm}
 
@@ -673,8 +683,11 @@ Również z ROSa korzystając zostało obsłużone zachowanie kamery. W tej roli
 \lstinputlisting[language=Python]{camera.py}
 \vspace{5mm}
 
-Mimo wszelkich starań działanie proponowanego systemu w praktyce często różniło się od pożądanego. Głównym problemem była rozbieżność między chmurą punktów widzianą z kamery a rzeczywistym kształtem przedmiotu. Gdy ta rozbieżność była zbyt duża - algorytm nie był w stanie odnaleźć poprawnego przekształcenia. Przez to w niektórych przypadkach konieczne okazało się znajdowanie pozycji obiektu zastępując niekształtną chmurę punktów jej centroidem. Jest to metoda działająca w przypadku odpowiednio małych obiektów, które trudno wykryć za pomocą kamery, natomiast nie dostarcza tak dokładnych informacji jak proponowane rozwiązanie.
+Mimo wszelkich starań działanie proponowanego systemu w praktyce często różniło się od pożądanego. Głównym problemem była rozbieżność między chmurą punktów widzianą z kamery a rzeczywistym kształtem przedmiotu. Gdy ta rozbieżność była zbyt duża - algorytm nie był w stanie odnaleźć poprawnego przekształcenia. Przez to w niektórych przypadkach konieczne okazało się znajdowanie pozycji obiektu zastępując niekształtną chmurę punktów jej środkiem ciężkości. A ponieważ obiekty traktowane są jako wykonane z jednorodnego materiału, środek ten możemy nazywać centroidem. Jest to metoda działająca w przypadku odpowiednio małych obiektów, które trudno wykryć za pomocą kamery, natomiast nie dostarcza tak dokładnych informacji jak proponowane rozwiązanie.
 
+Podejście oparte na znalezieniu centroidu stanowi pewien kompromis między potrzebą estymacji położenia a niską jakością danych z kamery. Przede wszystkim, centroid opisywany jest przez trzy współrzędne, a więc tracona jest informacja o orientacji obiektu w przestrzeni. Dlatego w przeprowadzonym doświadczeniu orientacja kostki została wcześniej skorygowana i przyjęta w postaci kątów Eulera jako (0, 90$^\circ$, 0), czyli wszystkie wartości zostały zaokrąglone do kątów prostych. Następnie należało znaleźć właściwą transformację między bazą robota a centroidem jako odległości wzdłuż każdej osi układu kartezjańskiego. Wówczas ostatnim krokiem doświadczenia było uruchomienie manipulatora i wysłaniu mu polecenia dojechania do ustalonego punktu, zaciśnięcia chwytaka i powrotu do pozycji początkowej. 
+
+\newpage
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{robot}
@@ -692,7 +705,7 @@ Z drugiej strony, istnieje wiele podobieństw między proponowaną pracą a prze
 
 Podsumowując, praca, mimo wszelkich zalet nie stanowi samowystarczalnego systemu, który mógłby w obecnym stanie zostać wykorzystany na potrzeby przemysłu. Przede wszystkim dlatego, że obejmuje tylko część zagadnień jakie należałoby rozwiązać przed procesem komercjalizacji. Czynności takie jak nadzór działania czy zorientowanie chwytaka względem szablonu obiektu nadal wymagają interwencji człowieka. Projekt ma za to potencjał do stania się częścią większego oprogramowania, gdzie stanowiłby znaczny wkład na polu manipulacji i przemysłu 4.0.
 
-\subsection*{\LARGE{Dalszy rozwój}} \addcontentsline{toc}{subsection}{Dalszy rozwój}
+\subsection*{\LARGE{5.1. Dalszy rozwój}} \addcontentsline{toc}{subsection}{5.1. Dalszy rozwój}
 
 Mimo, że zaproponowana metoda estymacji położenia obiektu wykonała założone zadanie z powodzeniem, zastosowana technika posiada również pewne ograniczenia. Do najważniejszych z nich należy brak możliwości wyłonienia pożądanego przedmiotu ze zbioru zawierającego więcej niż jeden element. Tą kwestię można oczywiście rozwiązać stosując metody segmentacji. Mielibyśmy wtedy chmurę punktów rozbitą na kilka elementów, ale rodziłoby to kolejny problem - algorytm musiałby rozpoznać, który z nich stanowi żądany obiekt. W tym miejscu mogłaby zostać zaimplementowana logika odpowiadająca za obsługę przypadków w zależności czy w danych, które są sprawdzane mamy do czynienia z jednym, kilkoma lub żadnym szukanym obiektem. Podsumowując, dalszy rozwój tej pracy mógłby obejmować:
 
@@ -715,25 +728,43 @@ Z drugiej strony do rozwiązania problemu wielu obiektów mogłyby zostać zaprz
 \newpage
 \section*{\LARGE{Bibliografia}} \addcontentsline{toc}{section}{Bibliografia}
 \begin{enumerate}
-\item \emph{Wprowadzenie do robotyki} - John. J. Craig
-\item \emph{Legged Robots That Balance} - Marc H. Raibert
-\item \emph{The Senses Considered as Perceptual Systems} - James J. Ginson
-\item \emph{Biocybernetyka} - Ryszard Tadeusiewicz
-\item \emph{Odkrywanie właściwości sieci neuronowych} - Ryszard Tadeusiewicz
-\item \emph{The Representation of Tool Use in Humans and Monkeys: Common and Uniquely Human Features}, "Journal of Neuroscience" - Scott H. Jonhson-Frey
-\item \emph{Krótka historia rozumu. Od pierwszej myśli do rozumienia wszechświata} - Leonard Mlodinow
-\item \emph{Deep Learning. Systemy uczące się} - Ian Goodfellow, Yoshua Bengio, Aaron Courville
-\item \emph{Solving Rubik's Cube with a Robot Hand} - praca zbiorowa OpenAI
-\item \emph{Linear Algebra with Applications} - Steven J. Leon
-\item \emph{A Singularly Valuable Decomposition} - Dan Kalman
-\item \emph{A Method for Registration of 3-D Shapes} - Paul J. Besl, Neil D. McKay
-\item \emph{Least-Squares Fitting of Two 3-D Point Sets} - K.S. Arun, T.S. Huang, S.D. Blostein
-\item \emph{Mask R-CNN} - Kaiming He, Georgia Gkioxari, Piotr Dollár, Ross Girshick
-\item \emph{PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation} - Charles R. Qi, Hao Su, Kaichun Mo, Leonidas J. Guibas
+\item John. J. Craig - \emph{Introduction to Robotics: Mechanics and Control}; wyd. polskie: \emph{Wprowadzenie do robotyki: mechanika i sterowanie}, tłum. Józef Knapczyk, Wydawnictwa Naukowo-Techniczne, 1993
+
+\item Marc H. Raibert - \emph{Legged Robots That Balance}, MIT press, 1986
+
+\item James J. Ginson - \emph{The Senses Considered as Perceptual Systems}, Tom 2. Nr 1. Boston: Houghton Mifflin, 1966
+
+\item Ryszard Tadeusiewicz - \emph{Biocybernetyka}
+
+\item Ryszard Tadeusiewicz et al. - \emph{Odkrywanie właściwości sieci neuronowych przy użyciu programów w języku C\#}, 2007
+
+\item R. Peeters et al. - \emph{The Representation of Tool Use in Humans and Monkeys: Common and Uniquely Human Features}, "Journal of Neuroscience", nr 29 (wrzesień 2009), s. 11523-11539
+
+\item Scott H. Johnson-Frey \emph{The Neural Bases of Complex Tool Use in Humans}, "TRENDS in Cognitive Sciences", nr 8 (luty 2004), s. 71-78
+
+\item  Leonard Mlodinow, \emph{The Upright Thinkers}; wyd. polskie: \emph{Krótka historia rozumu. Od pierwszej myśli do rozumienia wszechświata}, tłum. Sebastian Szymański, Prószyński i S-ka, Warszawa 2016
+
+\item Ian Goodfellow, Yoshua Bengio, Aaron Courville - \emph{Deep Learning}; wyd. polskie: \emph{Deep Learning. Systemy uczące się}, tłum. Witold Sikorski, Wydawnictwo Naukowe PWN, Warszawa 2018
+
+\item Hao-Shu Fang et al. - \emph{Graspnet-1billion: A large-scale benchmark for general object grasping}, "Proceedings of the IEEE/CVF conference on computer vision and pattern recognition", 2020
+
+\item Ilge Akkaya et al. - \emph{Solving Rubik's Cube with a Robot Hand}, arXiv: 1910.07113 (2019)
+
+\item Steven J. Leon, Ion Bica, Tiina Hohn - \emph{Linear Algebra with Applications}, Upper Saddle River, NJ: Pearson Prentice Hall, 2006
+
+\item Dan Kalman - \emph{A singularly valuable decomposition: the SVD of a matrix}, "The college mathematics journal" nr 27.1 (1996), s. 2-23
+
+\item Paul J. Besl, Neil D. McKay. \emph{Method for registration of 3-D shapes}, "Sensor fusion IV: control paradigms and data structures", Tom 1611. Spie, 1992
+
+\item K.S. Arun, T.S. Huang, S.D. Blostein - \emph{Least-Squares Fitting of Two 3-D Point Sets}, "IEEE Transactions on pattern analysis and machine intelligence", nr 5 (1987), s. 698-700
+
+\item Kaiming He, Georgia Gkioxari, Piotr Dollár, Ross Girshick - \emph{Mask R-CNN}, "Proceedings of the IEEE international conference on computer vision", 2017, s. 2961-2969
+
+\item Charles R. Qi, Hao Su, Kaichun Mo, Leonidas J. Guibas - \emph{PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation}, "Proceedings of the IEEE conference on computer vision and pattern recognition", 2017, s. 652-660
 \end{enumerate}
 
 \newpage
-\section*{\LARGE{Appendix}}
+\section*{\LARGE{Dodatki}}
 \subsection*{\Large{Kod programu}}
 \lstinputlisting[language=Python]{appendix.py}
 
