@@ -120,7 +120,7 @@ W ostatnich latach można zaobserwować wzrastający trend na zastosowanie robot
 
 Celem pracy jest opracowanie rozwiązania odpowiedzialnego za rozpoznawanie wskazanego obiektu i realizację chwycenia go przy wykorzystaniu manipulatora. Rozwinięcie problemu znanego pod nazwą \emph{bin picking} ma przede wszystkim na celu zwiększenie zakresu działania robotów przemysłowych w kontekście ich pracy. Stanowi to kwintesencję w wielu współczesnych zastosowaniach robotyki dążącej do bycia bardziej "elastyczną" i intuicyjną.
 
-Ponieważ zadania, o których wspomniałem są często realizowane przez określony rodzaj robotów, w swojej pracy zamierzam wykorzytać manipulator UR5 duńskiego producenta Universal Robots. Na nim zostanie zaimplementowany algorytm, który w oparciu o dane z systemu wizyjnego będzie w stanie określić położenie widzianych przedmiotów. W pracy posłużę się programami stworzonymi w języku Python. Dzięki temu działanie robota będzie można gruntownie zweryfikować w praktyce.
+Ponieważ zadania, o których wspomniałem są często realizowane przez określony rodzaj robotów, w swojej pracy zamierzam wykorzystać manipulator UR5 duńskiego producenta Universal Robots. Na nim zostanie zaimplementowany algorytm, który w oparciu o dane z systemu wizyjnego będzie w stanie określić położenie widzianych przedmiotów. W pracy posłużę się programami stworzonymi w języku Python. Dzięki temu działanie robota będzie można gruntownie zweryfikować w praktyce.
 
 \newpage
 \tableofcontents
@@ -640,7 +640,7 @@ Obliczona transformacja nie stanowi jeszcze ostatecznego rozwiązania algorytmu.
 
 \newpage
 \subsection*{\LARGE{4.1. Implementacja algorytmu}} \addcontentsline{toc}{subsection}{4.1. Implementacja algorytmu}
-Na następnych stronach zamieszczona została minimalistyczna implementacja omówionej listy kroków w języku Python. Pełna wersja algorytmu ICP wraz z komentarzami znajduje się w sekcji \emph{Dodatki}.
+Na następnych stronach zamieszczona została minimalistyczna implementacja omówionej listy kroków w języku Python. Pełna wersja algorytmu ICP wraz z komentarzami znajduje się w sekcji \emph{Załączniki}.
 
 \newpage
 \lstinputlisting[language=Python]{transform_matrix.py}
@@ -736,21 +736,34 @@ Z drugiej strony do rozwiązania problemu wielu obiektów mogłyby zostać zaprz
 
 \item Ryszard Tadeusiewicz - \emph{Biocybernetyka}
 
-\item Ryszard Tadeusiewicz et al. - \emph{Odkrywanie właściwości sieci neuronowych przy użyciu programów w języku C\#}, 2007
-
 \item R. Peeters et al. - \emph{The Representation of Tool Use in Humans and Monkeys: Common and Uniquely Human Features}, "Journal of Neuroscience", nr 29 (wrzesień 2009), s. 11523-11539
 
 \item Scott H. Johnson-Frey \emph{The Neural Bases of Complex Tool Use in Humans}, "TRENDS in Cognitive Sciences", nr 8 (luty 2004), s. 71-78
 
 \item  Leonard Mlodinow, \emph{The Upright Thinkers}; wyd. polskie: \emph{Krótka historia rozumu. Od pierwszej myśli do rozumienia wszechświata}, tłum. Sebastian Szymański, Prószyński i S-ka, Warszawa 2016
 
+\item David Forsyth, Jean Ponce - \emph{Computer vision: A modern approach}, Prentice hall, 2011
+
+\item Jan Erik Solem - \emph{Programming Computer Vision with Python},  O’Reilly Media, czerwiec 2012
+
+\item Ryszard Tadeusiewicz et al. - \emph{Odkrywanie właściwości sieci neuronowych przy użyciu programów w języku C\#}, 2007
+
 \item Ian Goodfellow, Yoshua Bengio, Aaron Courville - \emph{Deep Learning}; wyd. polskie: \emph{Deep Learning. Systemy uczące się}, tłum. Witold Sikorski, Wydawnictwo Naukowe PWN, Warszawa 2018
 
+\newpage
 \item Hao-Shu Fang et al. - \emph{Graspnet-1billion: A large-scale benchmark for general object grasping}, "Proceedings of the IEEE/CVF conference on computer vision and pattern recognition", 2020
+
+\item Mousavian, Arsalan, Clemens Eppner, Dieter Fox - \emph{6-dof graspnet: Variational grasp generation for object manipulation}, "Proceedings of the IEEE/CVF International Conference on Computer Vision", 2019
+
+\item Stuart Russell, Peter Norvig - \emph{Artificial intelligence: a modern approach}, Upper Saddle River, New Jersey 2010, s. 830-831
+
+\item Leslie PackKaelbling, Michael L. Littman, Andrew W. Moore - \emph{Reinforcement learning: A survey} - "Journal of artificial intelligence research", nr 4 (1996), s. 237-285
 
 \item Ilge Akkaya et al. - \emph{Solving Rubik's Cube with a Robot Hand}, arXiv: 1910.07113 (2019)
 
 \item Steven J. Leon, Ion Bica, Tiina Hohn - \emph{Linear Algebra with Applications}, Upper Saddle River, NJ: Pearson Prentice Hall, 2006
+
+\item Sudipto Banerjee, Anindya Roy - \emph{Linear algebra and matrix analysis for statistics}, Tom 181, Boca Raton, Floryda, USA, Crc Press, 2014
 
 \item Dan Kalman - \emph{A singularly valuable decomposition: the SVD of a matrix}, "The college mathematics journal" nr 27.1 (1996), s. 2-23
 
@@ -758,13 +771,19 @@ Z drugiej strony do rozwiązania problemu wielu obiektów mogłyby zostać zaprz
 
 \item K.S. Arun, T.S. Huang, S.D. Blostein - \emph{Least-Squares Fitting of Two 3-D Point Sets}, "IEEE Transactions on pattern analysis and machine intelligence", nr 5 (1987), s. 698-700
 
+\item Yang Chen, Gérard Medioni - \emph{Object modelling by registration of multiple range images} - "Image and vision computing", nr 10.3 (1992), s. 145-155
+
+\item Zhengyou Zhang - \emph{Iterative point matching for registration of free-form curves and surfaces} - "International journal of computer vision", nr 13.2 (1994), s. 119-152
+
+\item Fischler, Martin A., Robert C. Bolles - \emph{Random sample consensus: a paradigm for model fitting with applications to image analysis and automated cartography}, "Communications of the ACM", nr 24.6 (1981), s. 381-395
+
 \item Kaiming He, Georgia Gkioxari, Piotr Dollár, Ross Girshick - \emph{Mask R-CNN}, "Proceedings of the IEEE international conference on computer vision", 2017, s. 2961-2969
 
 \item Charles R. Qi, Hao Su, Kaichun Mo, Leonidas J. Guibas - \emph{PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation}, "Proceedings of the IEEE conference on computer vision and pattern recognition", 2017, s. 652-660
 \end{enumerate}
 
 \newpage
-\section*{\LARGE{Dodatki}}
+\section*{\LARGE{Załączniki}}
 \subsection*{\Large{Kod programu}}
 \lstinputlisting[language=Python]{appendix.py}
 
